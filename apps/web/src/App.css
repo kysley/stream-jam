@@ -2,4 +2,14 @@
   width: 100vw;
   height: 100vh;
   position: relative;
+  overflow: hidden;
+}
+
+.magnet {
+  position: relative;
+  z-index: 5;
+}
+
+.magnet.remote {
+  z-index: 3;
 }
