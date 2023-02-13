@@ -54,6 +54,7 @@ export function IndexPage() {
     const newX = (event.active.rect.current.initial?.left || 0) + event.delta.x;
     const newY = (event.active.rect.current.initial?.top || 0) + event.delta.y;
     update((prev) => ({
+      ...prev,
       x: newX,
       y: newY,
     }));
@@ -149,6 +150,7 @@ function Magnet(props: {
       }
     >
       <img
+        style={magnet.style}
         alt="magnet"
         src={props.imageUrl}
         ref={setNodeRef}
