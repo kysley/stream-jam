@@ -1,11 +1,9 @@
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { magnetFamily, selectedMagnetIdAtom } from "../state";
 
 export function useSelectedMagnet() {
   const selectedMagnetId = useAtomValue(selectedMagnetIdAtom);
-  const magnet = useAtomValue(magnetFamily(selectedMagnetId));
+  const [magnet, setMagnet] = useAtom(magnetFamily(selectedMagnetId));
 
-  if (!selectedMagnetId) return null;
-
-  return magnet;
+  return { magnet, setMagnet };
 }
