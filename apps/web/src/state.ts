@@ -10,21 +10,16 @@ export type Magnet = {
   style?: CSSProperties;
 };
 
-const useMagnetStore = create<{
+export const useRemoteMagnetStore = create<{
   magnets: Magnet[];
-  ids: string[];
-  selected?: string;
   actions: {
-    addMagnet(magnet: Magnet): void;
-    setSelectedMagnetId(id?: string): void;
-    updateMagnet(id: string, newState: Partial<Magnet>): void;
+    updateRemoteMagnet(id: string, newState: Magnet): void;
+    removeRemoteMagnet(id: string): void;
   };
 }>((set) => ({
   magnets: [],
-  ids: [],
-  selected: undefined,
   actions: {
-    updateMagnet(id, newState) {
+    updateRemoteMagnet(id, newState) {
       set((state) => {
         const target = state.magnets.findIndex((m) => m.id === id);
         if (target !== -1) {
@@ -35,8 +30,65 @@ const useMagnetStore = create<{
           return {
             magnets: m,
           };
+        } else {
+          state.magnets.push(newState);
+          return {
+            magnets: state.magnets,
+          };
         }
       });
+    },
+    removeRemoteMagnet(id) {
+      set((state) => {
+        const m = produce(state.magnets, (draft) =>
+          draft.filter((m) => m.id === id)
+        );
+        return {
+          magnets: m,
+        };
+      });
+    },
+  },
+}));
+
+export const useRemoteMagnetIds = () =>
+  useRemoteMagnetStore((state) => state.ids);
+export const useRemoteMagnetActions = () =>
+  useRemoteMagnetStore((state) => state.actions);
+
+const useMagnetStore = create<{
+  magnets: Magnet[];
+  ids: string[];
+  selected?: string;
+  actions: {
+    addMagnet(magnet: Magnet): void;
+    setSelectedMagnetId(id?: string): void;
+    updateMagnet(id: string, newState: Partial<Magnet>): Magnet | undefined;
+  };
+}>((set) => ({
+  magnets: [],
+  ids: [],
+  selected: undefined,
+  actions: {
+    updateMagnet(id, newState) {
+      let updated: Magnet | undefined;
+      set((state) => {
+        const target = state.magnets.findIndex((m) => m.id === id);
+        if (target !== -1) {
+          const m = produce(state.magnets, (draft) => {
+            draft[target] = { ...draft[target], ...newState };
+            updated = draft[target];
+            // draft = { ...draft, newState };
+          });
+          return {
+            magnets: m,
+          };
+        }
+      });
+      if (updated) {
+        return updated;
+      }
+      return undefined;
     },
     setSelectedMagnetId(id) {
       set((state) => {
