@@ -1,9 +1,13 @@
 import * as Slider from "@radix-ui/react-slider";
+import { useEmitMagnetUpdate } from "../hooks/use-emit-magnet-update";
+import { useMagnetActions, useSelectedMagnetId } from "../state";
 import "./magnet-editor.styles.css";
 
 export function MagnetEditor() {
-  const m = undefined;
-  if (!m) return null;
+  const id = useSelectedMagnetId();
+  const { updateMagnet } = useMagnetActions();
+  const { emitMagnetUpdate } = useEmitMagnetUpdate();
+  if (!id) return null;
 
   return (
     <div>
@@ -16,11 +20,10 @@ export function MagnetEditor() {
         aria-label="Volume"
         className="slider-root"
         onValueChange={(value) => {
-          console.log(value[0]);
-          m.setMagnet((prev) => ({
-            ...prev,
-            style: { ...prev.style, transform: `scale(${value[0]})` },
-          }));
+          const newState = updateMagnet(id, {
+            style: { transform: `scale(${value[0]})` },
+          });
+          if (newState) emitMagnetUpdate(newState);
         }}
       >
         <Slider.Track className="slider-track">
