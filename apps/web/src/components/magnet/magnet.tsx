@@ -33,7 +33,7 @@ export function Magnet({ id, disabled }: MagnetProps) {
       style={
         {
           ...(isSelected && {
-            border: "2px solid black",
+            border: "2px solid red",
           }),
           position: "absolute",
           transform: `translate3d(${magnet?.x}px, ${magnet?.y}px, 0)`,
