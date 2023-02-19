@@ -1,29 +1,34 @@
 import {
   DndContext,
   useDroppable,
-  useDraggable,
   DragStartEvent,
   DragEndEvent,
   DragMoveEvent,
 } from "@dnd-kit/core";
-import { CSSProperties, ReactNode, useEffect, useState } from "react";
-import { useAtom, useAtomValue } from "jotai";
-import { activeMagnet, magnetFamily, selectedMagnetIdAtom } from "../state";
-import { useClickOutside, useThrottledCallback } from "@react-hookz/web";
+import { ReactNode, useEffect, useState } from "react";
+import { useMagnetIds } from "../state";
+import { useThrottledCallback } from "@react-hookz/web";
 import { useUpdateDraggedMagnet } from "../hooks/use-update-dragged-magnet";
 import { useSocket } from "../hooks/use-socket";
 import { QuickToolbar } from "../components/toolbar";
 import { StreamPreview } from "../components/stream-preview";
 import { MagnetEditor } from "../components/magnet-editor";
+import { RemoteMagnet } from "../components/magnet/remote-magnet";
+import { Magnet } from "../components/magnet/magnet";
 
 export function IndexPage() {
-  const [draggingMagnet, setDraggingMagnet] = useAtom(activeMagnet);
+  const [draggingMagnet, setDraggingMagnet] = useState<string | undefined>();
   const [remoteMagnets, setRemoteMagnets] = useState([]);
+
+  const localMagnetIds = useMagnetIds();
+
   const update = useUpdateDraggedMagnet();
-  const onMove = useThrottledCallback((fn) => fn(), [], 200);
+  const onMove = useThrottledCallback((fn) => fn(), [], 25);
+
   const socket = useSocket();
 
   useEffect(() => {
+    // todo: turn this into a state slice
     if (socket) {
       socket.on("update", (data) => {
         // Ignore our own updates
@@ -44,34 +49,36 @@ export function IndexPage() {
     }
   }, [socket, remoteMagnets]);
 
-  function handleDragEnd(event: DragEndEvent) {}
+  function handleDragEnd(event: DragEndEvent) {
+    setDraggingMagnet(undefined);
+  }
 
   function handleDragStart(event: DragStartEvent) {
-    setDraggingMagnet(event.active.id);
+    setDraggingMagnet(event.active.id.toString());
   }
 
   function handleDragMove(event: DragMoveEvent) {
     const newX = (event.active.rect.current.initial?.left || 0) + event.delta.x;
     const newY = (event.active.rect.current.initial?.top || 0) + event.delta.y;
-    update((prev) => ({
-      ...prev,
-      x: newX,
-      y: newY,
-    }));
-
-    if (socket) {
-      onMove(() => {
-        socket.emit("update", {
-          socketId: socket.id,
-          data: {
-            id: event.active.id + socket.id,
-            x: newX,
-            y: newY,
-            imageUrl:
-              "https://cdn.7tv.app/emote/63b77cae9d5b1683fdd05d21/3x.webp",
-          },
-        });
+    if (draggingMagnet) {
+      update(draggingMagnet, {
+        x: newX,
+        y: newY,
       });
+
+      if (socket) {
+        onMove(() => {
+          socket.emit("update", {
+            socketId: socket.id,
+            data: {
+              id: event.active.id + socket.id,
+              x: newX,
+              y: newY,
+              url: "https://cdn.7tv.app/emote/63b77cae9d5b1683fdd05d21/3x.webp",
+            },
+          });
+        });
+      }
     }
   }
 
@@ -83,25 +90,10 @@ export function IndexPage() {
     >
       {remoteMagnets.length > 0 &&
         remoteMagnets.map((magnet) => (
-          <Magnet
-            id={magnet.id}
-            imageUrl={magnet.imageUrl}
-            key={magnet.id}
-            disabled
-            x={magnet.x}
-            y={magnet.y}
-            className="magnet remote"
-            // style={{ zIndex: 0 }}
-          />
+          <RemoteMagnet key={magnet.id} magnet={magnet} />
         ))}
-      <Magnet
-        imageUrl="https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp"
-        id="test"
-      />
-      <Magnet
-        imageUrl="https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp"
-        id="test2"
-      />
+      {localMagnetIds.length > 0 &&
+        localMagnetIds.map((id) => <Magnet key={id} id={id} />)}
       <QuickToolbar />
       <StreamPreview />
       <MagnetEditor />
@@ -112,54 +104,54 @@ export function IndexPage() {
   );
 }
 
-function Magnet(props: {
-  imageUrl: string;
-  id: string;
-  disabled?: boolean;
-  x?: number;
-  y?: number;
-  className?: string;
-}) {
-  const { attributes, listeners, setNodeRef, node } = useDraggable({
-    id: props.id,
-    disabled: props.disabled,
-  });
-  const magnet = useAtomValue(magnetFamily(props.id));
-  const [selectedId, setSelectedMagnet] = useAtom(selectedMagnetIdAtom);
-  const isSelected = selectedId === props.id;
+// function Magnet(props: {
+//   imageUrl: string;
+//   id: string;
+//   disabled?: boolean;
+//   x?: number;
+//   y?: number;
+//   className?: string;
+// }) {
+//   const { attributes, listeners, setNodeRef, node } = useDraggable({
+//     id: props.id,
+//     disabled: props.disabled,
+//   });
+//   const magnet = useAtomValue(magnetFamily(props.id));
+//   const [selectedId, setSelectedMagnet] = useAtom(selectedMagnetIdAtom);
+//   const isSelected = selectedId === props.id;
 
-  useClickOutside(node, () => isSelected && setSelectedMagnet(null));
+//   useClickOutside(node, () => isSelected && setSelectedMagnet(null));
 
-  const className = props.className ?? "magnet";
-  return (
-    <div
-      onMouseDown={() => {
-        setSelectedMagnet(props.id);
-      }}
-      style={
-        {
-          ...(isSelected && {
-            border: "2px solid black",
-          }),
-          position: "absolute",
-          transform: `translate3d(${props.x || magnet?.x}px, ${
-            props.y || magnet?.y
-          }px, 0)`,
-          // "--translate-y": `${magnet?.y ?? 0}px`,
-        } as React.CSSProperties
-      }
-    >
-      <img
-        style={magnet.style}
-        alt="magnet"
-        src={props.imageUrl}
-        ref={setNodeRef}
-        {...listeners}
-        {...attributes}
-      />
-    </div>
-  );
-}
+//   const className = props.className ?? "magnet";
+//   return (
+//     <div
+//       onMouseDown={() => {
+//         setSelectedMagnet(props.id);
+//       }}
+//       style={
+//         {
+//           ...(isSelected && {
+//             border: "2px solid black",
+//           }),
+//           position: "absolute",
+//           transform: `translate3d(${props.x || magnet?.x}px, ${
+//             props.y || magnet?.y
+//           }px, 0)`,
+//           // "--translate-y": `${magnet?.y ?? 0}px`,
+//         } as React.CSSProperties
+//       }
+//     >
+//       <img
+//         style={magnet.style}
+//         alt="magnet"
+//         src={props.imageUrl}
+//         ref={setNodeRef}
+//         {...listeners}
+//         {...attributes}
+//       />
+//     </div>
+//   );
+// }
 
 function Droppable(props: { children: ReactNode; disabled?: boolean }) {
   const { isOver, setNodeRef } = useDroppable({

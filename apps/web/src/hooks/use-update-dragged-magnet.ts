@@ -1,9 +1,15 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { activeMagnet, magnetFamily } from "../state";
+import {
+  activeMagnet,
+  magnetFamily,
+  useMagnetActions,
+  useSelectedMagnetId,
+} from "../state";
+import { useSelectedMagnet } from "./use-selected-magnet";
 
 export function useUpdateDraggedMagnet() {
-  const draggedMagnetId = useAtomValue(activeMagnet);
-  const setDraggedMagnet = useSetAtom(magnetFamily(draggedMagnetId));
+  const magnetId = useSelectedMagnetId();
+  const { updateMagnet } = useMagnetActions();
 
-  return setDraggedMagnet;
+  return updateMagnet;
 }

@@ -1,20 +1,25 @@
 import * as Toolbar from "@radix-ui/react-toolbar";
-import { useAtom, useSetAtom } from "jotai";
 import { ReactNode } from "react";
 import { Photo, TextSize } from "tabler-icons-react";
-import { validate } from "uuid";
-import { quickMenuAtom } from "../state";
+import { useMagnetActions } from "../state";
 
 import "./toolbar.styles.css";
 
 export function QuickToolbar() {
-  const setQuickMenu = useSetAtom(quickMenuAtom);
+  const { addMagnet } = useMagnetActions();
   return (
     <Toolbar.Root className="root">
       <Toolbar.ToggleGroup
         type="single"
         onValueChange={(value) => {
-          setQuickMenu(value);
+          if (value === "photo") {
+            addMagnet({
+              id: crypto.randomUUID().toString(),
+              url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp",
+              x: 50,
+              y: 50,
+            });
+          }
         }}
       >
         <ToggleItem value="photo">

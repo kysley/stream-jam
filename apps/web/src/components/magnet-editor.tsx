@@ -1,10 +1,9 @@
-import { useSelectedMagnet } from "../hooks/use-selected-magnet";
 import * as Slider from "@radix-ui/react-slider";
 import "./magnet-editor.styles.css";
 
 export function MagnetEditor() {
-  const m = useSelectedMagnet();
-  if (!m.magnet.id) return null;
+  const m = undefined;
+  if (!m) return null;
 
   return (
     <div>
