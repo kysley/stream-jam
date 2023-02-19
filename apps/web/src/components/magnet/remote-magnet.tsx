@@ -1,6 +1,4 @@
-import { useDraggable } from "@dnd-kit/core";
-import { useClickOutside } from "@react-hookz/web";
-import { Magnet, useMagnetActions, useManget } from "../../state";
+import { Magnet } from "../../state";
 
 type RemoteMagnetProps = {
   magnet: Magnet;
@@ -16,7 +14,7 @@ export function RemoteMagnet({ magnet }: RemoteMagnetProps) {
         {
           position: "absolute",
           transform: `translate3d(${magnet?.x}px, ${magnet?.y}px, 0)`,
-          // "--translate-y": `${magnet?.y ?? 0}px`,
+          zIndex: 100,
         } as React.CSSProperties
       }
     >

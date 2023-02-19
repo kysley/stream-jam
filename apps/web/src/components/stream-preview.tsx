@@ -5,7 +5,9 @@ export function StreamPreview() {
         width: 1920,
         height: 1080,
         transform: "scale(0.6)",
-        position: "absolute",
+        // position: "absolute",
+        justifySelf: "center",
+        // top: 5,
         backgroundColor: "grey",
         // zIndex: -1,
       }}
@@ -13,8 +15,8 @@ export function StreamPreview() {
       <iframe
         // onClick={handleClick}
         src="https://player.twitch.tv/?channel=moonmoon&parent=localhost&muted=true"
-        height="1080"
-        width="1920"
+        height="100%"
+        width="100%"
       />
     </div>
   );
