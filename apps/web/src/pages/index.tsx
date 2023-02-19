@@ -5,28 +5,20 @@ import {
   DragEndEvent,
   DragMoveEvent,
 } from "@dnd-kit/core";
-import { ReactNode, useCallback, useState } from "react";
-import { useMagnetActions, useMagnetIds, useRemoteMagnetStore } from "../state";
+import { ReactNode, useState } from "react";
+import { useMagnetActions } from "../state";
 import { useThrottledCallback } from "@react-hookz/web";
-import { useUpdateDraggedMagnet } from "../hooks/use-update-dragged-magnet";
 import { QuickToolbar } from "../components/toolbar";
 import { StreamPreview } from "../components/stream-preview";
 import { MagnetEditor } from "../components/magnet-editor";
-import { RemoteMagnet } from "../components/magnet/remote-magnet";
-import { Magnet } from "../components/magnet/magnet";
 import { useEmitMagnetUpdate } from "../hooks/use-emit-magnet-update";
-import { useListenForMagnetUpdate } from "../hooks/use-listen-for-magnet-update";
+import { RemoteMagnetDisplay } from "../components/remote-magnet-display";
+import { MagnetDisplay } from "../components/magnet-display";
 
 export function IndexPage() {
   const [draggingMagnet, setDraggingMagnet] = useState<string | undefined>();
 
-  const remoteMagnets = useRemoteMagnetStore(
-    useCallback((state) => state.magnets, [])
-  );
-  useListenForMagnetUpdate();
   const { emitMagnetUpdate } = useEmitMagnetUpdate();
-
-  const localMagnetIds = useMagnetIds();
 
   const { updateMagnet } = useMagnetActions();
   const onMove = useThrottledCallback((fn) => fn(), [], 25);
@@ -62,18 +54,16 @@ export function IndexPage() {
       onDragMove={handleDragMove}
       onDragStart={handleDragStart}
     >
-      {remoteMagnets.length > 0 &&
-        remoteMagnets.map((magnet) => (
-          <RemoteMagnet key={magnet.id} magnet={magnet} />
-        ))}
-      {localMagnetIds.length > 0 &&
-        localMagnetIds.map((id) => <Magnet key={id} id={id} />)}
+      <RemoteMagnetDisplay />
+      <MagnetDisplay />
       <QuickToolbar />
-      <StreamPreview />
       <MagnetEditor />
-      <Droppable>
+      <div className="container">
+        <StreamPreview />
+      </div>
+      {/* <Droppable>
         <div>drop here</div>
-      </Droppable>
+      </Droppable> */}
     </DndContext>
   );
 }
