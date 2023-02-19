@@ -37,7 +37,7 @@ export function Magnet({ id, disabled }: MagnetProps) {
           }),
           position: "absolute",
           transform: `translate3d(${magnet?.x}px, ${magnet?.y}px, 0)`,
-          // "--translate-y": `${magnet?.y ?? 0}px`,
+          zIndex: 100,
         } as React.CSSProperties
       }
     >

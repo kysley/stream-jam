@@ -7,8 +7,15 @@ export function StreamPreview() {
         transform: "scale(0.6)",
         position: "absolute",
         backgroundColor: "grey",
-        zIndex: -1,
+        // zIndex: -1,
       }}
-    ></div>
+    >
+      <iframe
+        // onClick={handleClick}
+        src="https://player.twitch.tv/?channel=moonmoon&parent=localhost&muted=true"
+        height="1080"
+        width="1920"
+      />
+    </div>
   );
 }
