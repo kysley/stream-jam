@@ -10,7 +10,7 @@ export function MagnetEditor() {
   if (!id) return null;
 
   return (
-    <div>
+    <div className="editor-container">
       Scale
       <Slider.Root
         defaultValue={[1]}

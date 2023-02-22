@@ -14,6 +14,7 @@ export function RemoteMagnet({ magnet }: RemoteMagnetProps) {
         {
           position: "absolute",
           transform: `translate3d(${magnet?.x}px, ${magnet?.y}px, 0)`,
+          opacity: 0.6,
           zIndex: 100,
         } as React.CSSProperties
       }

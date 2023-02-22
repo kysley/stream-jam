@@ -56,9 +56,9 @@ export function IndexPage() {
     >
       <RemoteMagnetDisplay />
       <MagnetDisplay />
-      <QuickToolbar />
-      <MagnetEditor />
       <div className="container">
+        <MagnetEditor />
+        <QuickToolbar />
         <StreamPreview />
       </div>
       {/* <Droppable>

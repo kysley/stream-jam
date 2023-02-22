@@ -14,7 +14,7 @@ export function StreamPreview() {
     >
       <iframe
         // onClick={handleClick}
-        src="https://player.twitch.tv/?channel=moonmoon&parent=localhost&muted=true"
+        src="https://player.twitch.tv/?channel=moonmoon&parent=localhost&muted=true&autoplay=false"
         height="100%"
         width="100%"
       />

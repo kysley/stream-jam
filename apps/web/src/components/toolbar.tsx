@@ -1,15 +1,21 @@
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { ReactNode } from "react";
-import { Photo, TextSize } from "tabler-icons-react";
+import { Icon, Photo, TextSize } from "tabler-icons-react";
 import { useMagnetActions } from "../state";
 
 import "./toolbar.styles.css";
 
+const toolbarWidgets: [{ value: string; icon: ReactNode }] = [
+  { value: "photo", icon: <Photo /> },
+  { value: "text", icon: <TextSize /> },
+];
+
 export function QuickToolbar() {
   const { addMagnet } = useMagnetActions();
   return (
-    <Toolbar.Root className="root">
+    <Toolbar.Root className="toolbar-container">
       <Toolbar.ToggleGroup
+        className="toolbar-group"
         type="single"
         onValueChange={(value) => {
           if (value === "photo") {
@@ -22,12 +28,9 @@ export function QuickToolbar() {
           }
         }}
       >
-        <ToggleItem value="photo">
-          <Photo color="black" />
-        </ToggleItem>
-        <ToggleItem value="text">
-          <TextSize color="black" />
-        </ToggleItem>
+        {toolbarWidgets.map((w) => (
+          <ToggleItem value={w.value}>{w.icon}</ToggleItem>
+        ))}
       </Toolbar.ToggleGroup>
       {/* <Toolbar.Button>
         <Photo color="black" />

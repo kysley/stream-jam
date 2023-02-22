@@ -1,15 +1,24 @@
-.root {
-    display: flex;
-  padding: 10;
-  width: 100%;
-  min-width: max-content;
-  border-radius: 6;
-  background-color: white;
-  /* boxShadow: `0 2px 10px ${blackA.blackA7}`; */
-
+.toolbar-container {
+  position: absolute;
+  top: 10px;
+  display: flex;
+  height: 24px;
+  padding: 4px 8px;
+  /* background-color: gray; */
+  background-color: #333333;
+  /* border: 1px solid #555555; */
+  border-radius: 5px;
 }
 
+.toolbar-group {
+  display: flex;
+  gap: 6px;
+}
+
+.toggle-item {
+  color: white;
+}
 
 .toggle-item[data-state=on] {
-  background:blue
+  background: #6200b360;
 }
