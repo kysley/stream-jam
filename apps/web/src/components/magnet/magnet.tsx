@@ -1,5 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import { useClickOutside } from "@react-hookz/web";
+import { useEffect, useState } from "react";
 import { useMagnetActions, useManget } from "../../state";
 
 type MagnetProps = {
@@ -13,13 +14,17 @@ export function Magnet({ id, disabled }: MagnetProps) {
     disabled,
   });
   const { setSelectedMagnetId } = useMagnetActions();
+  const [selected, setSelected] = useState(false);
 
-  // const isSelected = selectedId === props.id
-  const isSelected = true;
+  useEffect(() => {
+    if (selected) {
+      setSelectedMagnetId(id);
+    } else {
+      setSelectedMagnetId(undefined);
+    }
+  }, [selected]);
 
-  useClickOutside(node, () => isSelected && setSelectedMagnetId(undefined));
-
-  // const className = props.className ?? "magnet";
+  useClickOutside(node, () => setSelected(false));
 
   if (!magnet) {
     return null;
@@ -28,11 +33,11 @@ export function Magnet({ id, disabled }: MagnetProps) {
   return (
     <div
       onMouseDown={() => {
-        setSelectedMagnetId(magnet.id);
+        setSelected(true);
       }}
       style={
         {
-          ...(isSelected && {
+          ...(selected && {
             border: "2px solid red",
           }),
           position: "absolute",
