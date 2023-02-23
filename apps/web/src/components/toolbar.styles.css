@@ -2,7 +2,7 @@
   position: absolute;
   top: 10px;
   display: flex;
-  height: 24px;
+  /* height: 24px; */
   padding: 4px 8px;
   /* background-color: gray; */
   background-color: #333333;
@@ -16,9 +16,12 @@
 }
 
 .toggle-item {
+  cursor: pointer;
   color: white;
+  border-radius: 6px;
+  padding: 2px 4px;
 }
 
 .toggle-item[data-state=on] {
-  background: #6200b360;
+  background: #a350e7d5;
 }

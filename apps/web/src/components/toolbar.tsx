@@ -1,11 +1,11 @@
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { ReactNode } from "react";
-import { Icon, Photo, TextSize } from "tabler-icons-react";
+import { Photo, TextSize } from "tabler-icons-react";
 import { useMagnetActions } from "../state";
 
 import "./toolbar.styles.css";
 
-const toolbarWidgets: [{ value: string; icon: ReactNode }] = [
+const toolbarWidgets: { value: string; icon: ReactNode }[] = [
   { value: "photo", icon: <Photo /> },
   { value: "text", icon: <TextSize /> },
 ];
@@ -24,6 +24,9 @@ export function QuickToolbar() {
               url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp",
               x: 50,
               y: 50,
+              style: {
+                transform: "scale(.6)",
+              },
             });
           }
         }}
@@ -32,9 +35,6 @@ export function QuickToolbar() {
           <ToggleItem value={w.value}>{w.icon}</ToggleItem>
         ))}
       </Toolbar.ToggleGroup>
-      {/* <Toolbar.Button>
-        <Photo color="black" />
-      </Toolbar.Button> */}
     </Toolbar.Root>
   );
 }

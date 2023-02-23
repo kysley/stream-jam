@@ -13,7 +13,7 @@ export function MagnetEditor() {
     <div className="editor-container">
       Scale
       <Slider.Root
-        defaultValue={[1]}
+        defaultValue={[0.6]}
         max={2}
         min={0}
         step={0.1}
@@ -31,6 +31,7 @@ export function MagnetEditor() {
         </Slider.Track>
         <Slider.Thumb className="slider-thumb" />
       </Slider.Root>
+      <input type="number" />
     </div>
   );
 }
