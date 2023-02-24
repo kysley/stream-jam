@@ -1,7 +1,7 @@
-import { useDraggable } from "@dnd-kit/core";
-import { useClickOutside } from "@react-hookz/web";
-import { useEffect, useState } from "react";
-import { useMagnetActions, useManget } from "../../state";
+import { Image } from "react-konva";
+import { useState, useRef } from "react";
+import { useMagnetActions, useManget, useSelectedMagnetId } from "../../state";
+import useImage from "use-image";
 
 type MagnetProps = {
   id: string;
@@ -9,26 +9,40 @@ type MagnetProps = {
 };
 export function Magnet({ id, disabled }: MagnetProps) {
   const magnet = useManget(id);
-  const { attributes, listeners, setNodeRef, node } = useDraggable({
-    id,
-    disabled,
-  });
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [image] = useImage(magnet?.url || "");
   const { setSelectedMagnetId } = useMagnetActions();
+  const selectedId = useSelectedMagnetId();
   const [selected, setSelected] = useState(false);
 
-  useEffect(() => {
-    if (selected) {
-      setSelectedMagnetId(id);
-    } else {
-      setSelectedMagnetId(undefined);
-    }
-  }, [selected]);
+  // useEffect(() => {
+  //   if (selected) {
+  //     setSelectedMagnetId(id);
+  //   } else {
+  //     setSelectedMagnetId(undefined);
+  //   }
+  // }, [selected]);
 
-  useClickOutside(node, () => setSelected(false));
+  // useClickOutside(ref, () => setSelected(false));
 
   if (!magnet) {
     return null;
   }
+
+  return (
+    <Image
+      image={image}
+      draggable
+      onClick={(e) => {
+        e.evt.preventDefault();
+        e.evt.stopPropagation();
+        setSelectedMagnetId(magnet.id);
+      }}
+      scaleX={magnet.style?.scale}
+      scaleY={magnet.style?.scale}
+      stroke={selectedId === magnet.id ? "1px solid black" : undefined}
+    />
+  );
 
   return (
     <div

@@ -1,7 +1,12 @@
 .editor-container {
   position: absolute;
   top: 75px;
+  left: 25px;
   display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 3px;
+  background-color: #333333;
 }
 
 .slider-root {
