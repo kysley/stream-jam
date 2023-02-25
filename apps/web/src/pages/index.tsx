@@ -1,51 +1,23 @@
 import { useState } from "react";
-import { useMagnetActions } from "../state";
-import { useThrottledCallback } from "@react-hookz/web";
 import { QuickToolbar } from "../components/toolbar";
 import { MagnetEditor } from "../components/magnet-editor";
-import { useEmitMagnetUpdate } from "../hooks/use-emit-magnet-update";
 import { MagnetDisplay } from "../components/magnet-display";
-import { Stage, Layer } from "react-konva";
+import { Stage, Layer, Group } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { RemoteMagnetDisplay } from "../components/remote-magnet-display";
+import { Html } from "react-konva-utils";
+import { StreamPreview } from "../components/stream-preview";
+import { useMagnetActions } from "../state";
 
 export function IndexPage() {
-  const [draggingMagnet, setDraggingMagnet] = useState<string | undefined>();
   const [stage, setStage] = useState({
-    scale: 1,
+    scale: 0.5,
     x: 0,
     y: 0,
   });
+  const [allowIframeFocus, setAllowIframeFocus] = useState(false);
 
-  const { emitMagnetUpdate } = useEmitMagnetUpdate();
-
-  const { updateMagnet, setSelectedMagnetId } = useMagnetActions();
-  const onMove = useThrottledCallback((fn) => fn(), [], 25);
-
-  // function handleDragEnd(event: DragEndEvent) {
-  //   setDraggingMagnet(undefined);
-  // }
-
-  // function handleDragStart(event: DragStartEvent) {
-  //   setDraggingMagnet(event.active.id.toString());
-  // }
-
-  // function handleDragMove(event: DragMoveEvent) {
-  //   const newX = (event.active.rect.current.initial?.left || 0) + event.delta.x;
-  //   const newY = (event.active.rect.current.initial?.top || 0) + event.delta.y;
-  //   if (draggingMagnet) {
-  //     const newMagnet = updateMagnet(draggingMagnet, {
-  //       x: newX,
-  //       y: newY,
-  //     });
-
-  //     if (newMagnet) {
-  //       onMove(() => {
-  //         emitMagnetUpdate(newMagnet);
-  //       });
-  //     }
-  //   }
-  // }
+  const { setSelectedMagnetId } = useMagnetActions();
 
   const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
     e.evt.preventDefault();
@@ -70,28 +42,47 @@ export function IndexPage() {
 
   return (
     <div>
+      <div className="container">
+        <MagnetEditor />
+        <QuickToolbar
+          handleIframeFocusChange={() => setAllowIframeFocus((p) => !p)}
+        />
+      </div>
       <Stage
-        style={{ backgroundColor: "gray" }}
+        // style={{ backgroundColor: "gray" }}
         width={window.innerWidth}
-        height={window.innerHeight * 0.5}
+        height={window.innerHeight}
         onWheel={handleWheel}
         scaleX={stage.scale}
         scaleY={stage.scale}
         x={stage.x}
         y={stage.y}
         draggable
+        onMouseDown={(e) => {
+          // deselect when clicked on empty area
+          const clickedOnEmpty = e.target === e.target.getStage();
+          if (clickedOnEmpty) {
+            setSelectedMagnetId(undefined);
+          }
+        }}
       >
         <Layer>
+          <Group x={1920 / 2} y={1080 / 2}>
+            <Html
+              divProps={{
+                style: {
+                  zIndex: allowIframeFocus ? undefined : -1,
+                },
+              }}
+            >
+              <StreamPreview />
+            </Html>
+          </Group>
+
           <MagnetDisplay />
           <RemoteMagnetDisplay />
         </Layer>
       </Stage>
-
-      <div className="container">
-        <MagnetEditor />
-        <QuickToolbar />
-        {/* <StreamPreview /> */}
-      </div>
     </div>
   );
 }
