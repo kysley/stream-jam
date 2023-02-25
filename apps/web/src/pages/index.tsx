@@ -7,6 +7,7 @@ import { useEmitMagnetUpdate } from "../hooks/use-emit-magnet-update";
 import { MagnetDisplay } from "../components/magnet-display";
 import { Stage, Layer } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
+import { RemoteMagnetDisplay } from "../components/remote-magnet-display";
 
 export function IndexPage() {
   const [draggingMagnet, setDraggingMagnet] = useState<string | undefined>();
@@ -82,11 +83,10 @@ export function IndexPage() {
       >
         <Layer>
           <MagnetDisplay />
+          <RemoteMagnetDisplay />
         </Layer>
       </Stage>
 
-      {/* <RemoteMagnetDisplay /> */}
-      {/* <MagnetDisplay /> */}
       <div className="container">
         <MagnetEditor />
         <QuickToolbar />

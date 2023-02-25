@@ -1,25 +1,25 @@
+import { Image } from "react-konva";
+import useImage from "use-image";
 import { Magnet } from "../../state";
 
 type RemoteMagnetProps = {
   magnet: Magnet;
 };
 export function RemoteMagnet({ magnet }: RemoteMagnetProps) {
+  const [image] = useImage(magnet.url || "");
+
   if (!magnet) {
     return null;
   }
 
   return (
-    <div
-      style={
-        {
-          position: "absolute",
-          transform: `translate3d(${magnet?.x}px, ${magnet?.y}px, 0)`,
-          opacity: 0.6,
-          zIndex: 100,
-        } as React.CSSProperties
-      }
-    >
-      <img style={magnet.style} alt="magnet" src={magnet.url} />
-    </div>
+    <Image
+      opacity={0.37}
+      image={image}
+      scaleX={magnet.style?.scale}
+      scaleY={magnet.style?.scale}
+      x={magnet.x}
+      y={magnet.y}
+    />
   );
 }
