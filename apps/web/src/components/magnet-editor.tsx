@@ -22,7 +22,7 @@ export function MagnetEditor() {
           className="slider-root"
           onValueChange={(value) => {
             const newState = updateMagnet(id, {
-              style: { scale: value[0] },
+              scale: value[0],
             });
             if (newState) emitMagnetUpdate(newState);
           }}

@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback } from "react";
+import { useCallback } from "react";
 import { create } from "zustand";
 import { produce } from "structurajs";
 
@@ -7,9 +7,7 @@ export type Magnet = {
   x: number;
   y: number;
   url: string;
-  style?: {
-    scale?: number;
-  };
+  scale?: number;
 };
 
 export const useRemoteMagnetStore = create<{
@@ -77,13 +75,16 @@ const useMagnetStore = create<{
       set((state) => {
         const target = state.magnets.findIndex((m) => m.id === id);
         if (target !== -1) {
-          const m = produce(state.magnets, (draft) => {
-            draft[target] = { ...draft[target], ...newState };
-            updated = draft[target];
-            // draft = { ...draft, newState };
-          });
+          state.magnets[target] = { ...state.magnets[target], ...newState };
+          updated = { ...state.magnets[target], ...newState };
+          // const m = produce(state.magnets, (draft) => {
+          //   console.log("producing");
+          //   draft[target] = { ...draft[target], ...newState };
+          //   updated = draft[target];
+          //   // draft = { ...draft, newState };
+          // });
           return {
-            magnets: m,
+            magnets: state.magnets,
           };
         }
       });

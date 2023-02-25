@@ -16,8 +16,8 @@ export function RemoteMagnet({ magnet }: RemoteMagnetProps) {
     <Image
       opacity={0.37}
       image={image}
-      scaleX={magnet.style?.scale}
-      scaleY={magnet.style?.scale}
+      scaleX={magnet?.scale}
+      scaleY={magnet?.scale}
       x={magnet.x}
       y={magnet.y}
     />

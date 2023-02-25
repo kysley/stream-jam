@@ -35,8 +35,8 @@ export function Magnet({ id }: MagnetProps) {
       onClick={(e) => {
         setSelectedMagnetId(magnet.id);
       }}
-      scaleX={magnet.style?.scale}
-      scaleY={magnet.style?.scale}
+      scaleX={magnet?.scale}
+      scaleY={magnet?.scale}
       stroke={selectedId === magnet.id ? "1px solid black" : undefined}
       x={magnet?.x}
       y={magnet?.y}
