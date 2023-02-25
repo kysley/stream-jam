@@ -2309,7 +2309,15 @@ react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
-react-konva@^18.2.5:
+react-konva-utils@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/react-konva-utils/-/react-konva-utils-0.3.2.tgz#7641f437d9ed97a4dc829dbb47d2de75c07f8f5d"
+  integrity sha512-BocSYCPd58rCumFAL9sUs5aum+eRD53Amknd78Mm2BQln/XMZZS8zHq35HPbiZkSMcj5Q6fZ4foHa9aMLcPRIQ==
+  dependencies:
+    react-konva "^18.0.0-0"
+    use-image "^1.1.0"
+
+react-konva@^18.0.0-0, react-konva@^18.2.5:
   version "18.2.5"
   resolved "https://registry.yarnpkg.com/react-konva/-/react-konva-18.2.5.tgz#592692619c5f4a9c14726e146574ddc8bc468a7c"
   integrity sha512-lTqJStcHnpGSXB9RlV7p5at3MpRML/TujzbuUDZRIInsLocJ/I4Nhhg3w6yJm9UV05kcwr88OY6LO+2zRyzXog==
