@@ -1,5 +1,4 @@
 import { Image } from "react-konva";
-import { useState, useRef } from "react";
 import { useMagnetActions, useManget, useSelectedMagnetId } from "../../state";
 import useImage from "use-image";
 import { useEmitMagnetUpdate } from "../../hooks/use-emit-magnet-update";
@@ -7,16 +6,14 @@ import { useThrottledCallback } from "@react-hookz/web";
 
 type MagnetProps = {
   id: string;
-  disabled?: boolean;
 };
-export function Magnet({ id, disabled }: MagnetProps) {
+export function Magnet({ id }: MagnetProps) {
   const magnet = useManget(id);
   const [image] = useImage(magnet?.url || "");
   const { setSelectedMagnetId } = useMagnetActions();
   const selectedId = useSelectedMagnetId();
 
   const { emitMagnetUpdate } = useEmitMagnetUpdate();
-  const { updateMagnet } = useMagnetActions();
   const onMove = useThrottledCallback((fn) => fn(), [], 25);
 
   if (!magnet) {
@@ -28,21 +25,21 @@ export function Magnet({ id, disabled }: MagnetProps) {
       image={image}
       draggable
       onDragMove={(event) => {
-        const newX = event.evt.x;
-        const newY = event.evt.y;
+        const newX = event.target.attrs.x;
+        const newY = event.target.attrs.y;
 
         onMove(() => {
           emitMagnetUpdate({ ...magnet, x: newX, y: newY });
         });
       }}
       onClick={(e) => {
-        e.evt.preventDefault();
-        e.evt.stopPropagation();
         setSelectedMagnetId(magnet.id);
       }}
       scaleX={magnet.style?.scale}
       scaleY={magnet.style?.scale}
       stroke={selectedId === magnet.id ? "1px solid black" : undefined}
+      x={magnet?.x}
+      y={magnet?.y}
     />
   );
 }
