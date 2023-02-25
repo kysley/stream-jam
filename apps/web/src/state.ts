@@ -7,7 +7,9 @@ export type Magnet = {
   x: number;
   y: number;
   url: string;
-  style?: CSSProperties;
+  style?: {
+    scale?: number;
+  };
 };
 
 export const useRemoteMagnetStore = create<{
