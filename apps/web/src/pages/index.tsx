@@ -8,6 +8,7 @@ import { RemoteMagnetDisplay } from "../components/remote-magnet-display";
 import { Html } from "react-konva-utils";
 import { StreamPreview } from "../components/stream-preview";
 import { useMagnetActions } from "../state";
+import { GIF } from "../components/magnet/magnet";
 
 export function IndexPage() {
   const [stage, setStage] = useState({
@@ -78,7 +79,7 @@ export function IndexPage() {
               <StreamPreview />
             </Html>
           </Group>
-
+          <GIF src="https://konvajs.org/assets/yoda.gif" />
           <MagnetDisplay />
           <RemoteMagnetDisplay />
         </Layer>
