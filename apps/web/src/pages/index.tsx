@@ -2,13 +2,12 @@ import { useState } from "react";
 import { QuickToolbar } from "../components/toolbar";
 import { MagnetEditor } from "../components/magnet-editor";
 import { MagnetDisplay } from "../components/magnet-display";
-import { Stage, Layer, Group } from "react-konva";
+import { Stage, Layer, Group, Circle } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { RemoteMagnetDisplay } from "../components/remote-magnet-display";
 import { Html } from "react-konva-utils";
 import { StreamPreview } from "../components/stream-preview";
 import { useMagnetActions } from "../state";
-import { GIF } from "../components/magnet/magnet";
 
 export function IndexPage() {
   const [stage, setStage] = useState({
@@ -68,7 +67,7 @@ export function IndexPage() {
         }}
       >
         <Layer>
-          <Group x={1920 / 2} y={1080 / 2}>
+          <Group x={1920 / 2} y={1080 / 3}>
             <Html
               divProps={{
                 style: {
@@ -79,7 +78,6 @@ export function IndexPage() {
               <StreamPreview />
             </Html>
           </Group>
-          <GIF src="https://konvajs.org/assets/yoda.gif" />
           <MagnetDisplay />
           <RemoteMagnetDisplay />
         </Layer>
