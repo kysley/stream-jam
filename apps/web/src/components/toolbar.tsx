@@ -2,6 +2,7 @@ import * as Toolbar from "@radix-ui/react-toolbar";
 import { ReactNode } from "react";
 import { Photo, TextSize, AppWindow } from "tabler-icons-react";
 import { useMagnetActions } from "../state";
+import { TwitchAuthButton } from "./twitch-auth-button";
 
 import "./toolbar.styles.css";
 
@@ -42,6 +43,10 @@ export function QuickToolbar({
           <ToggleItem value={w.value}>{w.icon}</ToggleItem>
         ))}
       </Toolbar.ToggleGroup>
+      <Toolbar.Separator className="toolbar-separator" />
+      <Toolbar.Button>
+        <TwitchAuthButton />
+      </Toolbar.Button>
     </Toolbar.Root>
   );
 }

@@ -15,6 +15,12 @@
   gap: 6px;
 }
 
+.toolbar-separator {
+  width: 1px;
+  margin: 4px 0;
+  background-color: aqua;
+}
+
 .toggle-item {
   cursor: pointer;
   color: white;

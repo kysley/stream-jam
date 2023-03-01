@@ -1,15 +1,26 @@
 import fastifyServer from "fastify";
-// import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
+import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import cors from "@fastify/cors";
 import dotenv from "dotenv";
 import socketioServer from "fastify-socket.io";
-// import { router } from "./router";
-// import { createContext } from "./context";
-// import fastifyCookie from "@fastify/cookie";
-// import fastifyJwt from "@fastify/jwt";
+import fastifyCookie from "@fastify/cookie";
+import fastifyJwt from "@fastify/jwt";
+
+import { router } from "./router";
+import { createContext } from "./context";
+
 dotenv.config();
 
 const fastify = fastifyServer();
+
+fastify.register(fastifyJwt, {
+  secret: process.env.SJ_JWT || "gg",
+  cookie: {
+    cookieName: "token",
+    signed: true,
+  },
+});
+fastify.register(fastifyCookie);
 
 fastify.register(cors, {
   // put your options here
@@ -32,6 +43,16 @@ fastify.get("/", (req, res) => {
   res.code(200).send("yo");
 });
 
+fastify.register(fastifyTRPCPlugin, {
+  prefix: "/trpc",
+  trpcOptions: {
+    router,
+    createContext,
+  },
+});
+
+// fastify.addHook("onRequest", (req) => req.jwtVerify());
+
 (async () => {
   try {
     fastify.ready((e) => {
@@ -53,7 +74,8 @@ fastify.get("/", (req, res) => {
   }
 })();
 
-export {};
+export type AppRouter = typeof router;
+
 // export type { AppRouter } from "./router";
 
 // export const fastify = fastifyServer();
@@ -68,14 +90,6 @@ export {};
 //   cookie: {
 //     cookieName: "token",
 //     signed: false,
-//   },
-// });
-
-// fastify.register(fastifyTRPCPlugin, {
-//   prefix: "/trpc",
-//   trpcOptions: {
-//     router,
-//     createContext,
 //   },
 // });
 

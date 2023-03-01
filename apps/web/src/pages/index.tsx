@@ -2,7 +2,7 @@ import { useState } from "react";
 import { QuickToolbar } from "../components/toolbar";
 import { MagnetEditor } from "../components/magnet-editor";
 import { MagnetDisplay } from "../components/magnet-display";
-import { Stage, Layer, Group, Circle } from "react-konva";
+import { Stage, Layer, Group } from "react-konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { RemoteMagnetDisplay } from "../components/remote-magnet-display";
 import { Html } from "react-konva-utils";
