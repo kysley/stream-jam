@@ -9,7 +9,9 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "start": "node dist/index.js",
     "dev": "tsup src/index.ts --format cjs --dts --watch --onSuccess \"node dist/index.js\"",
-    "build:schema": "node build-schema.js && graphql-codegen"
+    "build:schema": "node build-schema.js && graphql-codegen",
+    "db:generate": "yarn prisma generate",
+    "db:push": "yarn prisma db push"
   },
   "devDependencies": {
     "@types/bull": "^4.10.0",
@@ -25,17 +27,20 @@
     "@fastify/cors": "^8.2.0",
     "@fastify/jwt": "^6.5.0",
     "@fastify/websocket": "^7.1.2",
-    "@trpc/server": "^10.11.0",
+    "@prisma/client": "^4.11.0",
+    "@trpc/server": "^10.13.0",
     "bullmq": "^3.6.5",
     "database": "*",
     "dotenv": "^16.0.3",
     "fastify": "^4.13.0",
     "fastify-socket.io": "^4.0.0",
-    "got": "^11.8.2",
+    "got": "^12.5.3",
     "immer": "^9.0.19",
     "ioredis": "^5.3.1",
     "mercurius": "^12.0.1",
     "paseto": "^3.1.2",
+    "phin": "^3.7.0",
+    "prisma": "^4.11.0",
     "socket.io": "^4.6.0",
     "types": "*",
     "zod": "^3.20.6"
