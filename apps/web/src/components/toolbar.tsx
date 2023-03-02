@@ -1,23 +1,23 @@
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { ReactNode } from "react";
-import { Photo, TextSize, AppWindow } from "tabler-icons-react";
-import { useMagnetActions } from "../state";
-import { TwitchAuthButton } from "./twitch-auth-button";
+import {
+  IconPhotoPlus,
+  IconAlphabetLatin,
+  IconAppWindowFilled,
+} from "@tabler/icons-react";
+import { useMagnetActions, useStageActions } from "../state";
 
 import "./toolbar.styles.css";
 
 const toolbarWidgets: { value: string; icon: ReactNode }[] = [
-  { value: "photo", icon: <Photo /> },
-  { value: "text", icon: <TextSize /> },
-  { value: "iframe", icon: <AppWindow /> },
+  { value: "photo", icon: <IconPhotoPlus /> },
+  { value: "text", icon: <IconAlphabetLatin /> },
+  { value: "iframe", icon: <IconAppWindowFilled /> },
 ];
 
-export function QuickToolbar({
-  handleIframeFocusChange,
-}: {
-  handleIframeFocusChange(): void;
-}) {
+export function QuickToolbar() {
   const { addMagnet } = useMagnetActions();
+  const { toggleIFrameFocus } = useStageActions();
   return (
     <Toolbar.Root className="toolbar-container">
       <Toolbar.ToggleGroup
@@ -30,12 +30,10 @@ export function QuickToolbar({
               url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp",
               x: 50,
               y: 100,
-              style: {
-                scale: 0.6,
-              },
+              scale: 0.6,
             });
           } else if (value === "iframe") {
-            handleIframeFocusChange();
+            toggleIFrameFocus();
           }
         }}
       >
@@ -43,10 +41,6 @@ export function QuickToolbar({
           <ToggleItem value={w.value}>{w.icon}</ToggleItem>
         ))}
       </Toolbar.ToggleGroup>
-      <Toolbar.Separator className="toolbar-separator" />
-      <Toolbar.Button>
-        <TwitchAuthButton />
-      </Toolbar.Button>
     </Toolbar.Root>
   );
 }

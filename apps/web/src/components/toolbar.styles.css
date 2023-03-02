@@ -1,18 +1,16 @@
 .toolbar-container {
-  position: absolute;
-  top: 10px;
   display: flex;
-  /* height: 24px; */
+  justify-content: center;
+  align-items: center;
   padding: 4px 8px;
-  /* background-color: gray; */
   background-color: #333333;
-  /* border: 1px solid #555555; */
   border-radius: 5px;
+  pointer-events: all;
 }
 
 .toolbar-group {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .toolbar-separator {
