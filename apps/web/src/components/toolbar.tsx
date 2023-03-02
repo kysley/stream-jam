@@ -27,7 +27,8 @@ export function QuickToolbar() {
           if (value === "photo") {
             addMagnet({
               id: crypto.randomUUID().toString(),
-              url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp",
+              // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp", webp not supported atm :/
+              url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.gif",
               x: 50,
               y: 100,
               scale: 0.6,
