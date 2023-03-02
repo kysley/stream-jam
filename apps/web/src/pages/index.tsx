@@ -8,8 +8,10 @@ import { RemoteMagnetDisplay } from "../components/remote-magnet-display";
 import { Html } from "react-konva-utils";
 import { StreamPreview } from "../components/stream-preview";
 import { useMagnetActions } from "../state";
+import { trpc } from "../utils/trpc";
 
 export function IndexPage() {
+  const { data } = trpc.me.useQuery();
   const [stage, setStage] = useState({
     scale: 0.5,
     x: 0,

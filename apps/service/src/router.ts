@@ -1,7 +1,8 @@
 import { initTRPC } from "@trpc/server";
 import p from "phin";
 import { z } from "zod";
-import { Context, createContext } from "./context";
+import { createContext } from "./context";
+import { prisma } from "./prisma";
 type User = {
   id: string;
   name: string;
@@ -10,9 +11,6 @@ type User = {
 const users: Record<string, User> = {};
 export const t = initTRPC.context<typeof createContext>().create();
 export const router = t.router({
-  getUserById: t.procedure.input(z.string()).query(({ input }) => {
-    return users[input]; // input type is string
-  }),
   registerWithTwitch: t.procedure
     .input(
       z.object({
@@ -42,34 +40,48 @@ export const router = t.router({
         method: "GET",
         parse: "json",
         headers: {
+          // @ts-expect-error
           Authorization: `Bearer ${res.body.access_token}`,
           "Client-ID": process.env.SJ_CLIENT_ID,
         },
       });
 
-      console.log(user.body);
-      // const token = await ctx.res.jwtSign({ accountId: "" });
-      // ctx.res.setCookie("token", token, {
-      //   secure: true,
-      //   httpOnly: true,
-      //   signed: true,
-      // });
-      console.log(res.body);
-      return res.body;
+      const userData = user.body.data[0];
+      if (!userData) return null;
+      console.log(userData);
+
+      const prismaUser = await prisma.user.upsert({
+        where: {
+          twId: userData.id,
+        },
+        create: {
+          twDisplayName: userData.display_name,
+          twId: userData.id,
+          // @ts-expect-error
+          twRefreshToken: res.body.refresh_token,
+        },
+        update: {
+          twDisplayName: userData.display_name,
+          // @ts-expect-error
+          twRefreshToken: res.body.refresh_token,
+        },
+      });
+
+      const token = await ctx.res.jwtSign({ id: prismaUser.id });
+      ctx.res.setCookie("token", token, {
+        secure: true,
+        httpOnly: true,
+        expires: new Date(new Date().setMonth(12)),
+        signed: true,
+      });
+      return true;
     }),
-  createUser: t.procedure
-    .input(
-      z.object({
-        name: z.string().min(3),
-        bio: z.string().max(142).optional(),
-      })
-    )
-    .mutation(({ input }) => {
-      const id = Date.now().toString();
-      const user: User = { id, ...input };
-      users[user.id] = user;
-      return user;
-    }),
+  me: t.procedure.query(async ({ ctx }) => {
+    if (ctx.user) {
+      return prisma.user.findUnique({ where: { id: ctx.user.id } });
+    }
+    return null;
+  }),
 });
 // export type definition of API
 export type AppRouter = typeof router;

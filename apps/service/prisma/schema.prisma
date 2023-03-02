@@ -11,5 +11,10 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id             String @id @default(uuid())
+  twRefreshToken String
+  twDisplayName  String @unique
+  twId           String @unique
+
+  // @@unique([id, twId, twDisplayName])
 }

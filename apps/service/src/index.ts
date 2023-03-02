@@ -13,6 +13,16 @@ dotenv.config();
 
 const fastify = fastifyServer();
 
+fastify.register(cors, {
+  // put your options here
+  origin: "http://localhost:5173",
+  credentials: true,
+});
+
+fastify.register(fastifyCookie, {
+  secret: process.env.SJ_JWT || "gg",
+});
+
 fastify.register(fastifyJwt, {
   secret: process.env.SJ_JWT || "gg",
   cookie: {
@@ -20,27 +30,16 @@ fastify.register(fastifyJwt, {
     signed: true,
   },
 });
-fastify.register(fastifyCookie);
-
-fastify.register(cors, {
-  // put your options here
-  origin: "http://localhost:5173",
-  credentials: true,
-});
 
 fastify.register(socketioServer, {
   cors: {
     origin: "http://localhost:5173",
     credentials: true,
   },
-  // cookie: {
-  //   name: "token",
-  //   httpOnly: true,
-  // },
-});
-
-fastify.get("/", (req, res) => {
-  res.code(200).send("yo");
+  cookie: {
+    name: "token",
+    httpOnly: true,
+  },
 });
 
 fastify.register(fastifyTRPCPlugin, {
@@ -51,7 +50,9 @@ fastify.register(fastifyTRPCPlugin, {
   },
 });
 
-// fastify.addHook("onRequest", (req) => req.jwtVerify());
+fastify.get("/", (req, res) => {
+  res.code(200).send("yo");
+});
 
 (async () => {
   try {

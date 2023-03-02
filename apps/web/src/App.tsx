@@ -15,6 +15,12 @@ function App() {
       links: [
         httpBatchLink({
           url: "http://localhost:3000/trpc",
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            });
+          },
           // optional
           // headers() {
           //   return {
