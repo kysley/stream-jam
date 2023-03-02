@@ -123,7 +123,7 @@ const useMagnetStore = create<{
 
 export const useSelectedMagnetId = () =>
   useMagnetStore((state) => state.selected);
-export const useManget = (id: string) =>
+export const useManget = (id?: string) =>
   useMagnetStore(
     useCallback((state) => state.magnets.find((m) => m.id === id), [id])
   );

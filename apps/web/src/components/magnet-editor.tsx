@@ -1,23 +1,24 @@
 import * as Slider from "@radix-ui/react-slider";
 import { ReactNode } from "react";
 import { useEmitMagnetUpdate } from "../hooks/use-emit-magnet-update";
-import { useMagnetActions, useSelectedMagnetId } from "../state";
+import { useMagnetActions, useManget, useSelectedMagnetId } from "../state";
 import "./magnet-editor.styles.css";
 
 export function MagnetEditor() {
   const id = useSelectedMagnetId();
+  const magnet = useManget(id);
   const { updateMagnet } = useMagnetActions();
   const { emitMagnetUpdate } = useEmitMagnetUpdate();
-  if (!id) return null;
+  if (!(id || magnet)) return null;
 
   return (
     <div className="editor-container">
       <EditorWidget label="Scale">
         <Slider.Root
-          defaultValue={[0.6]}
           max={2}
           min={0}
           step={0.1}
+          value={[magnet?.scale || 0.6]}
           name="Scale"
           className="slider-root"
           onValueChange={(value) => {
