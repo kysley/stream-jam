@@ -20,36 +20,31 @@ export function QuickToolbar() {
   const { toggleIFrameFocus } = useStageActions();
   return (
     <Toolbar.Root className="toolbar-container">
-      <Toolbar.ToggleGroup
-        className="toolbar-group"
-        type="single"
-        onValueChange={(value) => {
-          if (value === "photo") {
-            addMagnet({
-              id: crypto.randomUUID().toString(),
-              // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp", webp not supported atm :/
-              url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.gif",
-              x: 50,
-              y: 100,
-              scale: 0.6,
-            });
-          } else if (value === "iframe") {
-            toggleIFrameFocus();
-          }
-        }}
+      <Toolbar.ToolbarButton
+        className="toggle-item"
+        onClick={() =>
+          addMagnet({
+            id: crypto.randomUUID().toString(),
+            // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp", webp not supported atm :/
+            // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.gif",
+            url: "",
+            x: 50,
+            y: 100,
+            scale: 0.6,
+          })
+        }
       >
-        {toolbarWidgets.map((w) => (
-          <ToggleItem value={w.value}>{w.icon}</ToggleItem>
-        ))}
-      </Toolbar.ToggleGroup>
+        <IconPhotoPlus />
+      </Toolbar.ToolbarButton>
+      <Toolbar.ToolbarButton className="toggle-item">
+        <IconAlphabetLatin />
+      </Toolbar.ToolbarButton>
+      <Toolbar.ToolbarButton
+        className="toggle-item"
+        onClick={() => toggleIFrameFocus()}
+      >
+        <IconAppWindowFilled />
+      </Toolbar.ToolbarButton>
     </Toolbar.Root>
-  );
-}
-
-function ToggleItem(props: { value: string; children: ReactNode }) {
-  return (
-    <Toolbar.ToggleItem value={props.value} className="toggle-item">
-      {props.children}
-    </Toolbar.ToggleItem>
   );
 }
