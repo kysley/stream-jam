@@ -36,6 +36,16 @@ export function MagnetEditor() {
       </EditorWidget>
       <InputWidget name="Height" type="number" />
       <InputWidget name="Width" type="number" />
+      <InputWidget
+        value={magnet?.url || ""}
+        name="URL"
+        onChange={(e) => {
+          const newState = updateMagnet(id, {
+            url: e.target.value,
+          });
+          if (newState) emitMagnetUpdate(newState);
+        }}
+      />
     </div>
   );
 }
@@ -48,7 +58,7 @@ function EditorWidget({
   label: string;
 }) {
   return (
-    <label>
+    <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
       {label}
       {children}
     </label>
@@ -58,7 +68,9 @@ function EditorWidget({
 type InputWidgetProps = React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
->;
+> & {
+  name: string;
+};
 function InputWidget({ name, ...rest }: InputWidgetProps) {
   return (
     <EditorWidget label={name}>
