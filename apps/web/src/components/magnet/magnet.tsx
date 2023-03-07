@@ -1,4 +1,4 @@
-import { Image as KonvaImage } from "react-konva";
+import { Image as KonvaImage, Text as KonvaText } from "react-konva";
 import {
   Magnet,
   useMagnetActions,
@@ -59,8 +59,8 @@ export function Magnet({ id }: MagnetProps) {
 }
 
 export function MagnetRenderer({ magnet, ...props }: { magnet: Magnet }) {
-  if (!magnet) {
-    return null;
+  if (magnet.type === "text") {
+    return <Text {...props} />;
   }
 
   if (magnet?.url.endsWith("webp")) {
@@ -71,7 +71,7 @@ export function MagnetRenderer({ magnet, ...props }: { magnet: Magnet }) {
     return <GIF src={magnet.url} {...props} />;
   }
 
-  return <Image src={magnet.url} {...props} />;
+  return <Image src={magnet.url} {...props} visible={magnet.visible} />;
 }
 
 // https://stackoverflow.com/questions/59741398/play-video-on-canvas-in-react-konva
@@ -81,7 +81,7 @@ export function Video({ src, ...rest }: { src: string }) {
     const node = document.createElement("video");
     node.src = src;
     return node;
-  }, []);
+  }, [src]);
 
   // use Konva.Animation to redraw a layer
   useEffect(() => {
@@ -123,8 +123,19 @@ export function GIF({ src, ...rest }: { src: string }) {
 
   return <KonvaImage image={canvas} ref={imageRef} {...rest} />;
 }
-export function Image({ src, ...rest }: { src?: string }) {
+export function Image({ src, visible, ...rest }: { src?: string }) {
   const [image] = useImage(src || "./default_magnet.png");
-  return <KonvaImage image={image} {...rest} />;
+  return (
+    // todo: figure out better visibility false display
+    <KonvaImage
+      image={image}
+      {...rest}
+      stroke={visible ? undefined : "grey"}
+      strokeWidth={visible ? undefined : 15}
+      opacity={visible ? undefined : 0.7}
+    />
+  );
 }
-export function Text() {}
+export function Text(props) {
+  return <KonvaText text="Sample Text" fontSize={200 * 1.4} {...props} />;
+}

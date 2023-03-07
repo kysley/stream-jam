@@ -1,4 +1,3 @@
-import { QuickToolbar } from "../components/toolbar";
 import { MagnetEditor } from "../components/magnet-editor";
 import { trpc } from "../utils/trpc";
 import { Header } from "../components/header";

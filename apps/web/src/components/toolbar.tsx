@@ -24,20 +24,36 @@ export function QuickToolbar() {
         className="toggle-item"
         onClick={() =>
           addMagnet({
-            id: crypto.randomUUID().toString(),
             // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp", webp not supported atm :/
             // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.gif",
+            id: crypto.randomUUID().toString(),
             url: "",
+            visible: true,
             x: 50,
             y: 100,
             scale: 0.6,
+            type: "media",
           })
         }
       >
         <IconPhotoPlus />
       </Toolbar.ToolbarButton>
       <Toolbar.ToolbarButton className="toggle-item">
-        <IconAlphabetLatin />
+        <IconAlphabetLatin
+          onClick={() =>
+            addMagnet({
+              // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp", webp not supported atm :/
+              // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.gif",
+              id: crypto.randomUUID().toString(),
+              text: "Sample Text",
+              visible: true,
+              x: 50,
+              y: 100,
+              scale: 0.6,
+              type: "text",
+            })
+          }
+        />
       </Toolbar.ToolbarButton>
       <Toolbar.ToolbarButton
         className="toggle-item"

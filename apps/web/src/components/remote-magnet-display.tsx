@@ -14,9 +14,10 @@ export function RemoteMagnetDisplay() {
   return (
     <Fragment>
       {remoteMagnets.length > 0 &&
-        remoteMagnets.map((magnet) => (
-          <RemoteMagnet key={magnet.id} magnet={magnet} />
-        ))}
+        remoteMagnets.map(
+          (magnet) =>
+            magnet.visible && <RemoteMagnet key={magnet.id} magnet={magnet} />
+        )}
     </Fragment>
   );
 }

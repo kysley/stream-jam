@@ -1,5 +1,5 @@
 import { initTRPC } from "@trpc/server";
-import p from "phin";
+import wretch from "wretch";
 import { z } from "zod";
 import { createContext } from "./context";
 import { prisma } from "./prisma";
@@ -8,7 +8,8 @@ type User = {
   name: string;
   bio?: string;
 };
-const users: Record<string, User> = {};
+import FormDataAddon from "wretch/addons/formData";
+
 export const t = initTRPC.context<typeof createContext>().create();
 export const router = t.router({
   registerWithTwitch: t.procedure
@@ -19,34 +20,31 @@ export const router = t.router({
     )
     .query(async ({ input, ctx }) => {
       console.log("calling registerWithTwitch");
-      const res = await p({
-        url: "https://id.twitch.tv/oauth2/token",
-        method: "POST",
-        parse: "json",
-        form: {
+      const res = await wretch('"https://id.twitch.tv/oauth2/token"')
+        .addon(FormDataAddon)
+        .formData({
           client_id: process.env.SJ_CLIENT_ID || "",
           client_secret: process.env.SJ_SECRET || "",
           code: input.code,
           grant_type: "authorization_code",
           redirect_uri: "http://localhost:5173/connected",
-        },
-      });
+        })
+        .post();
 
       // Get the authenticating user using their access token
-      const user = await p<{
-        data: [{ id: string; login: string; display_name: string }];
-      }>({
-        url: "https://api.twitch.tv/helix/users",
-        method: "GET",
-        parse: "json",
+      const user = await wretch("https://api.twitch.tv/helix/users", {
         headers: {
           // @ts-expect-error
           Authorization: `Bearer ${res.body.access_token}`,
           "Client-ID": process.env.SJ_CLIENT_ID,
         },
-      });
+      })
+        .get()
+        .json<{
+          data: [{ id: string; login: string; display_name: string }];
+        }>();
 
-      const userData = user.body.data[0];
+      const userData = user.data[0];
       if (!userData) return null;
       console.log(userData);
 

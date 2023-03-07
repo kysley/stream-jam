@@ -3,13 +3,25 @@ import { create } from "zustand";
 import { shallow } from "zustand/shallow";
 import { produce } from "structurajs";
 
-export type Magnet = {
-  id: string;
-  x: number;
-  y: number;
-  url: string;
-  scale?: number;
-};
+export type Magnet =
+  | {
+      type: "media";
+      id: string;
+      x: number;
+      y: number;
+      url: string;
+      scale: number;
+      visible: boolean;
+    }
+  | {
+      type: "text";
+      id: string;
+      x: number;
+      y: number;
+      text: string;
+      scale: number;
+      visible: boolean;
+    };
 
 export const useRemoteMagnetStore = create<{
   magnets: Magnet[];

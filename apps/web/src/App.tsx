@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { trpc } from "./utils/trpc";
 import { httpBatchLink } from "@trpc/client";
 import { ConnectedPage } from "./pages/connected";
+import { themeClass } from "./theme.css";
 
 function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -21,12 +22,6 @@ function App() {
               credentials: "include",
             });
           },
-          // optional
-          // headers() {
-          //   return {
-          //     authorization: getAuthCookie(),
-          //   };
-          // },
         }),
       ],
     })
@@ -34,7 +29,7 @@ function App() {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <div className="App">
+        <div className={`App ${themeClass}`}>
           <Route path="/" component={IndexPage} />
           <Route path="/source/:id" component={SourceIdPage} />
           <Route path="/connected" component={ConnectedPage} />
