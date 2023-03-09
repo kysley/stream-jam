@@ -4,6 +4,7 @@
   position: relative;
   overflow: hidden;
   background-color: rgb(22,22,22);
+  color: hsl(0 0% 93.0%);
   z-index: 1;
 }
 
