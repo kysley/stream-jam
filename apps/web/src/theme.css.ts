@@ -10,15 +10,16 @@ import {
   blueDark,
   redDark,
   greenDark,
+  plumDark,
 } from "@radix-ui/colors";
 
 export const [themeClass, vars] = createTheme({
   colors: {
     ...grayDark,
     ...blue,
-    ...red,
+    ...redDark,
     ...green,
-    ...indigoDark,
+    primary: indigoDark,
   },
   radii: {
     1: "2px",

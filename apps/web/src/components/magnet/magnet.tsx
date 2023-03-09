@@ -4,6 +4,7 @@ import {
   useMagnetActions,
   useManget,
   useSelectedMagnetId,
+  useStageState,
 } from "../../state";
 import useImage from "use-image";
 import { useEmitMagnetUpdate } from "../../hooks/use-emit-magnet-update";
@@ -19,6 +20,7 @@ export function Magnet({ id }: MagnetProps) {
   const magnet = useManget(id);
   const { setSelectedMagnetId, updateMagnet } = useMagnetActions();
   const selectedId = useSelectedMagnetId();
+  const { scale } = useStageState();
 
   const { emitMagnetUpdate } = useEmitMagnetUpdate();
   const onMove = useThrottledCallback((fn) => fn(), [], 25);

@@ -9,7 +9,7 @@ export const editorContainer = style({
   flexDirection: "column",
   padding: "12px",
   borderRadius: "3px",
-  backgroundColor: "#333333",
+  backgroundColor: vars.colors.gray2,
   gap: "12px",
   width: "300px",
 });
@@ -25,7 +25,7 @@ export const sliderRoot = style({
 });
 
 export const sliderTrack = style({
-  backgroundColor: vars.colors.gray3,
+  backgroundColor: vars.colors.gray2,
   position: "relative",
   flexGrow: 1,
   borderRadius: "99999px",

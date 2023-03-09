@@ -5,9 +5,9 @@ import {
   IconAlphabetLatin,
   IconAppWindowFilled,
 } from "@tabler/icons-react";
-import { useMagnetActions, useStageActions } from "../state";
+import { useMagnetActions, useStageActions, useStageState } from "../state";
 
-import "./toolbar.styles.css";
+import * as cls from "./toolbar.css";
 
 const toolbarWidgets: { value: string; icon: ReactNode }[] = [
   { value: "photo", icon: <IconPhotoPlus /> },
@@ -18,10 +18,12 @@ const toolbarWidgets: { value: string; icon: ReactNode }[] = [
 export function QuickToolbar() {
   const { addMagnet } = useMagnetActions();
   const { toggleIFrameFocus } = useStageActions();
+  const { scale } = useStageState();
+
   return (
-    <Toolbar.Root className="toolbar-container">
+    <Toolbar.Root className={cls.toolbarContainer}>
       <Toolbar.ToolbarButton
-        className="toggle-item"
+        className={cls.toolbarButton}
         onClick={() =>
           addMagnet({
             // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp", webp not supported atm :/
@@ -31,15 +33,16 @@ export function QuickToolbar() {
             visible: true,
             x: 50,
             y: 100,
-            scale: 0.6,
+            scale,
             type: "media",
           })
         }
       >
-        <IconPhotoPlus />
+        <IconPhotoPlus size={28} />
       </Toolbar.ToolbarButton>
-      <Toolbar.ToolbarButton className="toggle-item">
+      <Toolbar.ToolbarButton className={cls.toolbarButton}>
         <IconAlphabetLatin
+          size={28}
           onClick={() =>
             addMagnet({
               // url: "https://cdn.7tv.app/emote/60ae65b29627f9aff4fd8bef/4x.webp", webp not supported atm :/
@@ -56,10 +59,10 @@ export function QuickToolbar() {
         />
       </Toolbar.ToolbarButton>
       <Toolbar.ToolbarButton
-        className="toggle-item"
+        className={cls.toolbarButton}
         onClick={() => toggleIFrameFocus()}
       >
-        <IconAppWindowFilled />
+        <IconAppWindowFilled size={28} />
       </Toolbar.ToolbarButton>
     </Toolbar.Root>
   );

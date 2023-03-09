@@ -12,9 +12,15 @@ export function Input({ intent, name, ...rest }: InputProps) {
   if (name) {
     return (
       <Label name={name}>
-        <input className={cN} {...rest} />
+        <div style={{ minWidth: 0 }}>
+          <input className={cN} {...rest} />
+        </div>
       </Label>
     );
   }
-  return <input className={cN} {...rest} />;
+  return (
+    <div style={{ minWidth: 0 }}>
+      <input className={cN} {...rest} />
+    </div>
+  );
 }

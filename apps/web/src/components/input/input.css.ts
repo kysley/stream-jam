@@ -8,18 +8,36 @@ export const input = recipe({
     paddingLeft: "6px",
     fontSize: "15px",
     lineHeight: "32px",
-    border: "1px solid transparent",
-    transition: "all ease-in .035s",
-    minWidth: "14px",
+    border: `1px solid transparent`,
+    transition: "background-color, border-color ease-in .035s",
+    width: "100%",
+    backgroundColor: vars.colors.gray3,
     ":focus": {
-      outline: "none",
-      border: `1px solid ${vars.colors.indigo9}`,
+      outline: `1px dashed ${vars.colors.gray7}`,
+      backgroundColor: vars.colors.gray5,
+    },
+    ":hover": {
+      backgroundColor: vars.colors.gray5,
+      borderColor: vars.colors.gray8,
     },
   },
   variants: {
     intent: {
       neutral: {
+        borderColor: vars.colors.gray7,
         backgroundColor: vars.colors.gray3,
+      },
+      danger: {
+        borderColor: vars.colors.red7,
+        backgroundColor: vars.colors.red3,
+        ":hover": {
+          backgroundColor: vars.colors.red5,
+          borderColor: vars.colors.red8,
+        },
+        ":focus": {
+          outline: `1px dashed ${vars.colors.red7}`,
+          backgroundColor: vars.colors.red5,
+        },
       },
     },
   },

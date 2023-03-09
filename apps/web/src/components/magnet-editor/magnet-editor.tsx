@@ -1,8 +1,29 @@
 import * as Slider from "@radix-ui/react-slider";
-import { IconLock, IconLockOpen } from "@tabler/icons-react";
+import {
+  IconEye,
+  IconEyeCheck,
+  IconEyeOff,
+  IconLink,
+  IconLock,
+  IconLockAccess,
+  IconLockAccessOff,
+  IconLockOff,
+  IconLockOpen,
+  IconShare,
+  IconShare2,
+  IconShare3,
+  IconTrash,
+  IconUnlink,
+} from "@tabler/icons-react";
 import { ChangeEvent, ReactNode, useState } from "react";
 import { useEmitMagnetUpdate } from "../../hooks/use-emit-magnet-update";
-import { useMagnetActions, useManget, useSelectedMagnetId } from "../../state";
+import {
+  useMagnetActions,
+  useManget,
+  useSelectedMagnetId,
+  useStageState,
+} from "../../state";
+import { Button } from "../button";
 import { Label } from "../label";
 import { Switch } from "../switch/switch";
 import { Input, InputProps } from "./../input";
@@ -13,6 +34,7 @@ export function MagnetEditor() {
   const magnet = useManget(id);
   const { updateMagnet } = useMagnetActions();
   const { emitMagnetUpdate } = useEmitMagnetUpdate();
+  const { scale } = useStageState();
 
   const [ratioLock, setRatioLock] = useState(true);
 
@@ -34,30 +56,35 @@ export function MagnetEditor() {
 
   return (
     <div className={cls.editorContainer}>
-      <Switch
+      <div>
+        <IconTrash />
+        <IconLockAccessOff />
+        <IconEye />
+      </div>
+      {/* <Switch
         name="Visible"
         // onChange={handleVisibilityChange}
         onCheckedChange={handleVisibilityChange}
         checked={magnet?.visible}
-      />
+      /> */}
       <SliderWidget
         name="Scale"
         handleValueChange={handleScaleSliderChange}
         value={magnet?.scale}
       />
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-        <InputWidget name="Height" type="number" />
+        <InputWidget name="Height" intent="danger" />
         <button
           onClick={() => setRatioLock((prev) => !prev)}
           style={{ cursor: "pointer" }}
         >
           {ratioLock ? (
-            <IconLock size={24} style={{ marginTop: "22px" }} />
+            <IconLink size={24} style={{ marginTop: "22px" }} />
           ) : (
-            <IconLockOpen size={24} style={{ marginTop: "22px" }} />
+            <IconUnlink size={24} style={{ marginTop: "22px" }} />
           )}
         </button>
-        <InputWidget name="Width" type="number" />
+        <InputWidget name="Width" />
       </div>
       <InputWidget
         value={magnet?.url || ""}
@@ -69,6 +96,10 @@ export function MagnetEditor() {
           if (newState) emitMagnetUpdate(newState);
         }}
       />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button intent="neutral">Cancel</Button>
+        <Button>Save preset</Button>
+      </div>
     </div>
   );
 }
