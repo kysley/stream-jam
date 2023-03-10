@@ -25,7 +25,7 @@ export const sliderRoot = style({
 });
 
 export const sliderTrack = style({
-  backgroundColor: vars.colors.gray2,
+  backgroundColor: vars.colors.gray5,
   position: "relative",
   flexGrow: 1,
   borderRadius: "99999px",
@@ -34,7 +34,7 @@ export const sliderTrack = style({
 
 export const sliderRange = style({
   position: "absolute",
-  backgroundColor: vars.colors.indigo10,
+  backgroundColor: vars.colors.primary.indigo9,
   borderRadius: "90999px",
   height: "100%",
 });
@@ -48,7 +48,6 @@ export const sliderThumb = style({
   borderRadius: "10px",
   transition: "all ease-in .05s",
   ":focus": {
-    backgroundColor: vars.colors.indigo9,
     height: "18px",
     width: "18px",
   },

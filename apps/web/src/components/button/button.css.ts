@@ -13,7 +13,7 @@ export const button = recipe({
     border: "1px solid transparent",
     transition: "background-color, border-color ease-in .035s",
     width: "100%",
-    padding: "0 15px",
+    padding: "0 .55rem",
     cursor: "pointer",
   },
   variants: {
@@ -34,18 +34,32 @@ export const button = recipe({
           outlineColor: vars.colors.primary.indigo8,
         },
       },
+      danger: {
+        borderColor: vars.colors.red7,
+        backgroundColor: vars.colors.red9,
+        ":hover": {
+          backgroundColor: vars.colors.red10,
+          borderColor: vars.colors.red8,
+        },
+        ":active": {
+          backgroundColor: vars.colors.red8,
+        },
+        ":focus": {
+          outline: "dotted thin",
+          // Uses "color" otherwise, which is white
+          outlineColor: vars.colors.red8,
+        },
+      },
 
       neutral: {
-        // borderColor: vars.colors.gray7,
-        // backgroundColor: vars.colors.gray9,
-        borderColor: "none",
-        backgroundColor: "none",
+        borderColor: vars.colors.gray6,
+        backgroundColor: vars.colors.gray7,
         ":hover": {
-          backgroundColor: vars.colors.gray5,
+          backgroundColor: vars.colors.gray6,
           borderColor: vars.colors.gray8,
         },
         ":active": {
-          backgroundColor: vars.colors.gray8,
+          backgroundColor: vars.colors.gray4,
         },
         ":focus": {
           outline: "dotted thin",
@@ -53,24 +67,75 @@ export const button = recipe({
           outlineColor: vars.colors.gray8,
         },
       },
-
-      danger: {
-        borderColor: vars.colors.red7,
-        backgroundColor: vars.colors.red3,
+    },
+    type: {
+      icon: {
+        color: vars.colors.gray9,
+        borderRadius: "6px",
+        border: "1px solid transparent",
+        padding: "2px 4px",
+        cursor: "pointer",
+        backgroundColor: "transparent",
         ":hover": {
-          backgroundColor: vars.colors.red5,
-          borderColor: vars.colors.red8,
+          backgroundColor: vars.colors.gray4,
+          // backgroundColor: "transparent",
+          // border: `1px solid ${vars.colors.gray8}`,
+          border: "1px solid transparent",
+          // todo: figure out better button hover
+          // transform: "scale(1.05)",
+        },
+        ":active": {
+          backgroundColor: vars.colors.gray5,
+          // backgroundColor: "transparent",
+          // border: `1px solid ${vars.colors.gray8}`,
+          border: "1px solid transparent",
         },
         ":focus": {
-          outline: `2px dotted ${vars.colors.red7}`,
-          backgroundColor: vars.colors.red5,
+          outline: "none",
         },
       },
     },
   },
   defaultVariants: {
-    intent: "primary",
+    intent: "neutral",
+    type: undefined,
   },
+  compoundVariants: [
+    {
+      variants: { type: "icon", intent: "danger" },
+      style: {
+        color: vars.colors.red9,
+        ":hover": {
+          backgroundColor: vars.colors.red4,
+          // border: `1px solid ${vars.colors.red8}`,
+        },
+        ":active": {
+          backgroundColor: vars.colors.red5,
+          // border: `1px solid ${vars.colors.red8}`,
+        },
+        ":focus": {
+          outline: "none",
+        },
+      },
+    },
+    {
+      variants: { type: "icon", intent: "primary" },
+      style: {
+        color: vars.colors.primary.indigo9,
+        ":hover": {
+          backgroundColor: vars.colors.primary.indigo4,
+          // border: `1px solid ${vars.colors.primary.indigo8}`,
+        },
+        ":active": {
+          backgroundColor: vars.colors.primary.indigo5,
+          // border: `1px solid ${vars.colors.primary.indigo8}`,
+        },
+        ":focus": {
+          outline: "none",
+        },
+      },
+    },
+  ],
 });
 
 export type ButtonVariants = RecipeVariants<typeof button>;

@@ -1,17 +1,8 @@
 import * as Slider from "@radix-ui/react-slider";
 import {
   IconEye,
-  IconEyeCheck,
   IconEyeOff,
   IconLink,
-  IconLock,
-  IconLockAccess,
-  IconLockAccessOff,
-  IconLockOff,
-  IconLockOpen,
-  IconShare,
-  IconShare2,
-  IconShare3,
   IconTrash,
   IconUnlink,
 } from "@tabler/icons-react";
@@ -45,9 +36,9 @@ export function MagnetEditor() {
     if (newState) emitMagnetUpdate(newState);
   };
 
-  const handleVisibilityChange = (checked: boolean) => {
+  const handleVisibilityChange = () => {
     const newState = updateMagnet(id, {
-      visible: checked,
+      visible: !magnet?.visible,
     });
     if (newState) emitMagnetUpdate(newState);
   };
@@ -56,10 +47,14 @@ export function MagnetEditor() {
 
   return (
     <div className={cls.editorContainer}>
-      <div>
-        <IconTrash />
-        <IconLockAccessOff />
-        <IconEye />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button
+          onClick={handleVisibilityChange}
+          icon={magnet?.visible ? <IconEye /> : <IconEyeOff />}
+          intent={magnet?.visible ? "primary" : "neutral"}
+        />
+        {/* <Button icon={<IconLockAccessOff />} /> */}
+        <Button icon={<IconTrash />} intent="danger" />
       </div>
       {/* <Switch
         name="Visible"
@@ -79,9 +74,16 @@ export function MagnetEditor() {
           style={{ cursor: "pointer" }}
         >
           {ratioLock ? (
-            <IconLink size={24} style={{ marginTop: "22px" }} />
+            <Button
+              icon={<IconLink size={24} />}
+              intent="primary"
+              style={{ marginTop: "22px" }}
+            />
           ) : (
-            <IconUnlink size={24} style={{ marginTop: "22px" }} />
+            <Button
+              icon={<IconUnlink size={24} />}
+              style={{ marginTop: "22px" }}
+            />
           )}
         </button>
         <InputWidget name="Width" />
@@ -96,9 +98,12 @@ export function MagnetEditor() {
           if (newState) emitMagnetUpdate(newState);
         }}
       />
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button intent="neutral">Cancel</Button>
-        <Button>Save preset</Button>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button intent="danger">Delete</Button>
+        <div style={{ display: "flex", gap: 2 }}>
+          <Button>Cancel</Button>
+          <Button intent="primary">Save preset</Button>
+        </div>
       </div>
     </div>
   );
