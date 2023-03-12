@@ -4,10 +4,10 @@ import { vars } from "../../theme.css";
 export const input = recipe({
   base: {
     borderRadius: vars.radii[3],
-    height: "32px",
+    height: "35px",
     paddingLeft: "6px",
     fontSize: "15px",
-    lineHeight: "32px",
+    lineHeight: "35px",
     border: "1px solid transparent",
     transition: "background-color, border-color ease-in .035s",
     width: "100%",

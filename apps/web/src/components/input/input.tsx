@@ -9,18 +9,26 @@ export type InputProps = React.DetailedHTMLProps<
 export function Input({ intent, name, ...rest }: InputProps) {
   const cN = input({ intent });
 
-  if (name) {
-    return (
-      <Label name={name}>
-        <div style={{ minWidth: 0 }}>
-          <input className={cN} {...rest} />
-        </div>
-      </Label>
-    );
-  }
   return (
     <div style={{ minWidth: 0 }}>
-      <input className={cN} {...rest} />
+      {name && <Label name={name}>{name}</Label>}
+      <input id={name} className={cN} {...rest} />
+    </div>
+  );
+}
+
+export type TextAreaProps = React.DetailedHTMLProps<
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  HTMLTextAreaElement
+> &
+  InputVariants;
+export function TextArea({ intent, name, ...rest }: TextAreaProps) {
+  const cN = input({ intent });
+
+  return (
+    <div style={{ minWidth: 0 }}>
+      {name && <Label name={name}>{name}</Label>}
+      <textarea id={name} className={cN} {...rest} />
     </div>
   );
 }

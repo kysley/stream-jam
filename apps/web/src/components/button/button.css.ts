@@ -70,7 +70,7 @@ export const button = recipe({
     },
     type: {
       icon: {
-        color: vars.colors.gray9,
+        color: vars.colors.gray12,
         borderRadius: "6px",
         border: "1px solid transparent",
         padding: "2px 4px",

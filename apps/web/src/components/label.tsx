@@ -15,9 +15,8 @@ export function Label({ name, children, icon, ...rest }: LabelProps) {
       }}
     >
       <label {...rest} htmlFor={name}>
-        {name}
+        {children}
       </label>
-      <div id={name}>{children}</div>
     </div>
   );
 }
