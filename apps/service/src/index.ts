@@ -31,23 +31,23 @@ fastify.register(fastifyJwt, {
   },
 });
 
-fastify.register(socketioServer, {
-  cors: {
-    origin: "http://localhost:5173",
-    credentials: true,
-  },
-  cookie: {
-    name: "token",
-    httpOnly: true,
-  },
-});
-
 fastify.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
   trpcOptions: {
     router,
     createContext,
   },
+});
+
+fastify.register(socketioServer, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+  // cookie: {
+  //   name: "token",
+  //   httpOnly: true,
+  // },
 });
 
 fastify.get("/", (req, res) => {
@@ -68,7 +68,8 @@ fastify.get("/", (req, res) => {
         });
       });
     });
-    await fastify.listen({ port: 3000 });
+    // Setting host for node 19 fix
+    await fastify.listen({ port: 3000, host: "0.0.0.0" });
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
