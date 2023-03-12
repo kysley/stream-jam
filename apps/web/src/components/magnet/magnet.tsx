@@ -1,4 +1,4 @@
-import { Image as KonvaImage, Text as KonvaText } from "react-konva";
+import { Group, Image as KonvaImage, Text as KonvaText } from "react-konva";
 import {
   Magnet,
   useMagnetActions,
@@ -53,16 +53,19 @@ export function Magnet({ id }: MagnetProps) {
       }}
       scaleX={magnet?.scale}
       scaleY={magnet?.scale}
-      stroke={selectedId === magnet.id ? "1px solid black" : undefined}
+      selected={selectedId === magnet.id}
       x={magnet?.x}
       y={magnet?.y}
+      height={magnet?.height}
+      width={magnet?.width}
     />
   );
 }
 
+// todo: if the magnet is remote then add the users displayname to the top of a magnet using a Group
 export function MagnetRenderer({ magnet, ...props }: { magnet: Magnet }) {
   if (magnet.type === "text") {
-    return <Text {...props} />;
+    return <Text text={magnet.text} {...props} />;
   }
 
   if (magnet?.url.endsWith("webp")) {
@@ -125,19 +128,28 @@ export function GIF({ src, ...rest }: { src: string }) {
 
   return <KonvaImage image={canvas} ref={imageRef} {...rest} />;
 }
-export function Image({ src, visible, ...rest }: { src?: string }) {
+export function Image({ src, visible, selected, ...rest }: { src?: string }) {
   const [image] = useImage(src || "./default_magnet.png");
   return (
     // todo: figure out better visibility false display
     <KonvaImage
       image={image}
       {...rest}
-      stroke={visible ? undefined : "grey"}
-      strokeWidth={visible ? undefined : 15}
+      stroke={selected ? "red" : undefined}
+      strokeWidth={!selected ? undefined : 15}
       opacity={visible ? undefined : 0.7}
+      strokeEnabled
     />
   );
 }
-export function Text(props) {
-  return <KonvaText text="Sample Text" fontSize={200 * 1.4} {...props} />;
+export function Text({ text, ...rest }: { text: string }) {
+  // if (rest.displayName) {
+  // return (
+  //   <Group {...rest}>
+  //     <KonvaText text={text} fontSize={200} />
+  //     <KonvaText text="REMOTE_MAGNET" fontSize={50} />
+  //   </Group>
+  // );
+  // }
+  return <KonvaText text={text} fontSize={200} {...rest} />;
 }

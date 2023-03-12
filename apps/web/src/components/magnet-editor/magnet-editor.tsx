@@ -1,12 +1,15 @@
 import * as Slider from "@radix-ui/react-slider";
+import { useClickOutside } from "@react-hookz/web";
 import {
   IconEye,
   IconEyeOff,
   IconLink,
   IconTrash,
+  IconTrashX,
   IconUnlink,
+  IconUpload,
 } from "@tabler/icons-react";
-import { ChangeEvent, ReactNode, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { useEmitMagnetUpdate } from "../../hooks/use-emit-magnet-update";
 import {
   useMagnetActions,
@@ -16,9 +19,42 @@ import {
 } from "../../state";
 import { Button } from "../button";
 import { Label } from "../label";
-import { Switch } from "../switch/switch";
-import { Input, InputProps } from "./../input";
+import { Input, InputProps, TextArea } from "./../input";
 import * as cls from "./magnet-editor.css";
+
+export function InCardConfirmation({
+  handleCancel,
+  handleConfirm,
+  mode,
+  text,
+}: {
+  handleCancel(): void;
+  handleConfirm(): void;
+  mode: "text" | "action";
+  text: string;
+}) {
+  const ref = useRef(null);
+  useClickOutside(ref, handleCancel);
+  return (
+    <div ref={ref} className={cls.confirmation}>
+      {mode === "action" ? (
+        <Fragment>
+          {text}
+          <Button intent="danger" onClick={handleConfirm}>
+            Confirm
+          </Button>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <Input placeholder="Preset name" />
+          <Button intent="primary" onClick={handleConfirm}>
+            {text}
+          </Button>
+        </Fragment>
+      )}
+    </div>
+  );
+}
 
 export function MagnetEditor() {
   const id = useSelectedMagnetId();
@@ -28,6 +64,8 @@ export function MagnetEditor() {
   const { scale } = useStageState();
 
   const [ratioLock, setRatioLock] = useState(true);
+  const [confirm, setConfirm] = useState(false);
+  const [save, setSave] = useState(false);
 
   const handleScaleSliderChange = (value: number[]) => {
     const newState = updateMagnet(id, {
@@ -47,64 +85,120 @@ export function MagnetEditor() {
 
   return (
     <div className={cls.editorContainer}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Button
-          onClick={handleVisibilityChange}
-          icon={magnet?.visible ? <IconEye /> : <IconEyeOff />}
-          intent={magnet?.visible ? "primary" : "neutral"}
+      {confirm && (
+        <InCardConfirmation
+          text="Delete?"
+          mode="action"
+          handleCancel={() => setConfirm(false)}
+          handleConfirm={() => setConfirm(false)}
         />
+      )}
+      {save && (
+        <InCardConfirmation
+          text="Save"
+          mode="text"
+          handleCancel={() => setSave(false)}
+          handleConfirm={() => setSave(false)}
+        />
+      )}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ display: "flex" }}>
+          <Button
+            onClick={handleVisibilityChange}
+            icon={magnet?.visible ? <IconEye /> : <IconEyeOff />}
+            intent={magnet?.visible ? "primary" : "neutral"}
+          />
+          <Button
+            onClick={() => setSave(true)}
+            icon={<IconUpload />}
+            intent={"neutral"}
+          />
+        </div>
         {/* <Button icon={<IconLockAccessOff />} /> */}
-        <Button icon={<IconTrash />} intent="danger" />
+        <Button
+          icon={confirm ? <IconTrashX /> : <IconTrash />}
+          intent="danger"
+          onClick={() => setConfirm(true)}
+        />
       </div>
-      {/* <Switch
-        name="Visible"
-        // onChange={handleVisibilityChange}
-        onCheckedChange={handleVisibilityChange}
-        checked={magnet?.visible}
-      /> */}
       <SliderWidget
         name="Scale"
         handleValueChange={handleScaleSliderChange}
         value={magnet?.scale}
       />
-      <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-        <InputWidget name="Height" intent="danger" />
-        <button
-          onClick={() => setRatioLock((prev) => !prev)}
-          style={{ cursor: "pointer" }}
-        >
+
+      <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+        <InputWidget
+          name="Height"
+          value={magnet?.height || ""}
+          onChange={(e) => {
+            const newState = updateMagnet(id, {
+              height: +e.target.value || undefined,
+              width: ratioLock ? +e.target.value : magnet.width,
+            });
+            if (newState) emitMagnetUpdate(newState);
+          }}
+        />
+        <div>
           {ratioLock ? (
             <Button
               icon={<IconLink size={24} />}
               intent="primary"
               style={{ marginTop: "22px" }}
+              onClick={() => setRatioLock((prev) => !prev)}
             />
           ) : (
             <Button
               icon={<IconUnlink size={24} />}
               style={{ marginTop: "22px" }}
+              onClick={() => setRatioLock((prev) => !prev)}
             />
           )}
-        </button>
-        <InputWidget name="Width" />
+        </div>
+        <InputWidget
+          name="Width"
+          value={magnet?.width || ""}
+          onChange={(e) => {
+            const newState = updateMagnet(id, {
+              width: +e.target.value || undefined,
+              height: ratioLock ? +e.target.value : magnet.height,
+            });
+            if (newState) emitMagnetUpdate(newState);
+          }}
+        />
       </div>
-      <InputWidget
-        value={magnet?.url || ""}
-        name="URL"
-        onChange={(e) => {
-          const newState = updateMagnet(id, {
-            url: e.target.value,
-          });
-          if (newState) emitMagnetUpdate(newState);
-        }}
-      />
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      {magnet?.type === "media" && (
+        <InputWidget
+          value={magnet?.url || ""}
+          name="URL"
+          onChange={(e) => {
+            const newState = updateMagnet(id, {
+              url: e.target.value,
+            });
+            if (newState) emitMagnetUpdate(newState);
+          }}
+        />
+      )}
+      {magnet?.type === "text" && (
+        <TextArea
+          style={{ width: "100%", height: "200px" }}
+          value={magnet?.text}
+          name="Text"
+          onChange={(e) => {
+            const newState = updateMagnet(id, {
+              text: e.target.value,
+            });
+            if (newState) emitMagnetUpdate(newState);
+          }}
+        />
+      )}
+      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button intent="danger">Delete</Button>
         <div style={{ display: "flex", gap: 2 }}>
           <Button>Cancel</Button>
           <Button intent="primary">Save preset</Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -119,8 +213,8 @@ function SliderWidget(
   return (
     <Label name={props.name}>
       <Slider.Root
-        max={2}
-        min={0}
+        max={5}
+        min={0.25}
         step={0.1}
         value={[props.value || 0.6]}
         name="Scale"

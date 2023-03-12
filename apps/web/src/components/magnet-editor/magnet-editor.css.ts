@@ -1,15 +1,44 @@
-import { style } from "@vanilla-extract/css";
+import { style, keyframes } from "@vanilla-extract/css";
 import { vars } from "../../theme.css";
+
+export const slideUp = keyframes({
+  from: {
+    transform: "translateY(3px)",
+    opacity: 0,
+  },
+  to: {
+    transform: "translateY(-3px)",
+    opacity: 1,
+  },
+});
+
+export const confirmation = style({
+  display: "flex",
+  position: "absolute",
+  backgroundColor: vars.colors.gray2,
+  outline: `1px solid ${vars.colors.gray6}`,
+  borderRadius: vars.radii[2],
+  top: -45,
+  transform: "translateY(-5px)",
+  left: 0,
+  justifyContent: "space-between",
+  zIndex: 0,
+  width: "100%",
+  padding: "4px 8px",
+  alignItems: "center",
+  animation: `.035s ease-out ${slideUp}`,
+});
 
 export const editorContainer = style({
   position: "absolute",
-  top: "75px",
+  top: "125px",
   right: "25px",
   display: "flex",
   flexDirection: "column",
   padding: "12px",
-  borderRadius: "3px",
+  borderRadius: vars.radii[2],
   backgroundColor: vars.colors.gray2,
+  outline: `1px solid ${vars.colors.gray6}`,
   gap: "12px",
   width: "300px",
 });
