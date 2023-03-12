@@ -3,8 +3,9 @@ import { MagnetRenderer } from "./magnet";
 
 type MagnetProps = {
   magnet: Magnet;
+  source: boolean;
 };
-export function RemoteMagnet({ magnet }: MagnetProps) {
+export function RemoteMagnet({ magnet, source }: MagnetProps) {
   if (!magnet) {
     return null;
   }
@@ -14,7 +15,7 @@ export function RemoteMagnet({ magnet }: MagnetProps) {
     // probably won't need a stroke once we are rendering display names for remote magnets
     <MagnetRenderer
       magnet={magnet}
-      stroke="orange"
+      stroke={source ? undefined : "orange"}
       strokeWidth="5px"
       // displayName="remote_test"
       // draggable

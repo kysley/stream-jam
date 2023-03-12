@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { Socket } from "socket.io-client";
 
-const socketIo = io("http://localhost:3000");
+const socketIo = io("http://localhost:3000", { withCredentials: true });
 
 export function useSocket() {
   const [socket, setSocket] = useState<Socket | null>(socketIo);

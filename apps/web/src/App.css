@@ -29,3 +29,7 @@
 .magnet.remote {
   z-index: 3;
 }
+
+.toolbar-container {
+  pointer-events: all;
+}

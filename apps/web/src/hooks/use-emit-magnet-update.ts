@@ -7,7 +7,10 @@ export function useEmitMagnetUpdate() {
 
   const emitMagnetUpdate = useCallback(
     (newState: Partial<Magnet>) => {
-      socket?.emit("update", { socketId: socket.id, magnet: newState });
+      socket?.emit("update", {
+        socketId: socket.id,
+        magnet: newState,
+      });
     },
     [socket]
   );

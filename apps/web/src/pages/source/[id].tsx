@@ -10,7 +10,7 @@ export function SourceIdPage() {
   return (
     <Stage x={-(1920 / 2)} y={-(1080 / 3)} width={1920} height={1080}>
       <Layer>
-        <RemoteMagnetDisplay />
+        <RemoteMagnetDisplay source />
       </Layer>
     </Stage>
   );
