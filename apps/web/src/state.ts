@@ -9,6 +9,8 @@ export type Magnet =
       id: string;
       x: number;
       y: number;
+      height?: number;
+      width?: number;
       url: string;
       scale: number;
       visible: boolean;
@@ -18,6 +20,8 @@ export type Magnet =
       id: string;
       x: number;
       y: number;
+      height?: number;
+      width?: number;
       text: string;
       scale: number;
       visible: boolean;
