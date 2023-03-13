@@ -7,11 +7,12 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "start": "node dist/index.js",
-    "dev": "tsup src/index.ts --format cjs --dts --watch --onSuccess \"node dist/index.js\"",
+    "start": "node -r dotenv/config dist/index.js",
+    "dev": "tsup src/index.ts --format cjs --dts --watch --onSuccess \"node -r dotenv/config dist/index.js\"",
     "build:schema": "node build-schema.js && graphql-codegen",
     "db:generate": "yarn prisma generate",
-    "db:push": "yarn prisma db push"
+    "db:push": "yarn prisma db push",
+    "db:up": "docker-compose -p stream-jam up -d"
   },
   "devDependencies": {
     "@types/bull": "^4.10.0",

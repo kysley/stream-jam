@@ -1,7 +1,6 @@
 import fastifyServer from "fastify";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import cors from "@fastify/cors";
-import dotenv from "dotenv";
 import socketioServer from "fastify-socket.io";
 import fastifyCookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
@@ -9,10 +8,7 @@ import fastifyJwt from "@fastify/jwt";
 import { router } from "./router";
 import { createContext } from "./context";
 
-dotenv.config();
-
 const fastify = fastifyServer();
-
 fastify.register(cors, {
   // put your options here
   origin: "http://localhost:5173",
@@ -43,6 +39,7 @@ fastify.register(socketioServer, {
   cors: {
     origin: "http://localhost:5173",
     credentials: true,
+    allowedHeaders: ["token"],
   },
   // cookie: {
   //   name: "token",
@@ -59,12 +56,36 @@ fastify.get("/", (req, res) => {
     fastify.ready((e) => {
       if (e) throw e;
       console.log("ready");
+      // fastify.io.use((socket, next) => {
+      //   console.log(socket.handshake.headers.cookie);
+      //   next();
+      // });
       fastify.io.on("connection", (socket) => {
+        // Can't seem to verify the cookie outside of fastify context
+        // const cookie = socket.handshake.headers.cookie;
+        // // No cookie? we want OUT
+        // if (!cookie) return;
+
+        // // const { token } = fastify.parseCookie(cookie);
+        // const token = cookie.split("=")[1];
+        // if (!token) return;
+
+        // if the user has a socket session
+        // get the user from the session
+
+        // verify that the socket session 1. is the same as the room or 2. is allowed to be in the room
+
         console.log("connection");
         socket.join("moonmoon");
         socket.on("update", (state) => {
-          console.log(state);
+          // console.log(state);
           fastify.io.to("moonmoon").emit("update", state);
+        });
+
+        socket.on("disconnect", () => {
+          console.log("socket disconnect");
+          console.log("TODO: remove socket session");
+          // socket.handshake.auth
         });
       });
     });
@@ -77,25 +98,3 @@ fastify.get("/", (req, res) => {
 })();
 
 export type AppRouter = typeof router;
-
-// export type { AppRouter } from "./router";
-
-// export const fastify = fastifyServer();
-
-// fastify.register(fastifyCookie, {
-//   secret: "123098",
-//   // hook: "onRequest",
-// });
-
-// fastify.register(fastifyJwt, {
-//   secret: "123098",
-//   cookie: {
-//     cookieName: "token",
-//     signed: false,
-//   },
-// });
-
-// export const CONNECTED_SOCKETS = new Map();
-
-// const fourCharCode = () =>
-//   Math.random().toString(36).substr(2, 4).toUpperCase();
