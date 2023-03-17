@@ -1,7 +1,7 @@
 import { useRegisterWithTwitch } from "../hooks/use-register-with-twitch";
 
 export function ConnectedPage() {
-  useRegisterWithTwitch();
+	useRegisterWithTwitch();
 
-  return <span>todo: redirect me</span>;
+	return <span>todo: redirect me</span>;
 }

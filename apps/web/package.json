@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@radix-ui/colors": "^0.1.8",
+    "@radix-ui/react-dialog": "^1.0.3",
+    "@radix-ui/react-select": "^1.2.1",
     "@radix-ui/react-slider": "^1.1.1",
     "@radix-ui/react-switch": "^1.0.2",
     "@radix-ui/react-toolbar": "^1.0.3",

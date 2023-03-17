@@ -8,6 +8,8 @@ import {
 import { useMagnetActions, useStageActions, useStageState } from "../state";
 
 import * as cls from "./toolbar.css";
+import { Select } from "./select/select";
+import { Button } from "./button";
 
 const toolbarWidgets: { value: string; icon: ReactNode }[] = [
 	{ value: "photo", icon: <IconPhotoPlus /> },
@@ -33,7 +35,7 @@ export function QuickToolbar({ jams }: { jams?: unknown[] }) {
 						visible: true,
 						x: 50,
 						y: 100,
-						scale,
+						scale: 1,
 						type: "media",
 					})
 				}
@@ -66,11 +68,18 @@ export function QuickToolbar({ jams }: { jams?: unknown[] }) {
 			</Toolbar.ToolbarButton>
 			<Toolbar.Separator style={{ background: "red", width: 2, height: 10 }} />
 			{jams && (
-				<select>
-					{jams.map((j) => (
-						<option value={j.id}>{j.name}</option>
-					))}
-				</select>
+				// <select>
+				// 	{jams.map((j) => (
+				// 		<option value={j.id}>{j.name}</option>
+				// 	))}
+				// </select>
+				<Select
+					placeholder="Connect to a jam"
+					options={[
+						{ name: "home (you)", value: "" },
+						...jams.map((j) => ({ name: j.name, value: j.id })),
+					]}
+				/>
 			)}
 		</Toolbar.Root>
 	);

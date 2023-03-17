@@ -6,6 +6,7 @@ import { prisma } from "./prisma";
 import {
 	getAuthorizationCode,
 	getModerators,
+	getStreams,
 	refreshAccessToken,
 } from "./helix";
 import { redis, userJammingWith } from "./redis";
@@ -161,11 +162,22 @@ export const router = t.router({
 			const jammingTwitchIds = await redis.smembers(
 				`user:${prismaUser?.twId}:jam_with`,
 			);
+
+			const auth = await refreshAccessToken(prismaUser!.twRefreshToken);
+			const streams = await getStreams(jammingTwitchIds, auth.access_token);
+
 			const users = await prisma.user.findMany({
 				where: { OR: jammingTwitchIds.map((i) => ({ twId: i })) },
 			});
-			console.log(users);
-			return users.map((user) => ({ id: user.id, name: user.twDisplayName }));
+
+			return users.map((user) => ({
+				id: user.id,
+				name: user.twDisplayName,
+				// Cross check if jamming user is live with the users api req
+				live: Boolean(
+					Math.sqrt(streams.findIndex((s) => s.user_id === user.twId)),
+				),
+			}));
 		}
 	}),
 	syncModerators: t.procedure.mutation(async ({ ctx }) => {
