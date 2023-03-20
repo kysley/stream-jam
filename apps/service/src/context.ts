@@ -1,10 +1,16 @@
 import { inferAsyncReturnType } from "@trpc/server";
 import { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
+
+export type CookieUser = {
+	id: string;
+	accessToken: string;
+};
+
 export async function createContext({ req, res }: CreateFastifyContextOptions) {
 	let user;
 
 	if (req.cookies.token) {
-		user = await req.jwtVerify<{ id: string }>();
+		user = await req.jwtVerify<CookieUser>();
 	}
 
 	return { req, res, user };

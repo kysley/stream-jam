@@ -10,6 +10,7 @@ import {
 	refreshAccessToken,
 } from "./helix";
 import { redis, userJammingWith } from "./redis";
+import { syncModerators } from "./helix/helpers";
 
 export const t = initTRPC.context<typeof createContext>().create();
 
@@ -57,10 +58,16 @@ export const router = t.router({
 				},
 			});
 
+			await syncModerators(prismaUser.twId, prismaUser.twDisplayName, {
+				accessToken: auth.accessToken,
+				id: prismaUser.id,
+			});
+
 			const token = await ctx.res.jwtSign({
 				id: prismaUser.id,
 				accessToken: auth.accessToken,
 			});
+
 			ctx.res.setCookie("token", token, {
 				secure: true,
 				httpOnly: true,
@@ -79,56 +86,22 @@ export const router = t.router({
 			if (!user) return null;
 
 			//refresh access token
-			const auth = await refreshAccessToken(user.twRefreshToken);
-			if (!auth) return null;
+			// const auth = await refreshAccessToken(user.twRefreshToken);
+			// if (!auth) return null;
 
-			// todo: move this to syncModerators/register procedures
-			const modList = await getModerators(user.twId, auth.access_token);
-			if (modList) {
-				await redis.del(
-					`user:${user.twId}:moderators`,
-					`user:${user.twId}:notifications`,
-				);
+			// const token = await ctx.res.jwtSign({
+			// 	id: user.id,
+			// 	accessToken: auth.access_token,
+			// });
 
-				// Add self for testing
-				await redis.lpush(
-					`user:${user.twId}:notifications`,
-					`You can now Jam with ${user.twDisplayName}!`,
-				);
-				await redis.sadd(`user:${user.twId}:jam_with`, user.twId);
-
-				console.log("one or more users seen as moderator of channel");
-
-				for (let i = 0; i <= modList.length - 1; i++) {
-					// We add the user id to the moderators list regardless, so we check the existance before
-					const isMember = await userJammingWith(user.twId, modList[i].user_id);
-					await redis.sadd(`user:${user.twId}:moderators`, modList[i].user_id);
-
-					await redis.sadd(`user:${modList[i].user_id}:jam_with`, user.twId);
-
-					if (!isMember) {
-						await redis.lpush(
-							`user:${modList[i].user_id}:notifications`,
-							`You can now Jam with ${user.twDisplayName}!`,
-						);
-					}
-				}
-			}
-			// ^end
-
-			const token = await ctx.res.jwtSign({
-				id: user.id,
-				accessToken: auth.access_token,
-			});
-
-			ctx.res.setCookie("token", token, {
-				secure: true,
-				httpOnly: true,
-				// expires: new Date(new Date() + auth.expires_in * 1000),
-				expires: new Date(new Date().setMonth(12)),
-				signed: true,
-				path: "/",
-			});
+			// ctx.res.setCookie("token", token, {
+			// 	secure: true,
+			// 	httpOnly: true,
+			// 	// expires: new Date(new Date() + auth.expires_in * 1000),
+			// 	expires: new Date(new Date().setMonth(12)),
+			// 	signed: true,
+			// 	path: "/",
+			// });
 
 			return user;
 		}
@@ -163,8 +136,8 @@ export const router = t.router({
 				`user:${prismaUser?.twId}:jam_with`,
 			);
 
-			const auth = await refreshAccessToken(prismaUser!.twRefreshToken);
-			const streams = await getStreams(jammingTwitchIds, auth.access_token);
+			const streams = await getStreams(jammingTwitchIds, ctx.user);
+			console.log({ streams });
 
 			const users = await prisma.user.findMany({
 				where: { OR: jammingTwitchIds.map((i) => ({ twId: i })) },
@@ -180,10 +153,45 @@ export const router = t.router({
 			}));
 		}
 	}),
-	syncModerators: t.procedure.mutation(async ({ ctx }) => {
-		if (ctx.user) {
-		}
-	}),
+	// syncModerators: t.procedure.mutation(async ({ ctx }) => {
+	// 	if (ctx.user) {
+	// 		const user = await prisma.user.findUnique({ where: { id: ctx.user.id } });
+	// 		if (!user) return null;
+	// 		// todo: move this to syncModerators/register procedures
+	// 		const modList = await getModerators(user.twId, ctx.user.accessToken);
+	// 		if (modList) {
+	// 			await redis.del(
+	// 				`user:${user.twId}:moderators`,
+	// 				`user:${user.twId}:notifications`,
+	// 			);
+
+	// 			// Add self for testing
+	// 			await redis.lpush(
+	// 				`user:${user.twId}:notifications`,
+	// 				`You can now Jam with ${user.twDisplayName}!`,
+	// 			);
+	// 			await redis.sadd(`user:${user.twId}:jam_with`, user.twId);
+
+	// 			console.log("one or more users seen as moderator of channel");
+
+	// 			for (let i = 0; i <= modList.length - 1; i++) {
+	// 				// We add the user id to the moderators list regardless, so we check the existance before
+	// 				const isMember = await userJammingWith(user.twId, modList[i].user_id);
+	// 				await redis.sadd(`user:${user.twId}:moderators`, modList[i].user_id);
+
+	// 				await redis.sadd(`user:${modList[i].user_id}:jam_with`, user.twId);
+
+	// 				if (!isMember) {
+	// 					await redis.lpush(
+	// 						`user:${modList[i].user_id}:notifications`,
+	// 						`You can now Jam with ${user.twDisplayName}!`,
+	// 					);
+	// 				}
+	// 			}
+	// 		}
+	// 		// ^end
+	// 	}
+	// }),
 });
 // export type definition of API
 export type AppRouter = typeof router;
