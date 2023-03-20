@@ -6,19 +6,20 @@ export type ButtonProps = React.DetailedHTMLProps<
 	React.ButtonHTMLAttributes<HTMLButtonElement>,
 	HTMLButtonElement
 > &
-	ButtonVariants & {
-		icon?: ReactNode;
-	};
+	ButtonVariants;
 export const Button = forwardRef<any, ButtonProps>(function Button(
-	{ intent, icon, name, children, ...rest },
+	{ intent, name, children, pill, ghost, ...rest },
 	ref,
 ) {
-	const cN = button({ intent, type: icon ? "icon" : undefined }); // ugly
+	const cN = button({
+		intent,
+		pill,
+		ghost,
+	}); // ugly
 
 	return (
 		<div style={{ minWidth: 0 }}>
 			<button className={cN} ref={ref} {...rest}>
-				{icon && icon}
 				{children}
 			</button>
 		</div>

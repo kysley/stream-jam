@@ -108,27 +108,27 @@ export function MagnetEditor() {
 				<div style={{ display: "flex" }}>
 					<Button
 						onClick={handleVisibilityChange}
-						icon={magnet?.visible ? <IconEye /> : <IconEyeOff />}
+						ghost
 						intent={magnet?.visible ? "primary" : "neutral"}
-					/>
-					<Button
-						onClick={() => setSave(true)}
-						icon={<IconUpload />}
-						intent={"neutral"}
-					/>
+					>
+						{magnet?.visible ? <IconEye /> : <IconEyeOff />}
+					</Button>
+					<Button onClick={() => setSave(true)} ghost intent={"neutral"}>
+						<IconUpload />
+					</Button>
 					<Button
 						disabled
 						onClick={() => setSave(true)}
-						icon={<IconHandMove />}
+						ghost
 						intent={"neutral"}
-					/>
+					>
+						<IconHandMove />
+					</Button>
 				</div>
-				{/* <Button icon={<IconLockAccessOff />} /> */}
-				<Button
-					icon={confirm ? <IconTrashX /> : <IconTrash />}
-					intent="danger"
-					onClick={() => setConfirm(true)}
-				/>
+				{/* <Button ghost={<IconLockAccessOff />} /> */}
+				<Button ghost intent="danger" onClick={() => setConfirm(true)}>
+					{confirm ? <IconTrashX /> : <IconTrash />}
+				</Button>
 			</div>
 			<SliderWidget
 				name="Scale"
@@ -151,17 +151,21 @@ export function MagnetEditor() {
 				<div>
 					{ratioLock ? (
 						<Button
-							icon={<IconLink size={24} />}
+							ghost
 							intent="primary"
 							style={{ marginTop: "22px" }}
 							onClick={() => setRatioLock((prev) => !prev)}
-						/>
+						>
+							<IconLink size={24} />
+						</Button>
 					) : (
 						<Button
-							icon={<IconUnlink size={24} />}
+							ghost
 							style={{ marginTop: "22px" }}
 							onClick={() => setRatioLock((prev) => !prev)}
-						/>
+						>
+							<IconUnlink size={24} />
+						</Button>
 					)}
 				</div>
 				<InputWidget

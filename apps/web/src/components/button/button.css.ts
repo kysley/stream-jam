@@ -69,12 +69,17 @@ export const button = recipe({
 				":disabled": {},
 			},
 		},
-		type: {
-			icon: {
+		pill: {
+			true: {
+				borderRadius: 25,
+			},
+		},
+		ghost: {
+			true: {
 				color: vars.colors.gray12,
 				borderRadius: "6px",
 				border: "1px solid transparent",
-				padding: "2px 4px",
+				padding: "4px 8px",
 				cursor: "pointer",
 				backgroundColor: "transparent",
 				":hover": {
@@ -85,11 +90,13 @@ export const button = recipe({
 					// todo: figure out better button hover
 					// transform: "scale(1.05)",
 				},
-				":not(:disabled):active": {
-					backgroundColor: vars.colors.gray5,
-					// backgroundColor: "transparent",
-					// border: `1px solid ${vars.colors.gray8}`,
-					border: "1px solid transparent",
+				selectors: {
+					"&:not(:disabled):active": {
+						backgroundColor: vars.colors.gray5,
+						// backgroundColor: "transparent",
+						// border: `1px solid ${vars.colors.gray8}`,
+						border: "1px solid transparent",
+					},
 				},
 				":focus": {
 					outline: "none",
@@ -103,11 +110,10 @@ export const button = recipe({
 	},
 	defaultVariants: {
 		intent: "neutral",
-		type: undefined,
 	},
 	compoundVariants: [
 		{
-			variants: { type: "icon", intent: "danger" },
+			variants: { ghost: true, intent: "danger" },
 			style: {
 				color: vars.colors.red9,
 				":hover": {
@@ -124,16 +130,18 @@ export const button = recipe({
 			},
 		},
 		{
-			variants: { type: "icon", intent: "primary" },
+			variants: { ghost: true, intent: "primary" },
 			style: {
 				color: vars.colors.primary.indigo9,
 				":hover": {
 					backgroundColor: vars.colors.primary.indigo4,
 					// border: `1px solid ${vars.colors.primary.indigo8}`,
 				},
-				":active": {
-					backgroundColor: vars.colors.primary.indigo5,
-					// border: `1px solid ${vars.colors.primary.indigo8}`,
+				selectors: {
+					"&:not(:disabled):active": {
+						backgroundColor: vars.colors.primary.indigo5,
+						// border: `1px solid ${vars.colors.primary.indigo8}`,
+					},
 				},
 				":focus": {
 					outline: "none",

@@ -23,8 +23,9 @@ export const DialogContent = style({
 	backgroundColor: vars.colors.gray4,
 	borderRadius: 6,
 	boxShadow:
-		"hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px",
+		"rgba(0, 0, 0, 0.1) 0px 10px 38px -10px, rgba(0, 0, 0, 0.2) 0px 10px 20px -15px",
 	position: "fixed",
+	border: `1px solid ${vars.colors.gray6}`,
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
@@ -33,7 +34,7 @@ export const DialogContent = style({
 	maxHeight: "85vh",
 	padding: 25,
 	animation: `${contentShow} 150ms cubic-bezier(0.16, 1, 0.3, 1)`,
-	":focus": { outline: "none" },
+	// ":focus": { outline: "none" },
 });
 
 export const DialogTitle = style({
