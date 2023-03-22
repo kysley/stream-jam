@@ -9,6 +9,8 @@ import { httpBatchLink } from "@trpc/client";
 import { ConnectedPage } from "./pages/connected";
 import { themeClass } from "./theme.css";
 import { StartPage } from "./pages/start";
+import { DashboardPage } from "./pages/dashboard";
+import { Header } from "./components/header";
 
 function App() {
 	const [queryClient] = useState(() => new QueryClient());
@@ -31,7 +33,9 @@ function App() {
 		<trpc.Provider client={trpcClient} queryClient={queryClient}>
 			<QueryClientProvider client={queryClient}>
 				<div className={`App ${themeClass}`}>
+					<Header />
 					<Route path="/" component={IndexPage} />
+					<Route path="/dashboard" component={DashboardPage} />
 					<Route path="/jam" component={StartPage} />
 					<Route path="/source/:id" component={SourceIdPage} />
 					<Route path="/connected" component={ConnectedPage} />

@@ -1,8 +1,24 @@
-import { IconLoader, IconUser } from "@tabler/icons-react";
+import {
+	IconBook,
+	IconBook2,
+	IconBrandTwitch,
+	IconDashboard,
+	IconFolder,
+	IconHome,
+	IconLoader,
+	IconMagnet,
+	IconMenu,
+	IconSettings,
+	IconUser,
+	IconUserEdit,
+} from "@tabler/icons-react";
 import { Fragment } from "react";
+import { Link, useRoute } from "wouter";
 import { useMe } from "../hooks/use-me";
 import { trpc } from "../utils/trpc";
 import { Button } from "./button";
+import { Popover } from "./popover/popover";
+import { PopoverItem, PopoverTitle } from "./popover/popover.css";
 import { QuickToolbar } from "./toolbar";
 import { toolbarContainer } from "./toolbar.css";
 import { TwitchAuthButton } from "./twitch-auth-button";
@@ -11,6 +27,7 @@ export function Header() {
 	const { data, isLoading } = useMe();
 	const { data: notifs } = trpc.notifications.useQuery();
 	const { data: jams } = trpc.jammingWith.useQuery();
+	const [isIndex] = useRoute("/");
 
 	return (
 		<Fragment>
@@ -23,6 +40,7 @@ export function Header() {
 					padding: "0 24px",
 					top: 16,
 					pointerEvents: "none",
+					zIndex: 1000,
 				}}
 			>
 				<div
@@ -32,7 +50,7 @@ export function Header() {
 						position: "relative",
 					}}
 				>
-					<QuickToolbar jams={jams} me={data} />
+					{isIndex && <QuickToolbar jams={jams} me={data} />}
 					<div
 						style={{
 							position: "absolute",
@@ -44,15 +62,52 @@ export function Header() {
 							right: 0,
 						}}
 					>
-						<Button ghost intent="primary">
-							Presets
-						</Button>
+						{isIndex ? (
+							<Button ghost intent="primary">
+								Presets
+								<IconFolder />
+							</Button>
+						) : (
+							<Link to='/'>
+								<a>
+									<Button ghost>
+										Home
+										<IconHome />
+									</Button>
+								</a>
+							</Link>
+						)}
 						{isLoading && <IconLoader />}
 						{!isLoading && data && (
-							<Button pill>
-								{data.twDisplayName}
-								{/* <IconUser /> */}
-							</Button>
+							<Popover
+								target={
+									<Button pill ghost>
+										<IconUser />
+									</Button>
+								}
+							>
+								{/* <div className={PopoverItem}>Dashboard</div> */}
+								<div className={PopoverTitle}>
+									<IconBrandTwitch size={20} />
+									<span>{data.twDisplayName}</span>
+								</div>
+								<Link to="/dashboard">
+									<a>
+										<div className={PopoverItem}>
+											<IconDashboard />
+											Dashboard
+										</div>
+									</a>
+								</Link>
+								<div className={PopoverItem}>
+									<IconFolder />
+									Manage presets
+								</div>
+								<div className={PopoverItem}>
+									<IconSettings />
+									Settings
+								</div>
+							</Popover>
 						)}
 						{!(isLoading || data) && <TwitchAuthButton />}
 					</div>

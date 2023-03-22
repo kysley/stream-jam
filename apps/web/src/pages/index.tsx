@@ -10,7 +10,6 @@ export function IndexPage() {
 	return (
 		<div>
 			<div className="container">
-				<Header />
 				<MagnetEditor />
 				<Dialog />
 			</div>
