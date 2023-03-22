@@ -15,6 +15,7 @@ export const button = recipe({
 		width: "100%",
 		padding: "0 .55rem",
 		cursor: "pointer",
+		gap: 6,
 	},
 	variants: {
 		intent: {

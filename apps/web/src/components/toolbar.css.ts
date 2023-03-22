@@ -5,10 +5,10 @@ export const toolbarContainer = style({
 	display: "flex",
 	justifyContent: "center",
 	alignItems: "center",
-	padding: "4px 8px",
+	padding: "4px 12px",
 	backgroundColor: vars.colors.gray2,
 	borderRadius: "5px",
 	pointerEvents: "all",
 	gap: "4px",
-	height: 35,
+	height: 42,
 });
