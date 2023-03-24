@@ -1,6 +1,7 @@
 import * as Slider from "@radix-ui/react-slider";
 import { useClickOutside } from "@react-hookz/web";
 import {
+	IconDeviceFloppy,
 	IconDragDrop,
 	IconDragDrop2,
 	IconEye,
@@ -114,7 +115,7 @@ export function MagnetEditor() {
 						{magnet?.visible ? <IconEye /> : <IconEyeOff />}
 					</Button>
 					<Button onClick={() => setSave(true)} ghost intent={"neutral"}>
-						<IconUpload />
+						<IconDeviceFloppy />
 					</Button>
 					<Button
 						disabled
