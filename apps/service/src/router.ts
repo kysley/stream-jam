@@ -3,14 +3,10 @@ import wretch from "wretch";
 import { z } from "zod";
 import { createContext } from "./context";
 import { prisma } from "./prisma";
-import {
-	getAuthorizationCode,
-	getModerators,
-	getStreams,
-	refreshAccessToken,
-} from "./helix";
-import { redis, userJammingWith } from "./redis";
+import { getAuthorizationCode, getStreams } from "./helix";
+import { redis } from "./redis";
 import { syncModerators } from "./helix/helpers";
+import { saveMagnet, updateMagnet, getMagnets } from "./routes";
 
 export const t = initTRPC.context<typeof createContext>().create();
 
@@ -153,6 +149,10 @@ export const router = t.router({
 			}));
 		}
 	}),
+	saveMagnet: saveMagnet(t),
+	updateMagnet: updateMagnet(t),
+	getMagnets: getMagnets(t),
+
 	// syncModerators: t.procedure.mutation(async ({ ctx }) => {
 	// 	if (ctx.user) {
 	// 		const user = await prisma.user.findUnique({ where: { id: ctx.user.id } });

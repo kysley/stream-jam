@@ -1,7 +1,7 @@
 import { Fragment, useCallback } from "react";
 import { useListenForMagnetUpdate } from "../hooks/use-listen-for-magnet-update";
 import { useRemoteMagnetStore } from "../state";
-import { RemoteMagnet } from "./magnet/remote-magnet";
+import { RemoteCanvasMagnet } from "./magnet/remote-canvas-magnet";
 
 export function RemoteMagnetDisplay({ source = false }: { source: boolean }) {
 	const remoteMagnets = useRemoteMagnetStore(

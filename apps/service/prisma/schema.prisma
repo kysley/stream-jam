@@ -16,5 +16,16 @@ model User {
   twDisplayName  String @unique
   twId           String @unique
 
+  magnets Magnet[]
   // @@unique([id, twId, twDisplayName])
+}
+
+model Magnet {
+  id      String  @id @default(cuid())
+  props   String? // stringified json for now
+  name    String
+  version Int     @default(1)
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }

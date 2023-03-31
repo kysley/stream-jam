@@ -1,26 +1,21 @@
 import {
-	IconBook,
-	IconBook2,
 	IconBrandTwitch,
 	IconDashboard,
 	IconFolder,
 	IconHome,
 	IconLoader,
-	IconMagnet,
-	IconMenu,
 	IconSettings,
 	IconUser,
-	IconUserEdit,
 } from "@tabler/icons-react";
 import { Fragment } from "react";
 import { Link, useRoute } from "wouter";
 import { useMe } from "../hooks/use-me";
 import { trpc } from "../utils/trpc";
 import { Button } from "./button";
+import { MagnetPresetsPopover } from "./magnet-presets/magnet-presets-popover";
 import { Popover } from "./popover/popover";
 import { PopoverItem, PopoverTitle } from "./popover/popover.css";
 import { QuickToolbar } from "./toolbar";
-import { toolbarContainer } from "./toolbar.css";
 import { TwitchAuthButton } from "./twitch-auth-button";
 
 export function Header() {
@@ -63,10 +58,14 @@ export function Header() {
 						}}
 					>
 						{isIndex ? (
-							<Button ghost intent="primary">
-								Presets
-								<IconFolder />
-							</Button>
+							<MagnetPresetsPopover
+								target={
+									<Button ghost intent="primary">
+										Presets
+										<IconFolder />
+									</Button>
+								}
+							/>
 						) : (
 							<Link to='/'>
 								<a>

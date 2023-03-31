@@ -8,7 +8,7 @@ import { trpc } from "./utils/trpc";
 import { httpBatchLink } from "@trpc/client";
 import { ConnectedPage } from "./pages/connected";
 import { themeClass } from "./theme.css";
-import { StartPage } from "./pages/start";
+import { StartPage } from "./pages/start/start";
 import { DashboardPage } from "./pages/dashboard";
 import { Header } from "./components/header";
 

@@ -61,6 +61,7 @@ fastify.get("/", (req, res) => {
 			//   next();
 			// });
 			fastify.io.on("connection", (socket) => {
+				let roomName: string;
 				// Can't seem to verify the cookie outside of fastify context
 				// const cookie = socket.handshake.headers.cookie;
 				// // No cookie? we want OUT
@@ -76,10 +77,19 @@ fastify.get("/", (req, res) => {
 				// verify that the socket session 1. is the same as the room or 2. is allowed to be in the room
 
 				console.log("connection");
-				socket.join("moonmoon");
+				// socket.join("moonmoon");
 				socket.on("update", (state) => {
 					// console.log(state);
-					fastify.io.to("moonmoon").emit("update", state);
+					if (roomName) {
+						console.log(roomName);
+						fastify.io.to(roomName).emit("update", state);
+					}
+				});
+
+				socket.on("joinRoom", (name: string) => {
+					socket.rooms.clear();
+					socket.join(name);
+					roomName = name;
 				});
 
 				socket.on("disconnect", () => {

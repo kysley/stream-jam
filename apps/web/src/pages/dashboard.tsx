@@ -1,5 +1,5 @@
-import Skeleton from "react-loading-skeleton";
 import { Link } from "wouter";
+import { MagnetList } from "../components/magnet-list";
 import {
 	Page,
 	PageTitle,
@@ -9,16 +9,17 @@ import {
 	Stat,
 	StatText,
 	StatValue,
-	DashboardImage,
-} from "../components/start/start-page.css";
+} from "./start/start-page.css";
 import { useMe } from "../hooks/use-me";
+import { trpc } from "../utils/trpc";
 
 export function DashboardPage() {
 	const { data } = useMe();
+	const { data: magnets } = trpc.magnets.useQuery();
 
 	return (
 		<div className={Page}>
-			<h1 className={PageTitle}>{data?.twDisplayName || <Skeleton />}</h1>
+			<h1 className={PageTitle}>{data?.twDisplayName || "loading"}</h1>
 
 			<div className={DashboardGrid}>
 				<div className={DashboardSection}>
@@ -40,18 +41,7 @@ export function DashboardPage() {
 				</div>
 				<div className={DashboardSection}>
 					<h2 className={DashboardTitle}>Presets</h2>
-					<div style={{ display: "flex", gap: 16 }}>
-						{[
-							{ id: 1, url: "https://i.imgur.com/frFzz7e.gif" },
-							{ id: 2, url: "https://i.imgur.com/frFzz7e.gif" },
-						].map((url) => (
-							<Link href={`/magnet/${url.id}`} key={url.id}>
-								<a>
-									<img src={url.url} className={DashboardImage} alt={url.url} />
-								</a>
-							</Link>
-						))}
-					</div>
+					<MagnetList />
 				</div>
 			</div>
 		</div>

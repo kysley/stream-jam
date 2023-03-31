@@ -1,9 +1,8 @@
 import * as Slider from "@radix-ui/react-slider";
 import { useClickOutside } from "@react-hookz/web";
 import {
+	IconCloudUpload,
 	IconDeviceFloppy,
-	IconDragDrop,
-	IconDragDrop2,
 	IconEye,
 	IconEyeOff,
 	IconHandMove,
@@ -11,16 +10,11 @@ import {
 	IconTrash,
 	IconTrashX,
 	IconUnlink,
-	IconUpload,
 } from "@tabler/icons-react";
 import { Fragment, useRef, useState } from "react";
 import { useEmitMagnetUpdate } from "../../hooks/use-emit-magnet-update";
-import {
-	useMagnetActions,
-	useManget,
-	useSelectedMagnetId,
-	useStageState,
-} from "../../state";
+import { useSaveMagnet } from "../../hooks/use-save-magnet";
+import { useMagnetActions, useManget, useSelectedMagnetId } from "../../state";
 import { Button } from "../button";
 import { Label } from "../label";
 import { Input, InputProps, TextArea } from "./../input";
@@ -33,12 +27,15 @@ export function InCardConfirmation({
 	text,
 }: {
 	handleCancel(): void;
-	handleConfirm(): void;
+	handleConfirm(value?: unknown): void;
 	mode: "text" | "action";
 	text: string;
 }) {
 	const ref = useRef(null);
 	useClickOutside(ref, handleCancel);
+
+	const [name, setName] = useState("");
+
 	return (
 		<div ref={ref} className={cls.confirmation}>
 			{mode === "action" ? (
@@ -50,8 +47,12 @@ export function InCardConfirmation({
 				</Fragment>
 			) : (
 				<Fragment>
-					<Input placeholder="Preset name" />
-					<Button intent="primary" onClick={handleConfirm}>
+					<Input
+						placeholder="Preset name"
+						value={name}
+						onChange={(e) => setName(e.target.value)}
+					/>
+					<Button intent="primary" onClick={() => handleConfirm(name)}>
 						{text}
 					</Button>
 				</Fragment>
@@ -63,9 +64,9 @@ export function InCardConfirmation({
 export function MagnetEditor() {
 	const id = useSelectedMagnetId();
 	const magnet = useManget(id);
-	const { updateMagnet } = useMagnetActions();
+	const { updateMagnet, removeMagnet } = useMagnetActions();
 	const { emitMagnetUpdate } = useEmitMagnetUpdate();
-	const { scale } = useStageState();
+	const { mutateAsync: saveMagnet } = useSaveMagnet();
 
 	const [ratioLock, setRatioLock] = useState(true);
 	const [confirm, setConfirm] = useState(false);
@@ -85,7 +86,28 @@ export function MagnetEditor() {
 		if (newState) emitMagnetUpdate(newState);
 	};
 
-	if (!(id || magnet)) return null;
+	const handleSave = (value: string) => {
+		if (magnet?.type === "media") {
+			const props = { ...magnet };
+			const nextVer = magnet?.version || 0 + 1;
+			saveMagnet({
+				name: magnet?.id,
+				props: {
+					version: nextVer,
+					url: props.url,
+					scale: props.scale,
+					type: props.type,
+					height: props.height,
+					width: props.width,
+				},
+			});
+		}
+		setSave(false);
+	};
+
+	if (!id || !magnet) return null;
+
+	console.log(magnet);
 
 	return (
 		<div className={cls.editorContainer}>
@@ -94,7 +116,10 @@ export function MagnetEditor() {
 					text="Delete?"
 					mode="action"
 					handleCancel={() => setConfirm(false)}
-					handleConfirm={() => setConfirm(false)}
+					handleConfirm={() => {
+						removeMagnet(magnet?.id);
+						setSave(false);
+					}}
 				/>
 			)}
 			{save && (
@@ -102,7 +127,7 @@ export function MagnetEditor() {
 					text="Save"
 					mode="text"
 					handleCancel={() => setSave(false)}
-					handleConfirm={() => setSave(false)}
+					handleConfirm={handleSave}
 				/>
 			)}
 			<div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -114,9 +139,15 @@ export function MagnetEditor() {
 					>
 						{magnet?.visible ? <IconEye /> : <IconEyeOff />}
 					</Button>
-					<Button onClick={() => setSave(true)} ghost intent={"neutral"}>
-						<IconDeviceFloppy />
-					</Button>
+					{magnet?.version ? (
+						<Button ghost onClick={handleSave}>
+							<IconCloudUpload />
+						</Button>
+					) : (
+						<Button onClick={() => setSave(true)} ghost intent={"neutral"}>
+							<IconDeviceFloppy />
+						</Button>
+					)}
 					<Button
 						disabled
 						onClick={() => setSave(true)}

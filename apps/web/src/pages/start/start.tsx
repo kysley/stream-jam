@@ -1,11 +1,9 @@
 import { useEffect } from "react";
 import { Layer, Stage } from "react-konva";
-import { Input } from "../components/input";
-import { MagnetEditor } from "../components/magnet-editor";
-import { Magnet } from "../components/magnet/magnet";
-import { RemoteMagnet } from "../components/magnet/remote-magnet";
-import * as cls from "../components/start/start-page.css";
-import { useMagnetActions, useStageActions } from "../state";
+import { MagnetEditor } from "../../components/magnet-editor";
+import { CanvasMagnet } from "../../components/magnet/canvas-magnet";
+import * as cls from "./start-page.css";
+import { useMagnetActions } from "../../state";
 
 export function StartPage() {
 	const { addMagnet, setSelectedMagnetId } = useMagnetActions();
@@ -29,7 +27,7 @@ export function StartPage() {
 			<section>
 				<Stage height={window.innerHeight} width={window.innerWidth / 2}>
 					<Layer>
-						<Magnet id='1' />
+						<CanvasMagnet id='1' />
 					</Layer>
 				</Stage>
 				<MagnetEditor />

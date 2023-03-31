@@ -16,7 +16,7 @@ import { Animation } from "konva/lib/Animation";
 type MagnetProps = {
 	id: string;
 };
-export function Magnet({ id }: MagnetProps) {
+export function CanvasMagnet({ id }: MagnetProps) {
 	const magnet = useManget(id);
 	const { setSelectedMagnetId, updateMagnet } = useMagnetActions();
 	const selectedId = useSelectedMagnetId();

@@ -56,7 +56,7 @@ export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
 							visible: true,
 							x: 50,
 							y: 100,
-							scale: 0.6,
+							scale: 1,
 							type: "text",
 						});
 					}}

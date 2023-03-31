@@ -1,11 +1,11 @@
 import { Magnet } from "../../state";
-import { MagnetRenderer } from "./magnet";
+import { MagnetRenderer } from "./canvas-magnet";
 
 type MagnetProps = {
 	magnet: Magnet;
 	source: boolean;
 };
-export function RemoteMagnet({ magnet, source }: MagnetProps) {
+export function RemoteCanvasMagnet({ magnet, source }: MagnetProps) {
 	if (!magnet) {
 		return null;
 	}
