@@ -26,8 +26,10 @@ export const button = recipe({
 					backgroundColor: vars.colors.primary.indigo10,
 					borderColor: vars.colors.primary.indigo8,
 				},
-				":active": {
-					backgroundColor: vars.colors.primary.indigo8,
+				selectors: {
+					"&:not(:disabled):active, &[data-state='open']": {
+						backgroundColor: vars.colors.primary.indigo8,
+					},
 				},
 				":focus": {
 					outline: "dotted thin",
@@ -42,8 +44,10 @@ export const button = recipe({
 					backgroundColor: vars.colors.red10,
 					borderColor: vars.colors.red8,
 				},
-				":active": {
-					backgroundColor: vars.colors.red8,
+				selectors: {
+					"&:not(:disabled):active, &[data-state='open']": {
+						backgroundColor: vars.colors.red8,
+					},
 				},
 				":focus": {
 					outline: "dotted thin",
@@ -59,8 +63,10 @@ export const button = recipe({
 					backgroundColor: vars.colors.gray6,
 					borderColor: vars.colors.gray8,
 				},
-				":active": {
-					backgroundColor: vars.colors.gray4,
+				selectors: {
+					"&:not(:disabled):active, &[data-state='open']": {
+						backgroundColor: vars.colors.gray4,
+					},
 				},
 				":focus": {
 					outline: "dotted thin",
@@ -92,7 +98,7 @@ export const button = recipe({
 					// transform: "scale(1.05)",
 				},
 				selectors: {
-					"&:not(:disabled):active": {
+					"&:not(:disabled):active, &[data-state='open']": {
 						backgroundColor: vars.colors.gray5,
 						// backgroundColor: "transparent",
 						// border: `1px solid ${vars.colors.gray8}`,
@@ -121,9 +127,11 @@ export const button = recipe({
 					backgroundColor: vars.colors.red4,
 					// border: `1px solid ${vars.colors.red8}`,
 				},
-				":active": {
-					backgroundColor: vars.colors.red5,
-					// border: `1px solid ${vars.colors.red8}`,
+				selectors: {
+					"&:not(:disabled):active, &[data-state='open']": {
+						backgroundColor: vars.colors.red5,
+						// border: `1px solid ${vars.colors.red8}`,
+					},
 				},
 				":focus": {
 					outline: "none",
@@ -139,7 +147,7 @@ export const button = recipe({
 					// border: `1px solid ${vars.colors.primary.indigo8}`,
 				},
 				selectors: {
-					"&:not(:disabled):active": {
+					"&:not(:disabled):active, &[data-state='open']": {
 						backgroundColor: vars.colors.primary.indigo5,
 						// border: `1px solid ${vars.colors.primary.indigo8}`,
 					},

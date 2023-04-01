@@ -5,7 +5,7 @@ import {
 	IconAlphabetLatin,
 	IconAppWindowFilled,
 } from "@tabler/icons-react";
-import { useMagnetActions, useStageActions, useStageState } from "../state";
+import { useMagnetActions, useStageActions } from "../state";
 
 import * as cls from "./toolbar.css";
 import { Select } from "./select/select";
@@ -20,7 +20,6 @@ const toolbarWidgets: { value: string; icon: ReactNode }[] = [
 export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
 	const { addMagnet } = useMagnetActions();
 	const { toggleIFrameFocus } = useStageActions();
-	const { scale } = useStageState();
 
 	return (
 		<Toolbar.Root className={cls.toolbarContainer}>
@@ -36,7 +35,7 @@ export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
 							visible: true,
 							x: 50,
 							y: 100,
-							scale: 1,
+							scale: 100,
 							type: "media",
 						})
 					}
@@ -56,7 +55,7 @@ export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
 							visible: true,
 							x: 50,
 							y: 100,
-							scale: 1,
+							scale: 100,
 							type: "text",
 						});
 					}}
@@ -81,6 +80,7 @@ export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
 					options={[
 						{ name: "home (you)", value: "" },
 						...jams.map((j) => ({ name: j.name, value: j.id })),
+						{ name: "moonmoon", value: "moonmoon" },
 					]}
 				/>
 			)}

@@ -10,7 +10,7 @@ export function StartPage() {
 	useEffect(() => {
 		addMagnet({
 			id: "1",
-			scale: 1,
+			scale: 100,
 			type: "media",
 			url: "https://i.imgur.com/frFzz7e.gif",
 			visible: true,

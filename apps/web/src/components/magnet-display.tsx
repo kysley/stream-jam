@@ -10,7 +10,9 @@ export function MagnetDisplay() {
 	return (
 		<Fragment>
 			{localMagnetIds.length > 0 &&
-				localMagnetIds.map((id) => <CanvasMagnet key={id} id={id} />)}
+				localMagnetIds.map((id, idx) => (
+					<CanvasMagnet key={`${id}-${idx}`} id={id} />
+				))}
 		</Fragment>
 	);
 }

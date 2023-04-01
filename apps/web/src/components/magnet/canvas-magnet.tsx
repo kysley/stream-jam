@@ -51,8 +51,8 @@ export function CanvasMagnet({ id }: MagnetProps) {
 			onClick={(e) => {
 				setSelectedMagnetId(magnet.id);
 			}}
-			scaleX={magnet?.scale}
-			scaleY={magnet?.scale}
+			scaleX={magnet?.scale / 100}
+			scaleY={magnet?.scale / 100}
 			selected={selectedId === magnet.id}
 			x={magnet?.x}
 			y={magnet?.y}

@@ -14,6 +14,7 @@ import {
 import { Fragment, useRef, useState } from "react";
 import { useEmitMagnetUpdate } from "../../hooks/use-emit-magnet-update";
 import { useSaveMagnet } from "../../hooks/use-save-magnet";
+import { useUpdateMagnet } from "../../hooks/use-update-magnet";
 import { useMagnetActions, useManget, useSelectedMagnetId } from "../../state";
 import { Button } from "../button";
 import { Label } from "../label";
@@ -64,34 +65,35 @@ export function InCardConfirmation({
 export function MagnetEditor() {
 	const id = useSelectedMagnetId();
 	const magnet = useManget(id);
-	const { updateMagnet, removeMagnet } = useMagnetActions();
+	const { updateMagnet: updateMagnetStore, removeMagnet } = useMagnetActions();
 	const { emitMagnetUpdate } = useEmitMagnetUpdate();
 	const { mutateAsync: saveMagnet } = useSaveMagnet();
+	const { mutateAsync: updateMagnet } = useUpdateMagnet();
 
 	const [ratioLock, setRatioLock] = useState(true);
 	const [confirm, setConfirm] = useState(false);
 	const [save, setSave] = useState(false);
 
 	const handleScaleSliderChange = (value: number[]) => {
-		const newState = updateMagnet(id, {
+		const newState = updateMagnetStore(id, {
 			scale: value[0],
 		});
 		if (newState) emitMagnetUpdate(newState);
 	};
 
 	const handleVisibilityChange = () => {
-		const newState = updateMagnet(id, {
+		const newState = updateMagnetStore(id, {
 			visible: !magnet?.visible,
 		});
 		if (newState) emitMagnetUpdate(newState);
 	};
 
-	const handleSave = (value: string) => {
+	const handleSave = (value?: string) => {
 		if (magnet?.type === "media") {
 			const props = { ...magnet };
 			const nextVer = magnet?.version || 0 + 1;
-			saveMagnet({
-				name: magnet?.id,
+			const payload = {
+				name: magnet?.id.toString(),
 				props: {
 					version: nextVer,
 					url: props.url,
@@ -100,7 +102,12 @@ export function MagnetEditor() {
 					height: props.height,
 					width: props.width,
 				},
-			});
+			};
+			if (value) {
+				saveMagnet(payload);
+			} else {
+				updateMagnet({ id: magnet.id, props: payload.props });
+			}
 		}
 		setSave(false);
 	};
@@ -140,7 +147,7 @@ export function MagnetEditor() {
 						{magnet?.visible ? <IconEye /> : <IconEyeOff />}
 					</Button>
 					{magnet?.version ? (
-						<Button ghost onClick={handleSave}>
+						<Button ghost onClick={() => handleSave()}>
 							<IconCloudUpload />
 						</Button>
 					) : (
@@ -173,7 +180,7 @@ export function MagnetEditor() {
 					name="Height"
 					value={magnet?.height || ""}
 					onChange={(e) => {
-						const newState = updateMagnet(id, {
+						const newState = updateMagnetStore(id, {
 							height: +e.target.value || undefined,
 							width: ratioLock ? +e.target.value : magnet.width,
 						});
@@ -204,7 +211,7 @@ export function MagnetEditor() {
 					name="Width"
 					value={magnet?.width || ""}
 					onChange={(e) => {
-						const newState = updateMagnet(id, {
+						const newState = updateMagnetStore(id, {
 							width: +e.target.value || undefined,
 							height: ratioLock ? +e.target.value : magnet.height,
 						});
@@ -217,7 +224,7 @@ export function MagnetEditor() {
 					value={magnet?.url || ""}
 					name="URL"
 					onChange={(e) => {
-						const newState = updateMagnet(id, {
+						const newState = updateMagnetStore(id, {
 							url: e.target.value,
 						});
 						if (newState) emitMagnetUpdate(newState);
@@ -230,7 +237,7 @@ export function MagnetEditor() {
 					value={magnet?.text}
 					name="Text"
 					onChange={(e) => {
-						const newState = updateMagnet(id, {
+						const newState = updateMagnetStore(id, {
 							text: e.target.value,
 						});
 						if (newState) emitMagnetUpdate(newState);
@@ -258,10 +265,10 @@ function SliderWidget(
 	return (
 		<Label name={props.name}>
 			<Slider.Root
-				max={5}
-				min={0.25}
-				step={0.1}
-				value={[props.value || 0.5]}
+				max={250}
+				min={0}
+				step={10}
+				value={[props.value || 1]}
 				name="Scale"
 				className={cls.sliderRoot}
 				onValueChange={props.handleValueChange}
