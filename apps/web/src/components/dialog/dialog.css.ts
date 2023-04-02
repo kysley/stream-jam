@@ -20,12 +20,7 @@ export const DialogOverlay = style({
 
 export const DialogContent = style({
 	zIndex: 100,
-	backgroundColor: vars.colors.gray4,
-	borderRadius: 6,
-	boxShadow:
-		"rgba(0, 0, 0, 0.1) 0px 10px 38px -10px, rgba(0, 0, 0, 0.2) 0px 10px 20px -15px",
 	position: "fixed",
-	border: `1px solid ${vars.colors.gray6}`,
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",

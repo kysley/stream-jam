@@ -18,6 +18,7 @@ import { useUpdateMagnet } from "../../hooks/use-update-magnet";
 import { useMagnetActions, useManget, useSelectedMagnetId } from "../../state";
 import { Button } from "../button";
 import { Label } from "../label";
+import { Layer } from "../layer";
 import { Input, InputProps, TextArea } from "./../input";
 import * as cls from "./magnet-editor.css";
 
@@ -117,7 +118,7 @@ export function MagnetEditor() {
 	console.log(magnet);
 
 	return (
-		<div className={cls.editorContainer}>
+		<Layer className={cls.editorContainer}>
 			{confirm && (
 				<InCardConfirmation
 					text="Delete?"
@@ -251,7 +252,7 @@ export function MagnetEditor() {
           <Button intent="primary">Save preset</Button>
         </div>
       </div> */}
-		</div>
+		</Layer>
 	);
 }
 

@@ -1,5 +1,4 @@
-import { ReactNode, forwardRef } from "react";
-import { Label } from "../label";
+import { forwardRef } from "react";
 import { button, ButtonVariants } from "./button.css";
 
 export type ButtonProps = React.DetailedHTMLProps<
@@ -7,21 +6,20 @@ export type ButtonProps = React.DetailedHTMLProps<
 	HTMLButtonElement
 > &
 	ButtonVariants;
-export const Button = forwardRef<any, ButtonProps>(function Button(
-	{ intent, name, children, pill, ghost, ...rest },
-	ref,
-) {
-	const cN = button({
-		intent,
-		pill,
-		ghost,
-	}); // ugly
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+	function Button({ intent, name, children, pill, ghost, ...rest }, ref) {
+		const cN = button({
+			intent,
+			pill,
+			ghost,
+		}); // ugly
 
-	return (
-		<div style={{ minWidth: 0 }}>
-			<button className={cN} ref={ref} {...rest}>
-				{children}
-			</button>
-		</div>
-	);
-});
+		return (
+			<div style={{ minWidth: 0 }}>
+				<button className={cN} ref={ref} {...rest}>
+					{children}
+				</button>
+			</div>
+		);
+	},
+);

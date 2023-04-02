@@ -1,5 +1,6 @@
 import * as RadixPopover from "@radix-ui/react-popover";
 import { ReactNode } from "react";
+import { Layer } from "../layer";
 import * as cls from "./popover.css";
 
 type PopoverProps = {
@@ -15,8 +16,9 @@ export function Popover({ children, target }: PopoverProps) {
 				className={cls.PopoverContent}
 				sideOffset={5}
 				collisionPadding={{ right: 24 }}
+				asChild
 			>
-				{children}
+				<Layer>{children}</Layer>
 			</RadixPopover.Content>
 		</RadixPopover.Root>
 	);

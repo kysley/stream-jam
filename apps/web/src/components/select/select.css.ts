@@ -43,43 +43,35 @@ export const selectIcon = style({
 });
 
 export const selectContent = style({
-	border: "1px solid transparent",
 	overflow: "hidden",
-	backgroundColor: vars.colors.gray2,
-	borderColor: vars.colors.gray7,
-	borderWidth: "1px",
-	borderRadius: vars.radii[2],
 	zIndex: "9999",
-	// boxShadow:
-	// 	"0px 10px 38px -10px rgba(22, 23, 24, 0.35), 0px 10px 20px -15px rgba(22, 23, 24, 0.2)",
+	width: "var(--radix-select-trigger-width)",
+	maxHeight: "var(--radix-select-content-available-height)",
 });
 
-export const selectViewport = style({
-	padding: 5,
-});
+export const selectViewport = style({});
 
 export const selectItem = style({
-	fontSize: 13,
+	fontSize: 15,
 	lineHeight: 1,
-	color: vars.colors.primary.indigo11,
+	color: vars.colors.gray12,
 	borderRadius: 3,
 	display: "flex",
 	alignItems: "center",
-	height: 25,
-	padding: "0 35px 0 25px",
+	padding: "8px",
 	position: "relative",
 	userSelect: "none",
+	cursor: "pointer",
 
 	selectors: {
 		"&[data-disabled]": {
-			color: vars.colors.primary.indigo8,
+			color: vars.colors.gray5,
 			pointerEvents: "none",
 		},
 
 		"&[data-highlighted]": {
 			outline: "none",
-			backgroundColor: vars.colors.primary.indigo9,
-			color: vars.colors.primary.indigo1,
+			backgroundColor: vars.colors.gray9,
 		},
 	},
 });

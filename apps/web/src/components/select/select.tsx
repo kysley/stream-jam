@@ -2,6 +2,7 @@ import { forwardRef, ReactNode } from "react";
 import * as RadixSelect from "@radix-ui/react-select";
 import { IconCheck, IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import * as cls from "./select.css";
+import { Layer } from "../layer";
 
 type SelectProps = {
 	placeholder?: string;
@@ -21,31 +22,34 @@ export function Select({ placeholder, options }: SelectProps) {
 				className={cls.selectContent}
 				position="popper"
 				sideOffset={5}
+				asChild
 			>
-				<RadixSelect.ScrollUpButton>
-					<IconChevronUp />
-				</RadixSelect.ScrollUpButton>
-				<RadixSelect.Viewport className={cls.selectViewport}>
-					{options.map((o) => (
-						<SelectItem value={o.value} key={o.value}>
-							{o.name}
-							{o.extra}
-						</SelectItem>
-					))}
-					{/* <RadixSelect.Group> */}
-					{/* <RadixSelect.Label>Jams</RadixSelect.Label> */}
-					{/* <SelectItem value="apple">Apple</SelectItem>
+				<Layer>
+					<RadixSelect.ScrollUpButton>
+						<IconChevronUp />
+					</RadixSelect.ScrollUpButton>
+					<RadixSelect.Viewport className={cls.selectViewport}>
+						{options.map((o) => (
+							<SelectItem value={o.value} key={o.value}>
+								{o.name}
+								{o.extra}
+							</SelectItem>
+						))}
+						{/* <RadixSelect.Group> */}
+						{/* <RadixSelect.Label>Jams</RadixSelect.Label> */}
+						{/* <SelectItem value="apple">Apple</SelectItem>
 					<SelectItem value="banana">Banana</SelectItem>
 					<SelectItem value="blueberry">Blueberry</SelectItem>
 					<SelectItem value="grapes">Grapes</SelectItem>
 					<SelectItem value="pineapple">Pineapple</SelectItem> */}
-					{/* </RadixSelect.Group> */}
+						{/* </RadixSelect.Group> */}
 
-					<RadixSelect.Separator />
-				</RadixSelect.Viewport>
-				<RadixSelect.ScrollDownButton>
-					<IconChevronDown />
-				</RadixSelect.ScrollDownButton>
+						<RadixSelect.Separator />
+					</RadixSelect.Viewport>
+					<RadixSelect.ScrollDownButton>
+						<IconChevronDown />
+					</RadixSelect.ScrollDownButton>
+				</Layer>
 			</RadixSelect.Content>
 			{/* </RadixSelect.Portal> */}
 		</RadixSelect.Root>

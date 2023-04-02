@@ -70,13 +70,8 @@ export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
 			</Toolbar.ToolbarButton>
 			<Toolbar.Separator style={{ background: "red", width: 2, height: 10 }} />
 			{jams && (
-				// <select>
-				// 	{jams.map((j) => (
-				// 		<option value={j.id}>{j.name}</option>
-				// 	))}
-				// </select>
 				<Select
-					placeholder="Connect to a jam"
+					placeholder="Connect to a stream"
 					options={[
 						{ name: "home (you)", value: "" },
 						...jams.map((j) => ({ name: j.name, value: j.id })),
