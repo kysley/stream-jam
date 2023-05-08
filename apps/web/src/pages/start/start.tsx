@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Layer, Stage } from "react-konva";
-import { MagnetEditor } from "../../components/magnet-editor";
+import { StatefulMagnetEditor } from "../../components/magnet-editor";
 import { CanvasMagnet } from "../../components/magnet/canvas-magnet";
 import * as cls from "./start-page.css";
 import { useMagnetActions } from "../../state";
@@ -30,7 +30,7 @@ export function StartPage() {
 						<CanvasMagnet id='1' />
 					</Layer>
 				</Stage>
-				<MagnetEditor />
+				<StatefulMagnetEditor />
 				{/* <h2>[Magnet Editor]</h2>
 				<Input />
 				<Input />

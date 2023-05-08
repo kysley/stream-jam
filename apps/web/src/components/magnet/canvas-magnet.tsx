@@ -80,7 +80,7 @@ export function MagnetRenderer({ magnet, ...props }: { magnet: Magnet }) {
 }
 
 // https://stackoverflow.com/questions/59741398/play-video-on-canvas-in-react-konva
-export function Video({ src, ...rest }: { src: string }) {
+export function Video({ src, selected, ...rest }: { src: string }) {
 	const videoRef = useRef(null);
 	const videoElement = useMemo(() => {
 		const node = document.createElement("video");
@@ -101,11 +101,19 @@ export function Video({ src, ...rest }: { src: string }) {
 		};
 	}, [videoElement]);
 
-	return <KonvaImage image={videoElement} ref={videoRef} {...rest} />;
+	return (
+		<KonvaImage
+			image={videoElement}
+			ref={videoRef}
+			{...rest}
+			stroke={selected ? "red" : undefined}
+			strokeWidth={selected ? 15 : undefined}
+		/>
+	);
 }
 
 // https://codesandbox.io/s/react-konva-gif-animation-p86qr?file=/src/index.js:1025-1060
-export function GIF({ src, ...rest }: { src: string }) {
+export function GIF({ src, selected, ...rest }: { src: string }) {
 	const imageRef = useRef(null);
 	const canvas = useMemo(() => {
 		const node = document.createElement("canvas");
@@ -126,7 +134,15 @@ export function GIF({ src, ...rest }: { src: string }) {
 		return () => anim && anim.stop();
 	}, [src, canvas]);
 
-	return <KonvaImage image={canvas} ref={imageRef} {...rest} />;
+	return (
+		<KonvaImage
+			image={canvas}
+			ref={imageRef}
+			{...rest}
+			stroke={selected ? "red" : undefined}
+			strokeWidth={selected ? 15 : undefined}
+		/>
+	);
 }
 export function Image({ src, visible, selected, ...rest }: { src?: string }) {
 	const [image] = useImage(src || "./default_magnet.png");

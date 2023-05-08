@@ -11,6 +11,7 @@ import { themeClass } from "./theme.css";
 import { StartPage } from "./pages/start/start";
 import { DashboardPage } from "./pages/dashboard";
 import { Header } from "./components/header";
+import { MagnetsPage } from "./pages/magnets/magnets.route";
 
 function App() {
 	const [queryClient] = useState(() => new QueryClient());
@@ -39,6 +40,7 @@ function App() {
 					<Route path="/jam" component={StartPage} />
 					<Route path="/source/:id" component={SourceIdPage} />
 					<Route path="/connected" component={ConnectedPage} />
+					<Route path="/magnets" component={MagnetsPage} />
 				</div>
 			</QueryClientProvider>
 		</trpc.Provider>

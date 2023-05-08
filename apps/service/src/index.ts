@@ -7,6 +7,7 @@ import fastifyJwt from "@fastify/jwt";
 
 import { router } from "./router";
 import { createContext } from "./context";
+import { createPredictionListener } from "./plugins/prediction-listener";
 
 const fastify = fastifyServer();
 fastify.register(cors, {
@@ -56,12 +57,18 @@ fastify.get("/", (req, res) => {
 		fastify.ready((e) => {
 			if (e) throw e;
 			console.log("ready");
+			const predictionListener = createPredictionListener(fastify.io, [
+				40754777, // "masondota2",
+				121059319, //moonmoon
+				39726444, //swan_one
+			]);
 			// fastify.io.use((socket, next) => {
 			//   console.log(socket.handshake.headers.cookie);
 			//   next();
 			// });
 			fastify.io.on("connection", (socket) => {
 				let roomName: string;
+				const cleanup = predictionListener(socket);
 				// Can't seem to verify the cookie outside of fastify context
 				// const cookie = socket.handshake.headers.cookie;
 				// // No cookie? we want OUT
@@ -77,9 +84,7 @@ fastify.get("/", (req, res) => {
 				// verify that the socket session 1. is the same as the room or 2. is allowed to be in the room
 
 				console.log("connection");
-				// socket.join("moonmoon");
 				socket.on("update", (state) => {
-					// console.log(state);
 					if (roomName) {
 						console.log(roomName);
 						fastify.io.to(roomName).emit("update", state);
@@ -95,6 +100,7 @@ fastify.get("/", (req, res) => {
 				socket.on("disconnect", () => {
 					console.log("socket disconnect");
 					console.log("TODO: remove socket session");
+					socket.on("disconnect", cleanup);
 					// socket.handshake.auth
 				});
 			});

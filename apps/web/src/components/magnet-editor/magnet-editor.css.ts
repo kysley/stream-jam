@@ -31,12 +31,13 @@ export const confirmation = style({
 
 export const editorContainer = style({
 	position: "absolute",
-	top: "125px",
+	top: "275px",
 	right: "25px",
 	display: "flex",
 	flexDirection: "column",
 	gap: "12px",
 	width: "300px",
+	zIndex: 999999,
 });
 
 export const sliderRoot = style({

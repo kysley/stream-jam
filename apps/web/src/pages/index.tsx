@@ -1,4 +1,4 @@
-import { MagnetEditor } from "../components/magnet-editor";
+import { StatefulMagnetEditor } from "../components/magnet-editor";
 import { trpc } from "../utils/trpc";
 import { StageComponent } from "../components/stage";
 
@@ -7,9 +7,7 @@ export function IndexPage() {
 
 	return (
 		<div>
-			<div className="container">
-				<MagnetEditor />
-			</div>
+			<StatefulMagnetEditor />
 			<StageComponent />
 		</div>
 	);

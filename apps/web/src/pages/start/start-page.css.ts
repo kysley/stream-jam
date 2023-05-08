@@ -5,7 +5,7 @@ export const Page = style({
 	display: "flex",
 	flexDirection: "column",
 	height: "100%",
-	padding: "0 12vw",
+	padding: "0 5vw",
 	paddingTop: "5vh",
 });
 

@@ -12,15 +12,13 @@ import {
 	IconUnlink,
 } from "@tabler/icons-react";
 import { Fragment, useRef, useState } from "react";
-import { useEmitMagnetUpdate } from "../../hooks/use-emit-magnet-update";
-import { useSaveMagnet } from "../../hooks/use-save-magnet";
-import { useUpdateMagnet } from "../../hooks/use-update-magnet";
-import { useMagnetActions, useManget, useSelectedMagnetId } from "../../state";
+import { Magnet } from "../../state";
 import { Button } from "../button";
 import { Label } from "../label";
 import { Layer } from "../layer";
 import { Input, InputProps, TextArea } from "./../input";
 import * as cls from "./magnet-editor.css";
+import { produce } from "structurajs";
 
 export function InCardConfirmation({
 	handleCancel,
@@ -63,59 +61,63 @@ export function InCardConfirmation({
 	);
 }
 
-export function MagnetEditor() {
-	const id = useSelectedMagnetId();
-	const magnet = useManget(id);
-	const { updateMagnet: updateMagnetStore, removeMagnet } = useMagnetActions();
-	const { emitMagnetUpdate } = useEmitMagnetUpdate();
-	const { mutateAsync: saveMagnet } = useSaveMagnet();
-	const { mutateAsync: updateMagnet } = useUpdateMagnet();
+export type MagnetEditorProps = {
+	magnet?: Magnet;
+	onMagnetChange(newState: Magnet): void;
+	onMagnetSave(magnet: Magnet): void;
+	onMagnetUpdate(magnet: Magnet): void;
+	onMagnetRemove(id: Magnet["id"]): void;
+};
 
+export function MagnetEditor({
+	magnet,
+	onMagnetChange,
+	onMagnetSave,
+	onMagnetUpdate,
+	onMagnetRemove,
+}: MagnetEditorProps) {
 	const [ratioLock, setRatioLock] = useState(true);
 	const [confirm, setConfirm] = useState(false);
 	const [save, setSave] = useState(false);
 
-	const handleScaleSliderChange = (value: number[]) => {
-		const newState = updateMagnetStore(id, {
-			scale: value[0],
-		});
-		if (newState) emitMagnetUpdate(newState);
-	};
+	if (!magnet) return null;
 
-	const handleVisibilityChange = () => {
-		const newState = updateMagnetStore(id, {
-			visible: !magnet?.visible,
+	const handleMagnetPropertyChange = <T extends keyof Magnet,>(
+		key: T,
+		value: Magnet[T],
+	) => {
+		const newMagnet = produce(magnet, (m) => {
+			m[key] = value;
 		});
-		if (newState) emitMagnetUpdate(newState);
+
+		onMagnetChange(newMagnet);
 	};
 
 	const handleSave = (value?: string) => {
-		if (magnet?.type === "media") {
-			const props = { ...magnet };
-			const nextVer = magnet?.version || 0 + 1;
-			const payload = {
-				name: magnet?.id.toString(),
-				props: {
-					version: nextVer,
-					url: props.url,
-					scale: props.scale,
-					type: props.type,
-					height: props.height,
-					width: props.width,
-				},
-			};
-			if (value) {
-				saveMagnet(payload);
-			} else {
-				updateMagnet({ id: magnet.id, props: payload.props });
-			}
+		const newMagnet = produce(magnet, (m) => {
+			m.version = (m?.version || 0) + 1;
+		});
+
+		const payload = {
+			name: value || newMagnet.id.toString(),
+			props: {
+				version: newMagnet.version,
+				url: newMagnet.type === "media" ? newMagnet.url : undefined,
+				text: newMagnet.type === "text" ? newMagnet.text : undefined,
+				scale: newMagnet.scale,
+				type: newMagnet.type,
+				height: newMagnet.height,
+				width: newMagnet.width,
+				visible: newMagnet.visible,
+			},
+		};
+		if (value) {
+			onMagnetSave(payload);
+		} else {
+			onMagnetUpdate({ id: magnet.id, props: payload.props });
 		}
 		setSave(false);
 	};
-
-	if (!id || !magnet) return null;
-
-	console.log(magnet);
 
 	return (
 		<Layer className={cls.editorContainer}>
@@ -125,7 +127,7 @@ export function MagnetEditor() {
 					mode="action"
 					handleCancel={() => setConfirm(false)}
 					handleConfirm={() => {
-						removeMagnet(magnet?.id);
+						onMagnetRemove(magnet.id);
 						setSave(false);
 					}}
 				/>
@@ -141,7 +143,9 @@ export function MagnetEditor() {
 			<div style={{ display: "flex", justifyContent: "space-between" }}>
 				<div style={{ display: "flex" }}>
 					<Button
-						onClick={handleVisibilityChange}
+						onClick={() =>
+							handleMagnetPropertyChange("visible", !magnet.visible)
+						}
 						ghost
 						intent={magnet?.visible ? "primary" : "neutral"}
 					>
@@ -172,7 +176,9 @@ export function MagnetEditor() {
 			</div>
 			<SliderWidget
 				name="Scale"
-				handleValueChange={handleScaleSliderChange}
+				handleValueChange={(v) => {
+					handleMagnetPropertyChange("scale", v[0]);
+				}}
 				value={magnet?.scale}
 			/>
 
@@ -181,11 +187,7 @@ export function MagnetEditor() {
 					name="Height"
 					value={magnet?.height || ""}
 					onChange={(e) => {
-						const newState = updateMagnetStore(id, {
-							height: +e.target.value || undefined,
-							width: ratioLock ? +e.target.value : magnet.width,
-						});
-						if (newState) emitMagnetUpdate(newState);
+						handleMagnetPropertyChange("height", +e.target.value);
 					}}
 				/>
 				<div>
@@ -212,36 +214,30 @@ export function MagnetEditor() {
 					name="Width"
 					value={magnet?.width || ""}
 					onChange={(e) => {
-						const newState = updateMagnetStore(id, {
-							width: +e.target.value || undefined,
-							height: ratioLock ? +e.target.value : magnet.height,
-						});
-						if (newState) emitMagnetUpdate(newState);
+						handleMagnetPropertyChange("width", +e.target.value);
 					}}
 				/>
 			</div>
-			{magnet?.type === "media" && (
+			{magnet.type === "media" && (
 				<InputWidget
 					value={magnet?.url || ""}
 					name="URL"
 					onChange={(e) => {
-						const newState = updateMagnetStore(id, {
-							url: e.target.value,
-						});
-						if (newState) emitMagnetUpdate(newState);
+						if (magnet.type === "media") {
+							handleMagnetPropertyChange("url", e.target.value);
+						}
 					}}
 				/>
 			)}
-			{magnet?.type === "text" && (
+			{magnet.type === "text" && (
 				<TextArea
 					style={{ width: "100%", height: "200px" }}
 					value={magnet?.text}
 					name="Text"
 					onChange={(e) => {
-						const newState = updateMagnetStore(id, {
-							text: e.target.value,
-						});
-						if (newState) emitMagnetUpdate(newState);
+						if (magnet.type === "text") {
+							handleMagnetPropertyChange("text", e.target.value);
+						}
 					}}
 				/>
 			)}

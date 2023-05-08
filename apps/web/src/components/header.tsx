@@ -1,8 +1,12 @@
 import {
 	IconBrandTwitch,
+	IconCircle,
+	IconCircles,
+	IconCircleSquare,
 	IconDashboard,
 	IconFolder,
 	IconHome,
+	IconLayoutList,
 	IconLoader,
 	IconSettings,
 	IconUser,
@@ -68,12 +72,10 @@ export function Header() {
 							/>
 						) : (
 							<Link to='/'>
-								<a>
-									<Button ghost>
-										Home
-										<IconHome />
-									</Button>
-								</a>
+								<Button ghost>
+									Home
+									<IconHome />
+								</Button>
 							</Link>
 						)}
 						{isLoading && <IconLoader />}
@@ -91,17 +93,17 @@ export function Header() {
 									<span>{data.twDisplayName}</span>
 								</div>
 								<Link to="/dashboard">
-									<a>
-										<div className={PopoverItem}>
-											<IconDashboard />
-											Dashboard
-										</div>
+									<a className={PopoverItem}>
+										<IconDashboard />
+										Dashboard
 									</a>
 								</Link>
-								<div className={PopoverItem}>
-									<IconFolder />
-									Manage presets
-								</div>
+								<Link to="/magnets">
+									<a className={PopoverItem}>
+										<IconCircleSquare />
+										Magnets
+									</a>
+								</Link>
 								<div className={PopoverItem}>
 									<IconSettings />
 									Settings
