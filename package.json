@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "turbo": "latest",
-    "rome": "latest"
+    "@biomejs/biome": "latest"
   },
   "engines": {
     "node": ">=14.0.0"

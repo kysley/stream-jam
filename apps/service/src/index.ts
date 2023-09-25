@@ -86,7 +86,6 @@ fastify.get("/", (req, res) => {
 				console.log("connection");
 				socket.on("update", (state) => {
 					if (roomName) {
-						console.log(roomName);
 						fastify.io.to(roomName).emit("update", state);
 					}
 				});

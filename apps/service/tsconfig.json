@@ -18,5 +18,6 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
+    "types": ["./src/index.d.ts"]
   },
 }

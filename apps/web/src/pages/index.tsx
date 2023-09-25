@@ -7,7 +7,7 @@ export function IndexPage() {
 
 	return (
 		<div>
-			<StatefulMagnetEditor />
+			<StatefulMagnetEditor emit/>
 			<StageComponent />
 		</div>
 	);

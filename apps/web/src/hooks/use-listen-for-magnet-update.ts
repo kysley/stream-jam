@@ -7,11 +7,14 @@ export function useListenForMagnetUpdate() {
 	const { updateRemoteMagnet } = useRemoteMagnetActions();
 
 	useEffect(() => {
+		socket?.emit('joinRoom', 'test')
+	}, [])
+
+	useEffect(() => {
 		if (socket) {
 			socket.on("update", (data) => {
 				// Ignore our own updates
 				if (data.socketId === socket.id) return;
-
 				updateRemoteMagnet(data.magnet.id, data.magnet);
 			});
 		}
