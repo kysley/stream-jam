@@ -4,6 +4,7 @@ import {
 	IconCircles,
 	IconCircleSquare,
 	IconDashboard,
+	IconFold,
 	IconFolder,
 	IconHome,
 	IconLayoutList,
@@ -15,12 +16,13 @@ import { Fragment } from "react";
 import { Link, useRoute } from "wouter";
 import { useMe } from "../hooks/use-me";
 import { trpc } from "../utils/trpc";
-import { Button } from "./button";
-import { MagnetPresetsPopover } from "./magnet-presets/magnet-presets-popover";
+import { Button } from "./ui/button";
+import { MagnetPresetSheet } from "./magnet-presets/magnet-presets-sheet";
 import { Popover } from "./popover/popover";
 import { PopoverItem, PopoverTitle } from "./popover/popover.css";
 import { QuickToolbar } from "./toolbar";
 import { TwitchAuthButton } from "./twitch-auth-button";
+import Avatar from "boring-avatars";
 
 export function Header() {
 	const { data, isLoading } = useMe();
@@ -62,17 +64,17 @@ export function Header() {
 						}}
 					>
 						{isIndex ? (
-							<MagnetPresetsPopover
+							<MagnetPresetSheet
 								target={
-									<Button ghost intent="primary">
+									<Button variant={"ghost"} className="gap-2">
+										<IconFolder size={18} />
 										Presets
-										<IconFolder />
 									</Button>
 								}
 							/>
 						) : (
-							<Link to='/'>
-								<Button ghost>
+							<Link to="/">
+								<Button variant={"secondary"}>
 									Home
 									<IconHome />
 								</Button>
@@ -82,16 +84,17 @@ export function Header() {
 						{!isLoading && data && (
 							<Popover
 								target={
-									<Button pill ghost>
-										<IconUser />
+									<Button variant={"ghost"} className="font-bold gap-2">
+										<Avatar size={25} name={data.twDisplayName} />
+										{data.twDisplayName}
 									</Button>
 								}
 							>
 								{/* <div className={PopoverItem}>Dashboard</div> */}
-								<div className={PopoverTitle}>
-									<IconBrandTwitch size={20} />
-									<span>{data.twDisplayName}</span>
-								</div>
+								{/* <div className={PopoverTitle}> */}
+								{/* <IconBrandTwitch size={20} /> */}
+								{/* <span>{data.twDisplayName}</span> */}
+								{/* </div> */}
 								<Link to="/dashboard">
 									<a className={PopoverItem}>
 										<IconDashboard />

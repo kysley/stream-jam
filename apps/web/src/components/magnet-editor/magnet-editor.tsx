@@ -19,6 +19,7 @@ import { Layer } from "../layer";
 import { Input, InputProps, TextArea } from "./../input";
 import * as cls from "./magnet-editor.css";
 import { produce } from "structurajs";
+import { Card, CardContent, CardHeader } from "../ui/card";
 
 export function InCardConfirmation({
 	handleCancel,
@@ -120,7 +121,7 @@ export function MagnetEditor({
 	};
 
 	return (
-		<Layer className={cls.editorContainer}>
+		<Card className={cls.editorContainer}>
 			{confirm && (
 				<InCardConfirmation
 					text="Delete?"
@@ -140,8 +141,8 @@ export function MagnetEditor({
 					handleConfirm={handleSave}
 				/>
 			)}
-			<div style={{ display: "flex", justifyContent: "space-between" }}>
-				<div style={{ display: "flex" }}>
+			<CardHeader>
+				<div className="flex flex-row content-center">
 					<Button
 						onClick={() =>
 							handleMagnetPropertyChange("visible", !magnet.visible)
@@ -168,87 +169,89 @@ export function MagnetEditor({
 					>
 						<IconHandMove />
 					</Button>
+					{/* <Button ghost={<IconLockAccessOff />} /> */}
+					<Button ghost intent="danger" onClick={() => setConfirm(true)}>
+						{confirm ? <IconTrashX /> : <IconTrash />}
+					</Button>
 				</div>
-				{/* <Button ghost={<IconLockAccessOff />} /> */}
-				<Button ghost intent="danger" onClick={() => setConfirm(true)}>
-					{confirm ? <IconTrashX /> : <IconTrash />}
-				</Button>
-			</div>
-			<SliderWidget
-				name="Scale"
-				handleValueChange={(v) => {
-					handleMagnetPropertyChange("scale", v[0]);
-				}}
-				value={magnet?.scale}
-			/>
+			</CardHeader>
+			<CardContent>
+				<SliderWidget
+					name="Scale"
+					handleValueChange={(v) => {
+						handleMagnetPropertyChange("scale", v[0]);
+					}}
+					value={magnet?.scale}
+				/>
 
-			<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-				<InputWidget
-					name="Height"
-					value={magnet?.height || ""}
-					onChange={(e) => {
-						handleMagnetPropertyChange("height", +e.target.value);
-					}}
-				/>
-				<div>
-					{ratioLock ? (
-						<Button
-							ghost
-							intent="primary"
-							style={{ marginTop: "22px" }}
-							onClick={() => setRatioLock((prev) => !prev)}
-						>
-							<IconLink size={24} />
-						</Button>
-					) : (
-						<Button
-							ghost
-							style={{ marginTop: "22px" }}
-							onClick={() => setRatioLock((prev) => !prev)}
-						>
-							<IconUnlink size={24} />
-						</Button>
-					)}
+				<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+					<InputWidget
+						name="Height"
+						value={magnet?.height || ""}
+						onChange={(e) => {
+							handleMagnetPropertyChange("height", +e.target.value);
+						}}
+					/>
+					<div>
+						{ratioLock ? (
+							<Button
+								ghost
+								intent="primary"
+								style={{ marginTop: "22px" }}
+								onClick={() => setRatioLock((prev) => !prev)}
+							>
+								<IconLink size={24} />
+							</Button>
+						) : (
+							<Button
+								ghost
+								style={{ marginTop: "22px" }}
+								onClick={() => setRatioLock((prev) => !prev)}
+							>
+								<IconUnlink size={24} />
+							</Button>
+						)}
+					</div>
+					<InputWidget
+						name="Width"
+						value={magnet?.width || ""}
+						onChange={(e) => {
+							handleMagnetPropertyChange("width", +e.target.value);
+						}}
+					/>
 				</div>
-				<InputWidget
-					name="Width"
-					value={magnet?.width || ""}
-					onChange={(e) => {
-						handleMagnetPropertyChange("width", +e.target.value);
-					}}
-				/>
-			</div>
-			{magnet.type === "media" && (
-				<InputWidget
-					value={magnet?.url || ""}
-					name="URL"
-					onChange={(e) => {
-						if (magnet.type === "media") {
-							handleMagnetPropertyChange("url", e.target.value);
-						}
-					}}
-				/>
-			)}
-			{magnet.type === "text" && (
-				<TextArea
-					style={{ width: "100%", height: "200px" }}
-					value={magnet?.text}
-					name="Text"
-					onChange={(e) => {
-						if (magnet.type === "text") {
-							handleMagnetPropertyChange("text", e.target.value);
-						}
-					}}
-				/>
-			)}
-			{/* <div style={{ display: "flex", justifyContent: "space-between" }}>
+				{magnet.type === "media" && (
+					<InputWidget
+						value={magnet?.url || ""}
+						name="URL"
+						onChange={(e) => {
+							if (magnet.type === "media") {
+								handleMagnetPropertyChange("url", e.target.value);
+							}
+						}}
+					/>
+				)}
+				{magnet.type === "text" && (
+					<TextArea
+						style={{ width: "100%", height: "200px" }}
+						value={magnet?.text}
+						name="Text"
+						onChange={(e) => {
+							if (magnet.type === "text") {
+								handleMagnetPropertyChange("text", e.target.value);
+							}
+						}}
+					/>
+				)}
+				{/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button intent="danger">Delete</Button>
         <div style={{ display: "flex", gap: 2 }}>
           <Button>Cancel</Button>
           <Button intent="primary">Save preset</Button>
         </div>
       </div> */}
-		</Layer>
+			</CardContent>
+		</Card>
 	);
 }
 

@@ -6,8 +6,8 @@ import { prisma } from "../prisma";
 
 const w = wretch().addon(FormDataAddon);
 
-type GetModeratorsResponse = {
-	data: [{ user_id: string; user_login: string; user_name: string }];
+export type GetModeratorsResponse = {
+	data: { user_id: string; user_login: string; user_name: string }[];
 };
 
 export async function getModerators(twitch_id: string, user: CookieUser) {

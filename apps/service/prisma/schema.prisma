@@ -11,13 +11,15 @@ datasource db {
 }
 
 model User {
-  id             String @id @default(uuid())
+  id             String          @id @default(uuid())
   twRefreshToken String
-  twDisplayName  String @unique
-  twId           String @unique
+  twDisplayName  String          @unique
+  twId           String          @unique
+  magnets        Magnet[]
+  streams        OverlayEditor[]
+  overlay        Overlay?
 
-  magnets Magnet[]
-  // @@unique([id, twId, twDisplayName])
+  @@unique([id, twId, twDisplayName])
 }
 
 model Magnet {
@@ -25,7 +27,27 @@ model Magnet {
   props   String? // stringified json for now
   name    String
   version Int     @default(1)
+  user    User?   @relation(fields: [userId], references: [id])
+  userId  String?
+}
 
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String?
+model OverlayEditor {
+  id           String  @id @default(uuid())
+  user         User    @relation(fields: [userId], references: [id])
+  userId       String
+  overlay      Overlay @relation(fields: [overlayId], references: [id])
+  overlayId    String
+  isModerator  Boolean @default(false)
+  isPrivileged Boolean @default(false)
+
+  @@unique([userId, overlayId])
+}
+
+model Overlay {
+  id      String          @id @default(uuid())
+  editors OverlayEditor[]
+  user    User            @relation(fields: [userId], references: [id])
+  userId  String          @unique
+
+  @@unique([id, userId])
 }

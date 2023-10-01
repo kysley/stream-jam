@@ -31,11 +31,11 @@ export const confirmation = style({
 
 export const editorContainer = style({
 	position: "absolute",
-	top: "275px",
+	top: "10vh",
 	right: "25px",
 	display: "flex",
 	flexDirection: "column",
-	gap: "12px",
+	// gap: "12px",
 	width: "300px",
 	zIndex: 999999,
 });

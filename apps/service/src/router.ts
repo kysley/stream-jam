@@ -6,7 +6,12 @@ import { prisma } from "./prisma";
 import { getAuthorizationCode, getStreams } from "./helix";
 import { redis } from "./redis";
 import { syncModerators } from "./helix/helpers";
-import { saveMagnet, updateMagnet, getMagnets } from "./routes";
+import {
+	saveMagnet,
+	updateMagnet,
+	getMagnets,
+	getUserModerators,
+} from "./routes";
 
 export const t = initTRPC.context<typeof createContext>().create();
 
@@ -54,10 +59,11 @@ export const router = t.router({
 				},
 			});
 
-			await syncModerators(prismaUser.twId, prismaUser.twDisplayName, {
-				accessToken: auth.accessToken,
-				id: prismaUser.id,
-			});
+			// Don't do this by default anymore
+			// await syncModerators(prismaUser.twId, prismaUser.twDisplayName, {
+			// 	accessToken: auth.accessToken,
+			// 	id: prismaUser.id,
+			// });
 
 			const token = await ctx.res.jwtSign({
 				id: prismaUser.id,
@@ -152,6 +158,7 @@ export const router = t.router({
 	saveMagnet: saveMagnet(t),
 	updateMagnet: updateMagnet(t),
 	getMagnets: getMagnets(t),
+	getModerators: getUserModerators(t),
 
 	// syncModerators: t.procedure.mutation(async ({ ctx }) => {
 	// 	if (ctx.user) {
