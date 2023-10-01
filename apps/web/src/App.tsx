@@ -8,11 +8,11 @@ import { trpc } from "./utils/trpc";
 import { httpBatchLink } from "@trpc/client";
 import { ConnectedPage } from "./pages/connected";
 import { themeClass } from "./theme.css";
-import { StartPage } from "./pages/start/start";
 import { DashboardPage } from "./pages/dashboard";
 import { Header } from "./components/header";
 import { MagnetsPage } from "./pages/magnets/magnets.route";
 import { ThemeProvider } from "./components/theme-provider";
+import { SettingsPage } from "./pages/settings/settings.route";
 
 function App() {
 	const [queryClient] = useState(() => new QueryClient());
@@ -39,10 +39,10 @@ function App() {
 						<Header />
 						<Route path="/" component={IndexPage} />
 						<Route path="/dashboard" component={DashboardPage} />
-						<Route path="/jam" component={StartPage} />
 						<Route path="/source/:id" component={SourceIdPage} />
 						<Route path="/connected" component={ConnectedPage} />
 						<Route path="/magnets" component={MagnetsPage} />
+						<Route path="/settings" component={SettingsPage} />
 					</div>
 				</QueryClientProvider>
 			</trpc.Provider>

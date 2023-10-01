@@ -4,6 +4,7 @@ import {
 	IconPhotoPlus,
 	IconAlphabetLatin,
 	IconAppWindowFilled,
+	IconDoorExit,
 } from "@tabler/icons-react";
 import { useMagnetActions, useStageActions } from "../state";
 
@@ -20,6 +21,7 @@ import {
 } from "./ui/command";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
+import { RouterOutputs } from "../utils/trpc";
 
 const toolbarWidgets: { value: string; icon: ReactNode }[] = [
 	{ value: "photo", icon: <IconPhotoPlus /> },
@@ -27,13 +29,21 @@ const toolbarWidgets: { value: string; icon: ReactNode }[] = [
 	{ value: "iframe", icon: <IconAppWindowFilled /> },
 ];
 
-export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
+type Stream = Exclude<RouterOutputs["streams"], undefined>[number];
+
+export function QuickToolbar({
+	streams,
+	me,
+}: { streams: RouterOutputs["streams"]; me: unknown }) {
 	const { addMagnet } = useMagnetActions();
 	const { toggleIFrameFocus } = useStageActions();
+
+	const [selectedStream, setSelectedStream] = useState<Stream>();
 
 	return (
 		<div className={cls.toolbarContainer}>
 			<Button
+				size="icon"
 				variant="outline"
 				onClick={() =>
 					addMagnet({
@@ -53,6 +63,7 @@ export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
 			</Button>
 
 			<Button
+				size="icon"
 				variant="outline"
 				onClick={() => {
 					addMagnet({
@@ -71,11 +82,11 @@ export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
 				<IconAlphabetLatin size={28} />
 			</Button>
 
-			<Button variant="outline" onClick={() => toggleIFrameFocus()}>
+			<Button variant="outline" onClick={() => toggleIFrameFocus()} size="icon">
 				<IconAppWindowFilled size={28} />
 			</Button>
 
-			<StreamSelector streams={[{ id: "1", name: "swan_one" }]} />
+			<StreamSelector streams={streams} />
 
 			{/* {jams && jams.length > 0 && (
 				// <Select
@@ -92,58 +103,111 @@ export function QuickToolbar({ jams, me }: { jams?: unknown[]; me: unknown }) {
 }
 
 interface StreamSelectorProps extends PopoverProps {
-	streams: any[];
+	streams: RouterOutputs["streams"];
+	onStreamChange?(stream?: Stream): void;
 }
 
-export function StreamSelector({ streams, ...props }: StreamSelectorProps) {
+export function StreamSelector({
+	streams,
+	onStreamChange,
+	...props
+}: StreamSelectorProps) {
 	const [open, setOpen] = useState(false);
-	const [selectedPreset, setSelectedPreset] = useState();
+	const [selectedStream, setSelectedStream] = useState<Stream>();
 	// const router = useRouter()
 
+	const liveStreams = streams?.filter((s) => s.live);
+	const offlineStreams = streams?.filter((s) => !s.live);
+
+	const handleChange = (stream?: Stream) => {
+		setSelectedStream(stream);
+		onStreamChange?.(stream);
+		setOpen(false);
+	};
+
 	return (
-		<Popover open={open} onOpenChange={setOpen} {...props}>
-			<PopoverTrigger asChild>
-				<Button
-					variant="outline"
-					role="combobox"
-					aria-label="Streams..."
-					aria-expanded={open}
-					className="flex-1 justify-between md:max-w-[200px] lg:max-w-[300px]"
-				>
-					{selectedPreset ? selectedPreset.name : "Streams..."}
-					<CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-				</Button>
-			</PopoverTrigger>
-			<PopoverContent className="w-[300px] p-0">
-				<Command>
-					<CommandInput placeholder="Search streams..." />
-					<CommandEmpty>No streams online.</CommandEmpty>
-					<CommandGroup heading="Online">
-						{streams.map((preset) => (
-							<CommandItem
-								key={preset.id}
-								onSelect={() => {
-									setSelectedPreset(preset);
-									setOpen(false);
-								}}
-							>
-								{preset.name}
-								<CheckIcon
-									className={cn(
-										"ml-auto h-4 w-4",
-										selectedPreset?.id === preset.id
-											? "opacity-100"
-											: "opacity-0",
-									)}
-								/>
-							</CommandItem>
-						))}
-					</CommandGroup>
-					{/* <CommandGroup className="pt-0">
+		<div className="flex flex-column ml-5 gap-2">
+			<Popover open={open} onOpenChange={setOpen} {...props}>
+				<PopoverTrigger asChild>
+					<Button
+						variant="outline"
+						role="combobox"
+						aria-label="Open a stream"
+						aria-expanded={open}
+						className="flex-1 justify-between md:max-w-[200px] lg:max-w-[300px]"
+					>
+						{selectedStream ? selectedStream.name : "Open a stream"}
+						<CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent className="w-[300px] p-0">
+					<Command>
+						<CommandInput placeholder="Search streams" />
+						<CommandEmpty>No streams online.</CommandEmpty>
+						<CommandGroup heading="LIVE" className="text-red-500">
+							{liveStreams && liveStreams.length > 0 ? (
+								liveStreams.map((stream) => (
+									<CommandItem
+										key={stream.id}
+										onSelect={() => {
+											handleChange(stream);
+										}}
+									>
+										{stream.name}
+										<CheckIcon
+											className={cn(
+												"ml-auto h-4 w-4",
+												selectedStream?.id === stream.id
+													? "opacity-100"
+													: "opacity-0",
+											)}
+										/>
+									</CommandItem>
+								))
+							) : (
+								<CommandEmpty />
+							)}
+						</CommandGroup>
+						<CommandGroup heading="Offline">
+							{offlineStreams && offlineStreams.length > 0 ? (
+								offlineStreams.map((stream) => (
+									<CommandItem
+										key={stream.id}
+										onSelect={() => {
+											handleChange(stream);
+										}}
+									>
+										{stream.name}
+										<CheckIcon
+											className={cn(
+												"ml-auto h-4 w-4",
+												selectedStream?.id === stream.id
+													? "opacity-100"
+													: "opacity-0",
+											)}
+										/>
+									</CommandItem>
+								))
+							) : (
+								<CommandEmpty />
+							)}
+						</CommandGroup>
+						{/* <CommandGroup className="pt-0">
 						<CommandItem>More examples</CommandItem>
 					</CommandGroup> */}
-				</Command>
-			</PopoverContent>
-		</Popover>
+					</Command>
+				</PopoverContent>
+			</Popover>
+			{selectedStream && (
+				<Button
+					variant="secondary"
+					size="icon"
+					title="Leave"
+					onClick={() => handleChange(undefined)}
+				>
+					<IconDoorExit className="text-red-500" />
+				</Button>
+			)}
+		</div>
 	);
 }

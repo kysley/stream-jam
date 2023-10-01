@@ -27,7 +27,7 @@ import Avatar from "boring-avatars";
 export function Header() {
 	const { data, isLoading } = useMe();
 	const { data: notifs } = trpc.notifications.useQuery();
-	const { data: jams } = trpc.jammingWith.useQuery();
+	const { data: streams } = trpc.streams.useQuery();
 	const [isIndex] = useRoute("/");
 
 	return (
@@ -51,7 +51,7 @@ export function Header() {
 						position: "relative",
 					}}
 				>
-					{isIndex && <QuickToolbar jams={jams} me={data} />}
+					{isIndex && <QuickToolbar streams={streams} me={data} />}
 					<div
 						style={{
 							position: "absolute",

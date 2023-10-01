@@ -3,7 +3,7 @@ import wretch from "wretch";
 import { z } from "zod";
 import { createContext } from "./context";
 import { prisma } from "./prisma";
-import { getAuthorizationCode, getStreams } from "./helix";
+import { getAuthorizationCode, getStreams, refreshAccessToken } from "./helix";
 import { redis } from "./redis";
 import { syncModerators } from "./helix/helpers";
 import {
@@ -11,6 +11,8 @@ import {
 	updateMagnet,
 	getMagnets,
 	getUserModerators,
+	createUserOverlay,
+	getUserOverlay,
 } from "./routes";
 
 export const t = initTRPC.context<typeof createContext>().create();
@@ -88,22 +90,22 @@ export const router = t.router({
 			if (!user) return null;
 
 			//refresh access token
-			// const auth = await refreshAccessToken(user.twRefreshToken);
-			// if (!auth) return null;
+			const auth = await refreshAccessToken(ctx.user);
+			if (!auth) return null;
 
-			// const token = await ctx.res.jwtSign({
-			// 	id: user.id,
-			// 	accessToken: auth.access_token,
-			// });
+			const token = await ctx.res.jwtSign({
+				id: user.id,
+				accessToken: auth.access_token,
+			});
 
-			// ctx.res.setCookie("token", token, {
-			// 	secure: true,
-			// 	httpOnly: true,
-			// 	// expires: new Date(new Date() + auth.expires_in * 1000),
-			// 	expires: new Date(new Date().setMonth(12)),
-			// 	signed: true,
-			// 	path: "/",
-			// });
+			ctx.res.setCookie("token", token, {
+				secure: true,
+				httpOnly: true,
+				// expires: new Date(new Date() + auth.expires_in * 1000),
+				expires: new Date(new Date().setMonth(12)),
+				signed: true,
+				path: "/",
+			});
 
 			return user;
 		}
@@ -129,36 +131,50 @@ export const router = t.router({
 			return redis.lrange(`user:${prismaUser?.twId}:notifications`, 0, -1);
 		}
 	}),
-	jammingWith: t.procedure.query(async ({ ctx }) => {
+	streams: t.procedure.query(async ({ ctx }) => {
 		if (ctx.user) {
 			const prismaUser = await prisma.user.findUnique({
 				where: { id: ctx.user.id },
 			});
-			const jammingTwitchIds = await redis.smembers(
-				`user:${prismaUser?.twId}:jam_with`,
-			);
+			// const jammingTwitchIds = await redis.smembers(
+			// 	`user:${prismaUser?.twId}:jam_with`,
+			// );
 
-			const streams = await getStreams(jammingTwitchIds, ctx.user);
-			console.log({ streams });
-
-			const users = await prisma.user.findMany({
-				where: { OR: jammingTwitchIds.map((i) => ({ twId: i })) },
+			const editing = await prisma.overlayEditor.findMany({
+				where: {
+					userId: prismaUser?.id,
+				},
+				include: {
+					overlay: {
+						include: {
+							user: true,
+						},
+					},
+				},
 			});
 
-			return users.map((user) => ({
-				id: user.id,
-				name: user.twDisplayName,
+			const streams = await getStreams(
+				editing?.map((e) => e.overlay.user.twId) || [],
+				ctx.user,
+			);
+
+			console.log({ streams, ...editing[0].overlay });
+
+			return editing?.map((e) => ({
+				id: e.overlayId,
+				name: e.overlay.user.twDisplayName,
 				// Cross check if jamming user is live with the users api req
-				live: Boolean(
-					Math.sqrt(streams.findIndex((s) => s.user_id === user.twId)),
-				),
+				live:
+					streams.findIndex((s) => s.user_id === e.overlay.user.twId) !== -1,
 			}));
 		}
 	}),
 	saveMagnet: saveMagnet(t),
 	updateMagnet: updateMagnet(t),
 	getMagnets: getMagnets(t),
-	getModerators: getUserModerators(t),
+	getUserModerators: getUserModerators(t),
+	createUserOverlay: createUserOverlay(t),
+	getUserOverlay: getUserOverlay(t),
 
 	// syncModerators: t.procedure.mutation(async ({ ctx }) => {
 	// 	if (ctx.user) {

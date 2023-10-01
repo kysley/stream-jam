@@ -111,5 +111,3 @@ fastify.get("/", (req, res) => {
 		process.exit(1);
 	}
 })();
-
-export type AppRouter = typeof router;

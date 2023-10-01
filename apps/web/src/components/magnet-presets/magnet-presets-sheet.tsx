@@ -51,7 +51,7 @@ export function MagnetPresetSheet({ target }: { target: ReactNode }) {
 									style={{ height: "auto" }}
 									onClick={() =>
 										addMagnet({
-											id: `${id}${Date.now}`,
+											id: `${id}${Date.now()}`,
 											name,
 											...props,
 										})

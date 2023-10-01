@@ -4,7 +4,6 @@ import { Button } from "../../components/button";
 import { MagnetRenderer } from "../../components/magnet/canvas-magnet";
 import { useMagnets } from "../../hooks/use-magnets";
 import { vars } from "../../theme.css";
-import { Page, PageTitle } from "../start/start-page.css";
 import { magnetsLayout } from "./magnets.route.css";
 import { Magnet } from "../../state";
 import { MagnetEditor } from "../../components/magnet-editor";
@@ -15,8 +14,8 @@ export function MagnetsPage() {
 	const [selectedMagnet, setSelectedMagnet] = useState();
 
 	return (
-		<div className={Page}>
-			<h1 className={PageTitle}>{data?.length || "loading"} magnets</h1>
+		<div>
+			<h1>{data?.length || "loading"} magnets</h1>
 			<div className={magnetsLayout}>
 				{isLoading || !data ? (
 					<span>loading...</span>
@@ -72,11 +71,11 @@ function MagnetDisplayPanel({ magnet }: { magnet?: Magnet }) {
 				// var container = document.querySelector("#stage-parent");
 
 				// now we need to fit stage into parent container
-				var containerWidth = containerRef.current.offsetWidth;
+				const containerWidth = containerRef.current.offsetWidth;
 
 				// but we also make the full scene visible
 				// so we need to scale all objects on canvas
-				var scale = containerWidth / 1080;
+				const scale = containerWidth / 1080;
 
 				setStage({
 					width: 1080 * scale,
