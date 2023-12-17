@@ -50,10 +50,7 @@ export function IndexPage() {
 				<Separator className="h-10" orientation="vertical" />
 				<div className="flex gap-2 flex-col">
 					<h1>As a viewer or moderator</h1>
-					<p>
-						Search for streamers who have made you an editor <br /> or request
-						access from a stream you moderate.
-					</p>
+					<p>Search for streamers who have made you an editor.</p>
 				</div>
 			</div>
 			<Dialog open={modalOpen} onOpenChange={(o) => setModalOpen(o)}>

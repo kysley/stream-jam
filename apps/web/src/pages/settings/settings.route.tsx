@@ -9,12 +9,12 @@ import { EditorsSettings } from "./editors-settings";
 
 const sidebarNavItems = [
 	{
-		title: "Stream editors",
+		title: "Account",
 		href: "/settings",
 	},
 	{
-		title: "Account",
-		href: "/settings?tab=account",
+		title: "Editors",
+		href: "/settings?tab=editors",
 	},
 	{
 		title: "Appearance",
@@ -48,8 +48,7 @@ export function SettingsPage() {
 					<SidebarNav items={sidebarNavItems} />
 				</aside>
 				<div className="flex-1 lg:max-w-2xl">
-					{!params.size && <EditorsSettings />}
-					{params.get("tab") === "account" && (
+					{!params.size && (
 						<div className="space-y-6">
 							<div>
 								<h3 className="text-lg font-medium">Profile</h3>
@@ -61,6 +60,7 @@ export function SettingsPage() {
 							{/* <ProfileForm /> */}
 						</div>
 					)}
+					{params.get("tab") === "editors" && <EditorsSettings />}
 				</div>
 			</div>
 		</div>
