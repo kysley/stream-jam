@@ -13,6 +13,7 @@ import { Header } from "./components/header";
 import { MagnetsPage } from "./pages/magnets/magnets.route";
 import { ThemeProvider } from "./components/theme-provider";
 import { SettingsPage } from "./pages/settings/settings.route";
+import { JamIdPage } from "./pages/jam/[id]";
 
 function App() {
 	const [queryClient] = useState(() => new QueryClient());
@@ -37,9 +38,11 @@ function App() {
 				<QueryClientProvider client={queryClient}>
 					<div className={`App ${themeClass}`}>
 						<Header />
+						{/* <div className="pos-left">hello left</div> */}
 						<Route path="/" component={IndexPage} />
 						<Route path="/dashboard" component={DashboardPage} />
 						<Route path="/source/:id" component={SourceIdPage} />
+						<Route path="/jam/:id" component={JamIdPage} />
 						<Route path="/connected" component={ConnectedPage} />
 						<Route path="/magnets" component={MagnetsPage} />
 						<Route path="/settings" component={SettingsPage} />

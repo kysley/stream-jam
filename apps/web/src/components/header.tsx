@@ -51,7 +51,7 @@ export function Header() {
 						position: "relative",
 					}}
 				>
-					{isIndex && <QuickToolbar streams={streams} me={data} />}
+					{!isIndex && <QuickToolbar streams={streams} me={data} />}
 					<div
 						style={{
 							position: "absolute",

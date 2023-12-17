@@ -145,7 +145,7 @@ export function GIF({ src, selected, ...rest }: { src: string }) {
 	);
 }
 export function Image({ src, visible, selected, ...rest }: { src?: string }) {
-	const [image] = useImage(src || "./default_magnet.png");
+	const [image] = useImage(src || "/default_magnet.png");
 	return (
 		// todo: figure out better visibility false display
 		<KonvaImage

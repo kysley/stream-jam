@@ -8,6 +8,31 @@
   z-index: 1;
 }
 
+.slotted-grid {
+  display: grid;
+  grid-template-columns: 2fr 10fr 2fr;
+  grid-template-areas: "left main right";
+  grid-auto-flow: column;
+  height: 100%;
+  position: relative;
+}
+
+.slotted-grid .pos-left {
+  grid-area: left;
+}
+
+.slotted-grid .pos-main {
+  grid-area: main;
+  border-radius: 20px;
+  margin: 10px 10px;
+  /* background-color: rgb(44,44,44); */
+  border:1px solid red;
+}
+
+.slotted-grid .pos-right {
+  grid-area: right;
+}
+
 .container {
   /* width: 100vw;
   height: 100vh;

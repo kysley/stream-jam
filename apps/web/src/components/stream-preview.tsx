@@ -7,7 +7,9 @@ export function StreamPreview() {
 				style={{
 					width: 1920,
 					height: 1080,
-					backgroundColor: vars.colors.gray2,
+					// backgroundColor: vars.colors.gray2,
+					backgroundColor: "blue",
+					opacity: 0.2,
 				}}
 			/>
 		);

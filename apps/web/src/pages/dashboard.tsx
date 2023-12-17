@@ -5,7 +5,7 @@ import { trpc } from "../utils/trpc";
 
 export function DashboardPage() {
 	const { data } = useMe();
-	const { data: magnets } = trpc.magnets.useQuery();
+	const { data: magnets } = trpc.getMagnets.useQuery();
 
 	return null;
 }
