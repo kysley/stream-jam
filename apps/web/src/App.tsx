@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Route } from "wouter";
+import { Route, useRoute } from "wouter";
 import { IndexPage } from "./pages";
 import "./App.css";
 import { SourceIdPage } from "./pages/source/[id]";
@@ -16,6 +16,7 @@ import { SettingsPage } from "./pages/settings/settings.route";
 import { JamIdPage } from "./pages/jam/[id]";
 
 function App() {
+	const [match] = useRoute("/source/:id");
 	const [queryClient] = useState(() => new QueryClient());
 	const [trpcClient] = useState(() =>
 		trpc.createClient({
@@ -37,7 +38,7 @@ function App() {
 			<trpc.Provider client={trpcClient} queryClient={queryClient}>
 				<QueryClientProvider client={queryClient}>
 					<div className={`App ${themeClass}`}>
-						<Header />
+						{!match && <Header />}
 						{/* <div className="pos-left">hello left</div> */}
 						<Route path="/" component={IndexPage} />
 						<Route path="/dashboard" component={DashboardPage} />

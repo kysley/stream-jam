@@ -3,13 +3,16 @@ import { StageComponent } from "../../components/stage";
 import { useRef } from "react";
 import { useMagnets } from "../../hooks/use-magnets";
 import { Button } from "../../components/ui/button";
-import { useMagnetActions } from "../../state";
+import { useEditorActions, useMagnetActions } from "../../state";
 import {
 	MagnetEditor,
 	StatefulMagnetEditor,
 } from "../../components/magnet-editor";
+import { EditorPanel } from "../../components/panels/editor/editor-panel";
 
 export function JamIdPage() {
+	const { load } = useEditorActions();
+
 	const [match, params] = useRoute("/jam/:id");
 	const { addMagnet } = useMagnetActions();
 	const { data, isLoading } = useMagnets();
@@ -33,12 +36,20 @@ export function JamIdPage() {
 									key={id}
 									variant="ghost"
 									style={{ height: "auto" }}
-									onClick={() =>
-										addMagnet({
-											id: `${id}${Date.now()}`,
-											name,
-											...props,
-										})
+									onClick={
+										() => {
+											console.log(props);
+											load({
+												id: `${id}${Date.now()}`,
+												name,
+												...props,
+											});
+										}
+										// addMagnet({
+										// 	id: `${id}${Date.now()}`,
+										// 	name,
+										// 	...props,
+										// })
 									}
 								>
 									<img
@@ -55,6 +66,7 @@ export function JamIdPage() {
 				<StageComponent ref={containerRef} />
 			</div>
 			<div className="pos-right">
+				<EditorPanel />
 				<StatefulMagnetEditor emit />
 			</div>
 		</div>

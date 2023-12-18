@@ -83,7 +83,7 @@ export function MagnetEditor({
 
 	if (!magnet) return null;
 
-	const handleMagnetPropertyChange = <T extends keyof Magnet,>(
+	const handleMagnetPropertyChange = <T extends keyof Magnet>(
 		key: T,
 		value: Magnet[T],
 	) => {
@@ -121,7 +121,7 @@ export function MagnetEditor({
 	};
 
 	return (
-		<Card className={cls.editorContainer}>
+		<div className="flex flex-col gap-4">
 			{confirm && (
 				<InCardConfirmation
 					text="Delete?"
@@ -141,117 +141,106 @@ export function MagnetEditor({
 					handleConfirm={handleSave}
 				/>
 			)}
-			<CardHeader>
-				<div className="flex flex-row content-center">
-					<Button
-						onClick={() =>
-							handleMagnetPropertyChange("visible", !magnet.visible)
-						}
-						ghost
-						intent={magnet?.visible ? "primary" : "neutral"}
-					>
-						{magnet?.visible ? <IconEye /> : <IconEyeOff />}
+			<div className="flex flex-row justify-between">
+				<Button
+					onClick={() => handleMagnetPropertyChange("visible", !magnet.visible)}
+					ghost
+					intent={magnet?.visible ? "primary" : "neutral"}
+				>
+					{magnet?.visible ? <IconEye /> : <IconEyeOff />}
+				</Button>
+				{magnet?.version ? (
+					<Button ghost onClick={() => handleSave()}>
+						<IconCloudUpload />
 					</Button>
-					{magnet?.version ? (
-						<Button ghost onClick={() => handleSave()}>
-							<IconCloudUpload />
+				) : (
+					<Button onClick={() => setSave(true)} ghost intent={"neutral"}>
+						<IconDeviceFloppy />
+					</Button>
+				)}
+				<Button disabled onClick={() => setSave(true)} ghost intent={"neutral"}>
+					<IconHandMove />
+				</Button>
+				{/* <Button ghost={<IconLockAccessOff />} /> */}
+				<Button ghost intent="danger" onClick={() => setConfirm(true)}>
+					{confirm ? <IconTrashX /> : <IconTrash />}
+				</Button>
+			</div>
+			<SliderWidget
+				name="Scale"
+				handleValueChange={(v) => {
+					handleMagnetPropertyChange("scale", v[0]);
+				}}
+				value={magnet?.scale}
+			/>
+
+			<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+				<InputWidget
+					name="Height"
+					value={magnet?.height || ""}
+					onChange={(e) => {
+						handleMagnetPropertyChange("height", +e.target.value);
+					}}
+				/>
+				<div>
+					{ratioLock ? (
+						<Button
+							ghost
+							intent="primary"
+							style={{ marginTop: "22px" }}
+							onClick={() => setRatioLock((prev) => !prev)}
+						>
+							<IconLink size={24} />
 						</Button>
 					) : (
-						<Button onClick={() => setSave(true)} ghost intent={"neutral"}>
-							<IconDeviceFloppy />
+						<Button
+							ghost
+							style={{ marginTop: "22px" }}
+							onClick={() => setRatioLock((prev) => !prev)}
+						>
+							<IconUnlink size={24} />
 						</Button>
 					)}
-					<Button
-						disabled
-						onClick={() => setSave(true)}
-						ghost
-						intent={"neutral"}
-					>
-						<IconHandMove />
-					</Button>
-					{/* <Button ghost={<IconLockAccessOff />} /> */}
-					<Button ghost intent="danger" onClick={() => setConfirm(true)}>
-						{confirm ? <IconTrashX /> : <IconTrash />}
-					</Button>
 				</div>
-			</CardHeader>
-			<CardContent>
-				<SliderWidget
-					name="Scale"
-					handleValueChange={(v) => {
-						handleMagnetPropertyChange("scale", v[0]);
+				<InputWidget
+					name="Width"
+					value={magnet?.width || ""}
+					onChange={(e) => {
+						handleMagnetPropertyChange("width", +e.target.value);
 					}}
-					value={magnet?.scale}
 				/>
-
-				<div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-					<InputWidget
-						name="Height"
-						value={magnet?.height || ""}
-						onChange={(e) => {
-							handleMagnetPropertyChange("height", +e.target.value);
-						}}
-					/>
-					<div>
-						{ratioLock ? (
-							<Button
-								ghost
-								intent="primary"
-								style={{ marginTop: "22px" }}
-								onClick={() => setRatioLock((prev) => !prev)}
-							>
-								<IconLink size={24} />
-							</Button>
-						) : (
-							<Button
-								ghost
-								style={{ marginTop: "22px" }}
-								onClick={() => setRatioLock((prev) => !prev)}
-							>
-								<IconUnlink size={24} />
-							</Button>
-						)}
-					</div>
-					<InputWidget
-						name="Width"
-						value={magnet?.width || ""}
-						onChange={(e) => {
-							handleMagnetPropertyChange("width", +e.target.value);
-						}}
-					/>
-				</div>
-				{magnet.type === "media" && (
-					<InputWidget
-						value={magnet?.url || ""}
-						name="URL"
-						onChange={(e) => {
-							if (magnet.type === "media") {
-								handleMagnetPropertyChange("url", e.target.value);
-							}
-						}}
-					/>
-				)}
-				{magnet.type === "text" && (
-					<TextArea
-						style={{ width: "100%", height: "200px" }}
-						value={magnet?.text}
-						name="Text"
-						onChange={(e) => {
-							if (magnet.type === "text") {
-								handleMagnetPropertyChange("text", e.target.value);
-							}
-						}}
-					/>
-				)}
-				{/* <div style={{ display: "flex", justifyContent: "space-between" }}>
+			</div>
+			{magnet.type === "media" && (
+				<InputWidget
+					value={magnet?.url || ""}
+					name="URL"
+					onChange={(e) => {
+						if (magnet.type === "media") {
+							handleMagnetPropertyChange("url", e.target.value);
+						}
+					}}
+				/>
+			)}
+			{magnet.type === "text" && (
+				<TextArea
+					style={{ width: "100%", height: "200px" }}
+					value={magnet?.text}
+					name="Text"
+					onChange={(e) => {
+						if (magnet.type === "text") {
+							handleMagnetPropertyChange("text", e.target.value);
+						}
+					}}
+				/>
+			)}
+			{/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button intent="danger">Delete</Button>
         <div style={{ display: "flex", gap: 2 }}>
           <Button>Cancel</Button>
           <Button intent="primary">Save preset</Button>
         </div>
       </div> */}
-			</CardContent>
-		</Card>
+		</div>
 	);
 }
 
@@ -264,6 +253,9 @@ function SliderWidget(
 ) {
 	return (
 		<Label name={props.name}>
+			<label>
+				{props.name} ({props.value}%)
+			</label>
 			<Slider.Root
 				max={250}
 				min={0}

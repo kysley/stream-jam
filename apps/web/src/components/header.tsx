@@ -34,7 +34,7 @@ export function Header() {
 		<Fragment>
 			<div
 				style={{
-					position: "absolute",
+					// position: "absolute",
 					width: "100%",
 					display: "grid",
 					gridTemplateColumns: "1fr",
