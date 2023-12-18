@@ -124,12 +124,12 @@ function PreviewPopout({ magnet, onPreviewClose }: PreviewPopoutProps) {
 			<div
 				style={{
 					display: "grid",
+					gridTemplateColumns: "1fr 1fr",
 					backgroundColor: "rgb(33,33,33)",
 					// justifyContent: "center",
 					alignItems: "center",
 					borderTopLeftRadius: "inherit",
 					borderTopRightRadius: "inherit",
-					gridAutoFlow: "column",
 				}}
 			>
 				<span
@@ -145,7 +145,7 @@ function PreviewPopout({ magnet, onPreviewClose }: PreviewPopoutProps) {
 					size="sm"
 					variant="ghost"
 					// style={{ position: "absolute", right: 5, }}
-					style={{ justifySelf: "flex-end" }}
+					// style={{ justifySelf: "flex-end" }}
 					onClick={() => onPreviewClose()}
 				>
 					<IconArrowsMinimize size={18} />
