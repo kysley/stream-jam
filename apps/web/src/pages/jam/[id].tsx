@@ -23,6 +23,26 @@ export function JamIdPage() {
 			<div className="pos-left">
 				<div
 					style={{
+						display: "flex",
+						backgroundColor: "rgb(44,44,44)",
+						borderTopLeftRadius: "inherit",
+						justifyContent: "center",
+						alignItems: "center",
+						boxShadow:
+							"inset -1px -1px rgb(33,33,33),inset 1px 1px rgb(22,22,22),inset -2px -2px rgb(22,22,22),inset 2px 2px rgb(55,55,55)",
+					}}
+				>
+					<span
+						style={{
+							textAlign: "center",
+							fontStyle: "italic",
+						}}
+					>
+						ASSETS
+					</span>
+				</div>
+				<div
+					style={{
 						display: "grid",
 						gridAutoFlow: "dense",
 						gap: "1em",
@@ -67,7 +87,7 @@ export function JamIdPage() {
 			</div>
 			<div className="pos-right">
 				<EditorPanel />
-				<StatefulMagnetEditor emit />
+				{/* <StatefulMagnetEditor emit /> */}
 			</div>
 		</div>
 	);

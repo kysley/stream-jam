@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import {
 	Magnet,
 	useEditor,
@@ -10,14 +10,19 @@ import { MagnetEditor } from "../../magnet-editor";
 import { MagnetRenderer } from "../../magnet/canvas-magnet";
 import { Button } from "../../ui/button";
 import { IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
+import { he } from "date-fns/locale";
 
 // TODO: Editing existing magnet vs adding it to the scene
 export function EditorPanel() {
-	const [popout, setPopout] = useState(true);
-	useMagnetActions();
-	const magnetId = useSelectedMagnetId();
-	const existingmagnet = useManget(magnetId);
-	const { actions, magnet } = useEditor();
+	const [popout, setPopout] = useState(false);
+	const selectedMagnetId = useSelectedMagnetId();
+	const existingmagnet = useManget(selectedMagnetId);
+	const { actions, magnet: tempMagnet } = useEditor();
+	const { addMagnet, updateMagnet, setSelectedMagnetId } = useMagnetActions();
+
+	const isTempMagnet = !selectedMagnetId && tempMagnet;
+
+	const magnet = existingmagnet ?? tempMagnet;
 
 	const imageStyles: CSSProperties = {
 		// maxWidth: "100%",
@@ -27,13 +32,18 @@ export function EditorPanel() {
 		transformOrigin: "center",
 	};
 
-	if (!magnet) {
-		return (
-			<div className="flex flex-col justify-center items-center h-full">
-				Select a magnet to edit or
-				<Button>Create a magnet</Button>
-			</div>
-		);
+	useEffect(() => {
+		if (!selectedMagnetId) {
+			actions.clear();
+		}
+	}, [selectedMagnetId, actions.clear]);
+
+	function handleUpdate(values: Partial<Magnet>) {
+		if (isTempMagnet || !selectedMagnetId) {
+			actions.update(values);
+		} else {
+			updateMagnet(selectedMagnetId, values);
+		}
 	}
 
 	return (
@@ -45,6 +55,8 @@ export function EditorPanel() {
 					borderTopLeftRadius: "inherit",
 					justifyContent: "center",
 					alignItems: "center",
+					boxShadow:
+						"inset -1px -1px rgb(33,33,33),inset 1px 1px rgb(22,22,22),inset -2px -2px rgb(22,22,22),inset 2px 2px rgb(55,55,55)",
 				}}
 			>
 				<span
@@ -56,46 +68,91 @@ export function EditorPanel() {
 					EDITOR
 				</span>
 			</div>
-			<div
-				style={{
-					display: "grid",
-					position: "relative",
-				}}
-			>
-				{popout ? (
-					<PreviewPopout
-						magnet={magnet}
-						onPreviewClose={() => setPopout(false)}
-					/>
-				) : (
-					<div
-						style={{
-							display: "flex",
-							justifyContent: "center",
-							alignItems: "center",
-							// overflow: popout ? undefined : "hidden",
-							overflow: "hidden",
-							position: "relative",
-						}}
-					>
-						<Button
-							size="sm"
-							variant="ghost"
-							style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}
-							// style={{ justifySelf: "flex-end" }}
-							onClick={() => setPopout(true)}
+			{magnet ? (
+				<div
+					style={{
+						display: "grid",
+						position: "relative",
+					}}
+				>
+					{popout ? (
+						<PreviewPopout
+							magnet={magnet}
+							onPreviewClose={() => setPopout(false)}
+						/>
+					) : (
+						<div
+							style={{
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center",
+								// overflow: popout ? undefined : "hidden",
+								overflow: "hidden",
+								position: "relative",
+								minHeight: "15vh",
+							}}
 						>
-							<IconArrowsMaximize size={18} />
-						</Button>
-						{magnet.type === "media" && (
-							<img src={magnet.url} style={imageStyles} />
-						)}
+							<Button
+								size="sm"
+								variant="ghost"
+								style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}
+								// style={{ justifySelf: "flex-end" }}
+								onClick={() => setPopout(true)}
+							>
+								<IconArrowsMaximize size={18} />
+							</Button>
+							{magnet.type === "media" && (
+								<img src={magnet.url} style={imageStyles} />
+							)}
+						</div>
+					)}
+					<div className="p-2 space-y-2">
+						<MagnetEditor magnet={magnet} onMagnetChange={handleUpdate} />
+						<div className="flex flex-row justify-between">
+							<Button
+								variant="secondary"
+								onClick={() => {
+									addMagnet(magnet);
+									actions.clear();
+									setSelectedMagnetId(magnet.id);
+								}}
+							>
+								Add to scene
+							</Button>
+							{!selectedMagnetId && (
+								<Button
+									variant="outline"
+									onClick={() => {
+										actions.clear();
+										setSelectedMagnetId(undefined);
+									}}
+								>
+									Discard
+								</Button>
+							)}
+						</div>
 					</div>
-				)}
-				<div className="p-2">
-					<MagnetEditor magnet={magnet} />
 				</div>
-			</div>
+			) : (
+				<div className="flex flex-col justify-center items-center h-full">
+					Select a magnet to edit or
+					<Button
+						onClick={() =>
+							actions.load({
+								id: crypto.randomUUID().toString(),
+								url: "",
+								visible: true,
+								x: 50,
+								y: 100,
+								scale: 100,
+								type: "media",
+							})
+						}
+					>
+						Create a magnet
+					</Button>
+				</div>
+			)}
 		</>
 	);
 }
@@ -111,12 +168,9 @@ function PreviewPopout({ magnet, onPreviewClose }: PreviewPopoutProps) {
 			style={{
 				position: "absolute",
 				top: "0",
-				left: "-25vw",
-				width: "20vw",
-				height: "20vh",
+				left: "-35vw",
 				backgroundColor: "rgb(22,22,22)",
-				borderRadius: 10,
-				border: "1px solid rgb(33,33,33)",
+				border: "1px solid rgb(55,55,55)",
 				display: "flex",
 				flexDirection: "column",
 			}}
@@ -125,11 +179,11 @@ function PreviewPopout({ magnet, onPreviewClose }: PreviewPopoutProps) {
 				style={{
 					display: "grid",
 					gridTemplateColumns: "1fr 1fr",
-					backgroundColor: "rgb(33,33,33)",
+					backgroundColor: "rgb(44,44,44)",
 					// justifyContent: "center",
 					alignItems: "center",
-					borderTopLeftRadius: "inherit",
-					borderTopRightRadius: "inherit",
+					boxShadow:
+						"inset -1px -1px rgb(33,33,33),inset 1px 1px rgb(22,22,22),inset -2px -2px rgb(22,22,22),inset 2px 2px rgb(55,55,55)",
 				}}
 			>
 				<span

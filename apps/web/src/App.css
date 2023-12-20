@@ -18,29 +18,31 @@
   height: 100%;
   position: relative;
   gap: 8px;
-  padding: 10px 0;
+  /* padding: 10px 0; */
   height: 100%;
 }
 
 .slotted-grid .pos-left {
   grid-area: left;
   background-color: rgb(33,33,33);
-  border-bottom-right-radius: 20px;
-  border-top-right-radius: 20px;
+  /* border-bottom-right-radius: 20px; */
+  /* border-top-right-radius: 20px; */
+  border-right: 1px solid rgb(55,55,55);
 }
 
 .slotted-grid .pos-main {
   grid-area: main;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   /* background-color: rgb(33,33,33); */
   /* border:1px solid red; */
 }
 
 .slotted-grid .pos-right {
   grid-area: right;
-  border-bottom-left-radius: 20px;
-  border-top-left-radius: 20px;
+  /* border-bottom-left-radius: 20px; */
+  /* border-top-left-radius: 20px; */
   background-color: rgb(33,33,33);
+  border-left: 1px solid rgb(55,55,55);
 }
 
 .container {

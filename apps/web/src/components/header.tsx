@@ -34,14 +34,14 @@ export function Header() {
 		<Fragment>
 			<div
 				style={{
-					// position: "absolute",
 					width: "100%",
 					display: "grid",
 					gridTemplateColumns: "1fr",
 					padding: "0 24px",
-					top: 16,
 					pointerEvents: "none",
 					zIndex: 1000,
+					backgroundColor: "rgb(33,33,33)",
+					borderBottom: "1px solid rgb(55,55,55)",
 				}}
 			>
 				<div
@@ -74,8 +74,8 @@ export function Header() {
 							/>
 						) : (
 							<Link to="/">
-								<Button variant={"secondary"}>
-									Home
+								<Button variant={"ghost"}>
+									{/* Home */}
 									<IconHome />
 								</Button>
 							</Link>

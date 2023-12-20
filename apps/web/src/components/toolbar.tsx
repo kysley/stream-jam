@@ -42,7 +42,7 @@ export function QuickToolbar({
 
 	return (
 		<div className={cls.toolbarContainer}>
-			<Button
+			{/* <Button
 				size="icon"
 				variant="outline"
 				onClick={() =>
@@ -60,9 +60,9 @@ export function QuickToolbar({
 				}
 			>
 				<IconPhotoPlus size={28} />
-			</Button>
+			</Button> */}
 
-			<Button
+			{/* <Button
 				size="icon"
 				variant="outline"
 				onClick={() => {
@@ -80,11 +80,11 @@ export function QuickToolbar({
 				}}
 			>
 				<IconAlphabetLatin size={28} />
-			</Button>
+			</Button> */}
 
-			<Button variant="outline" onClick={() => toggleIFrameFocus()} size="icon">
+			{/* <Button variant="outline" onClick={() => toggleIFrameFocus()} size="icon">
 				<IconAppWindowFilled size={28} />
-			</Button>
+			</Button> */}
 
 			<StreamSelector streams={streams} />
 
@@ -132,11 +132,10 @@ export function StreamSelector({
 					<Button
 						variant="outline"
 						role="combobox"
-						aria-label="Open a stream"
 						aria-expanded={open}
 						className="flex-1 justify-between md:max-w-[200px] lg:max-w-[300px]"
 					>
-						{selectedStream ? selectedStream.name : "Open a stream"}
+						{selectedStream ? selectedStream.name : "Join a stream"}
 						<CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
