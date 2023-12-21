@@ -8,6 +8,24 @@ import fastifyJwt from "@fastify/jwt";
 import { router } from "./router";
 import { createContext } from "./context";
 import { createPredictionListener } from "./plugins/prediction-listener";
+import { createSubscriptionListener } from "./plugins/sub-listener";
+import { AppTokenAuthProvider } from "@twurple/auth";
+import { ApiClient } from "@twurple/api";
+import {
+	DirectConnectionAdapter,
+	EventSubHttpListener,
+} from "@twurple/eventsub-http";
+import { EventSubWsListener } from "@twurple/eventsub-ws";
+import { NgrokAdapter } from "@twurple/eventsub-ngrok";
+import { makeAuthProvider } from "./twitch";
+
+export const TEST_CHANNEL_IDS = [
+	31688366, // sym
+	40754777, // "masondota2",
+	121059319, //moonmoon
+	39726444, //swan_one
+	71092938, // xqc
+];
 
 const fastify = fastifyServer();
 fastify.register(cors, {
@@ -54,21 +72,44 @@ fastify.get("/", (req, res) => {
 
 (async () => {
 	try {
-		fastify.ready((e) => {
+		fastify.ready(async (e) => {
 			if (e) throw e;
 			console.log("ready");
-			const predictionListener = createPredictionListener(fastify.io, [
-				40754777, // "masondota2",
-				121059319, //moonmoon
-				39726444, //swan_one
-			]);
+
+			const authProvider = makeAuthProvider();
+
+			const apiClient = new ApiClient({ authProvider });
+			const eventSubHttp = new EventSubHttpListener({
+				apiClient,
+				adapter: new NgrokAdapter(),
+				secret: "tStrinatedFuldBheneryGisShoiARaexedndomlg",
+			});
+			const eventSubApi = new EventSubWsListener({ apiClient });
+
+			// await apiClient.eventSub.deleteAllSubscriptions();
+			const setupSubscriptionListener = createSubscriptionListener(
+				fastify.io,
+				eventSubHttp,
+				TEST_CHANNEL_IDS,
+			);
+
+			// setupSubscriptionListener();
+
+			eventSubHttp.start();
+
+			// const predictionListener = createPredictionListener(
+			// 	fastify.io,
+			// 	TEST_CHANNEL_IDS,
+			// );
 			// fastify.io.use((socket, next) => {
 			//   console.log(socket.handshake.headers.cookie);
 			//   next();
 			// });
+
 			fastify.io.on("connection", (socket) => {
 				let roomName: string;
-				const cleanup = predictionListener(socket);
+				// const cleanup = predictionListener(socket);
+				// const cleanup2 = subscriptionListener(socket);
 				// Can't seem to verify the cookie outside of fastify context
 				// const cookie = socket.handshake.headers.cookie;
 				// // No cookie? we want OUT
@@ -99,7 +140,9 @@ fastify.get("/", (req, res) => {
 				socket.on("disconnect", () => {
 					console.log("socket disconnect");
 					console.log("TODO: remove socket session");
-					socket.on("disconnect", cleanup);
+					// socket.on("disconnect",);
+					// cleanup();
+					// cleanup2();
 					// socket.handshake.auth
 				});
 			});

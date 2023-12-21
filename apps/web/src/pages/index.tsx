@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Separator } from "../components/ui/separator";
+import { Link, useRouter } from "wouter";
 
 export function IndexPage() {
 	const { data } = trpc.me.useQuery();
@@ -42,9 +43,9 @@ export function IndexPage() {
 							board, <br />
 							sub+follow alerts, and more.
 						</p>
-						<Button onClick={() => setModalOpen(true)} variant="secondary">
-							Create overlay
-						</Button>
+						<Link href={`/jam/${data?.twDisplayName}`}>
+							<Button variant="secondary">View overlay</Button>
+						</Link>
 					</div>
 				)}
 				<Separator className="h-10" orientation="vertical" />
@@ -53,7 +54,7 @@ export function IndexPage() {
 					<p>Search for streamers who have made you an editor.</p>
 				</div>
 			</div>
-			<Dialog open={modalOpen} onOpenChange={(o) => setModalOpen(o)}>
+			{/* <Dialog open={modalOpen} onOpenChange={(o) => setModalOpen(o)}>
 				<DialogContent className="sm:max-w-[425px]">
 					<DialogHeader>
 						<DialogTitle>Edit profile</DialogTitle>
@@ -79,7 +80,7 @@ export function IndexPage() {
 						<Button type="submit">Save changes</Button>
 					</DialogFooter>
 				</DialogContent>
-			</Dialog>
+			</Dialog> */}
 		</>
 	);
 }

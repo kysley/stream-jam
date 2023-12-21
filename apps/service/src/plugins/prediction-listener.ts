@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import { AppTokenAuthProvider } from "@twurple/auth";
 import { ApiClient, HelixEventSubSubscription } from "@twurple/api";
 import { EventSubWsListener } from "@twurple/eventsub-ws";
+import { TEST_CHANNEL_IDS } from "..";
 
 type CleanupFunction = () => Promise<void>;
 
@@ -58,15 +59,14 @@ export const createPredictionListener = (io: Server, channelIds: number[]) => {
 	};
 
 	return (socket: Socket) => {
-		const { channel = 121059319 } = socket.handshake.query;
+		const { channel = TEST_CHANNEL_IDS[0] } = socket.handshake.query;
 		if (typeof channel === "number" && channelIds.includes(channel)) {
 			console.info(`${channel}[PREDICTION]: Prediction listener join attempt`);
 			// socket.join(channel);
 			subscribeToChannelPredictionBeginEvents(channel);
 			subscribeToChannelPredictionProgressEvents(channel);
 			return cleanup;
-		} else {
-			return async () => {};
 		}
+		return async () => {};
 	};
 };
