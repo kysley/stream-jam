@@ -5,6 +5,8 @@ import socketioServer from "fastify-socket.io";
 import fastifyCookie from "@fastify/cookie";
 import fastifyJwt from "@fastify/jwt";
 
+import TES from "tesjs";
+
 import { router } from "./router";
 import { createContext } from "./context";
 import { createPredictionListener } from "./plugins/prediction-listener";
@@ -18,13 +20,14 @@ import {
 import { EventSubWsListener } from "@twurple/eventsub-ws";
 import { NgrokAdapter } from "@twurple/eventsub-ngrok";
 import { makeAuthProvider } from "./twitch";
+import { log } from "console";
 
 export const TEST_CHANNEL_IDS = [
-	31688366, // sym
-	40754777, // "masondota2",
-	121059319, //moonmoon
-	39726444, //swan_one
-	71092938, // xqc
+	"31688366", // sym
+	"40754777", // "masondota2",
+	"121059319", //moonmoon
+	"39726444", //swan_one
+	"71092938", // xqc
 ];
 
 const fastify = fastifyServer();
@@ -69,33 +72,73 @@ fastify.register(socketioServer, {
 fastify.get("/", (req, res) => {
 	res.code(200).send("yo");
 });
-
 (async () => {
 	try {
 		fastify.ready(async (e) => {
 			if (e) throw e;
 			console.log("ready");
 
-			const authProvider = makeAuthProvider();
-
-			const apiClient = new ApiClient({ authProvider });
-			const eventSubHttp = new EventSubHttpListener({
-				apiClient,
-				adapter: new NgrokAdapter(),
-				secret: "tStrinatedFuldBheneryGisShoiARaexedndomlg",
+			// because of PORT in .env, run ngrok to 3009 in this case
+			const tes = new TES({
+				identity: {
+					id: process.env.SJ_CLIENT_ID,
+					secret: process.env.SJ_SECRET, //do not ship this in plaintext!! use environment variables so this does not get exposed
+				},
+				listener: {
+					type: "webhook",
+					// baseURL: "https://example.com",
+					// this changes every time. see testing-events.md
+					baseURL:
+						"https://ead6-2001-1970-488b-a200-51fc-9a46-2bd8-8e4b.ngrok-free.app",
+					secret: process.env.TES_WEBHOOK_SECRET,
+				},
 			});
-			const eventSubApi = new EventSubWsListener({ apiClient });
+
+			tes.on("channel.subscribe", (event) => {
+				log(event);
+				// console.log(`${event.broadcaster_user_name}'s new title is ${event.title}`);
+			});
+
+			// create a new subscription for the `channel.update` event for broadcaster "1337"
+			tes
+				.subscribe("channel.subscribe", {
+					broadcaster_user_id: TEST_CHANNEL_IDS[3],
+				})
+				.then(() => {
+					console.log("Subscription successful");
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+
+			// const authProvider = makeAuthProvider();
+
+			// const apiClient = new ApiClient({ authProvider });
 
 			// await apiClient.eventSub.deleteAllSubscriptions();
-			const setupSubscriptionListener = createSubscriptionListener(
-				fastify.io,
-				eventSubHttp,
-				TEST_CHANNEL_IDS,
-			);
+
+			// const eventSubHttp = new EventSubHttpListener({
+			// 	apiClient,
+			// 	adapter: new NgrokAdapter({ port: 3000 }),
+			// 	secret: "tStrinatedFuldBheneryGisShoiARaexedndomlg",
+			// });
+			// const eventSubApi = new EventSubWsListener({ apiClient });
+
+			// const cli = await eventSubHttp
+			// 	.onChannelSubscription(TEST_CHANNEL_IDS[0], console.log)
+			// 	.getCliTestCommand();
+			// log(cli);
+
+			// await apiClient.eventSub.deleteAllSubscriptions();
+			// const setupSubscriptionListener = createSubscriptionListener(
+			// 	fastify.io,
+			// 	eventSubHttp,
+			// 	TEST_CHANNEL_IDS,
+			// );
 
 			// setupSubscriptionListener();
 
-			eventSubHttp.start();
+			// eventSubHttp.start();
 
 			// const predictionListener = createPredictionListener(
 			// 	fastify.io,
