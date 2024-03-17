@@ -20,7 +20,7 @@ import { Button } from "./ui/button";
 import { MagnetPresetSheet } from "./magnet-presets/magnet-presets-sheet";
 import { Popover } from "./popover/popover";
 import { PopoverItem, PopoverTitle } from "./popover/popover.css";
-import { QuickToolbar } from "./toolbar";
+import { QuickToolbar, StreamSelector } from "./toolbar";
 import { TwitchAuthButton } from "./twitch-auth-button";
 import Avatar from "boring-avatars";
 
@@ -38,7 +38,7 @@ export function Header() {
 					display: "grid",
 					gridTemplateColumns: "1fr",
 					padding: "0 24px",
-					pointerEvents: "none",
+					// pointerEvents: "none",
 					zIndex: 1000,
 					backgroundColor: "rgb(33,33,33)",
 					borderBottom: "1px solid rgb(55,55,55)",
@@ -51,7 +51,8 @@ export function Header() {
 						position: "relative",
 					}}
 				>
-					{!isIndex && <QuickToolbar streams={streams} me={data} />}
+					<StreamSelector streams={streams} />
+					{/* {!isIndex && <QuickToolbar streams={streams} me={data} />} */}
 					<div
 						style={{
 							position: "absolute",

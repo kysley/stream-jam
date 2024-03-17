@@ -76,7 +76,7 @@ export function MagnetRenderer({ magnet, ...props }: { magnet: Magnet }) {
 		return <GIF src={magnet.url} {...props} />;
 	}
 
-	return <Image src={magnet.url} {...props} visible={magnet.visible} />;
+	return <Image src={magnet.url} {...props}  />;
 }
 
 // https://stackoverflow.com/questions/59741398/play-video-on-canvas-in-react-konva
@@ -119,7 +119,6 @@ export function GIF({ src, selected, ...rest }: { src: string }) {
 		const node = document.createElement("canvas");
 		return node;
 	}, []);
-
 	useEffect(() => {
 		// save animation instance to stop it on unmount
 		let anim;

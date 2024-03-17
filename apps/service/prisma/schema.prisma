@@ -11,13 +11,14 @@ datasource db {
 }
 
 model User {
-  id             String          @id @default(uuid())
-  twRefreshToken String
-  twDisplayName  String          @unique
-  twId           String          @unique
-  magnets        Magnet[]
-  streams        OverlayEditor[]
-  overlay        Overlay?
+  id                 String              @id @default(uuid())
+  twRefreshToken     String
+  twDisplayName      String              @unique
+  twId               String              @unique
+  magnets            Magnet[]
+  streams            OverlayEditor[]
+  overlay            Overlay?
+  subscriptionEvents SubscriptionEvent[]
 
   @@unique([id, twId, twDisplayName])
 }
@@ -32,13 +33,11 @@ model Magnet {
 }
 
 model OverlayEditor {
-  id           String  @id @default(uuid())
-  user         User    @relation(fields: [userId], references: [id])
-  userId       String
-  overlay      Overlay @relation(fields: [overlayId], references: [id])
-  overlayId    String
-  isModerator  Boolean @default(false)
-  isPrivileged Boolean @default(false)
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  overlay   Overlay @relation(fields: [overlayId], references: [id])
+  overlayId String
 
   @@unique([userId, overlayId])
 }
@@ -50,4 +49,15 @@ model Overlay {
   userId  String          @unique
 
   @@unique([id, userId])
+}
+
+model SubscriptionEvent {
+  id            String @id @default(uuid())
+  name          String
+  twDisplayName String
+  twId          String
+  duration      Int
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }

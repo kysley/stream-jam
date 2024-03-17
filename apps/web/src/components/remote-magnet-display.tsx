@@ -9,7 +9,6 @@ export function RemoteMagnetDisplay({ source = false }: { source: boolean }) {
 		useCallback((state) => state.magnets, []),
 	);
 	useListenForMagnetUpdate();
-
 	if (!remoteMagnets.length) return null;
 
 	return (
@@ -17,7 +16,8 @@ export function RemoteMagnetDisplay({ source = false }: { source: boolean }) {
 			{remoteMagnets.length > 0 &&
 				remoteMagnets.map(
 					(magnet) =>
-						magnet.visible && (
+						// magnet.visible && (
+					 (
 							<MagnetRenderer
 								magnet={magnet}
 								scaleX={magnet?.scale / 100}
@@ -26,6 +26,7 @@ export function RemoteMagnetDisplay({ source = false }: { source: boolean }) {
 								y={magnet?.y}
 								height={magnet?.height}
 								width={magnet?.width}
+								visible
 							/>
 						),
 				)}

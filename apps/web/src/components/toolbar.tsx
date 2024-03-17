@@ -22,6 +22,7 @@ import {
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
 import { RouterOutputs } from "../utils/trpc";
+import { Link } from "wouter";
 
 const toolbarWidgets: { value: string; icon: ReactNode }[] = [
 	{ value: "photo", icon: <IconPhotoPlus /> },
@@ -39,6 +40,8 @@ export function QuickToolbar({
 	const { toggleIFrameFocus } = useStageActions();
 
 	const [selectedStream, setSelectedStream] = useState<Stream>();
+
+	const handleStreamConnect = () => {};
 
 	return (
 		<div className={cls.toolbarContainer}>
@@ -108,7 +111,7 @@ interface StreamSelectorProps extends PopoverProps {
 }
 
 export function StreamSelector({
-	streams,
+	streams = [{ id: "1", name: "test", live: true }],
 	onStreamChange,
 	...props
 }: StreamSelectorProps) {
@@ -135,7 +138,7 @@ export function StreamSelector({
 						aria-expanded={open}
 						className="flex-1 justify-between md:max-w-[200px] lg:max-w-[300px]"
 					>
-						{selectedStream ? selectedStream.name : "Join a stream"}
+						{selectedStream ? selectedStream.name : "Connect to a stream"}
 						<CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</PopoverTrigger>
@@ -146,22 +149,24 @@ export function StreamSelector({
 						<CommandGroup heading="LIVE" className="text-red-500">
 							{liveStreams && liveStreams.length > 0 ? (
 								liveStreams.map((stream) => (
-									<CommandItem
-										key={stream.id}
-										onSelect={() => {
-											handleChange(stream);
-										}}
-									>
-										{stream.name}
-										<CheckIcon
-											className={cn(
-												"ml-auto h-4 w-4",
-												selectedStream?.id === stream.id
-													? "opacity-100"
-													: "opacity-0",
-											)}
-										/>
-									</CommandItem>
+									<Link href={`/jam/${stream.name}`}>
+										<CommandItem
+											key={stream.id}
+											onSelect={() => {
+												handleChange(stream);
+											}}
+										>
+											{stream.name}
+											<CheckIcon
+												className={cn(
+													"ml-auto h-4 w-4",
+													selectedStream?.id === stream.id
+														? "opacity-100"
+														: "opacity-0",
+												)}
+											/>
+										</CommandItem>
+									</Link>
 								))
 							) : (
 								<CommandEmpty />
@@ -170,22 +175,24 @@ export function StreamSelector({
 						<CommandGroup heading="Offline">
 							{offlineStreams && offlineStreams.length > 0 ? (
 								offlineStreams.map((stream) => (
-									<CommandItem
-										key={stream.id}
-										onSelect={() => {
-											handleChange(stream);
-										}}
-									>
-										{stream.name}
-										<CheckIcon
-											className={cn(
-												"ml-auto h-4 w-4",
-												selectedStream?.id === stream.id
-													? "opacity-100"
-													: "opacity-0",
-											)}
-										/>
-									</CommandItem>
+									<Link to={`/jam/${stream.name}`}>
+										<CommandItem
+											key={stream.id}
+											onSelect={() => {
+												handleChange(stream);
+											}}
+										>
+											{stream.name}
+											<CheckIcon
+												className={cn(
+													"ml-auto h-4 w-4",
+													selectedStream?.id === stream.id
+														? "opacity-100"
+														: "opacity-0",
+												)}
+											/>
+										</CommandItem>
+									</Link>
 								))
 							) : (
 								<CommandEmpty />
@@ -198,13 +205,10 @@ export function StreamSelector({
 				</PopoverContent>
 			</Popover>
 			{selectedStream && (
-				<Button
-					variant="secondary"
-					size="icon"
-					title="Leave"
-					onClick={() => handleChange(undefined)}
-				>
-					<IconDoorExit className="text-red-500" />
+				<Button variant="ghost" size="icon" title="Leave" asChild>
+					<Link href={`/`} onClick={() => handleChange(undefined)}>
+						<IconDoorExit className="text-red-500" />
+					</Link>
 				</Button>
 			)}
 		</div>

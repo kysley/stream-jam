@@ -1,7 +1,7 @@
 import { Layer, Stage } from "react-konva";
 import { Link, useLocation, useRoute } from "wouter";
 import { RemoteMagnetDisplay } from "../../components/remote-magnet-display";
-import { usePathname, useSearch } from "wouter/use-location";
+import { useSearch } from "wouter";
 import { cn } from "../../lib/utils";
 import { buttonVariants } from "../../components/ui/button";
 import { Separator } from "../../components/ui/separator";
@@ -75,7 +75,9 @@ interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
-	const pathname = usePathname();
+	// const pathname = usePathname();
+	// @todo: fix this
+	const pathname = "test";
 	const search = useSearch();
 	return (
 		<nav
