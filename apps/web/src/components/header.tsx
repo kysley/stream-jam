@@ -12,7 +12,7 @@ import {
 	IconSettings,
 	IconUser,
 } from "@tabler/icons-react";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Link, useRoute } from "wouter";
 import { useMe } from "../hooks/use-me";
 import { trpc } from "../utils/trpc";
@@ -25,7 +25,7 @@ import { TwitchAuthButton } from "./twitch-auth-button";
 import Avatar from "boring-avatars";
 
 export function Header() {
-	const { data, isLoading } = useMe();
+	const { data, isLoading, dataUpdatedAt } = useMe();
 	const { data: notifs } = trpc.notifications.useQuery();
 	const { data: streams } = trpc.streams.useQuery();
 	const [isIndex] = useRoute("/");

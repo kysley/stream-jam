@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Magnet } from "./state.types";
+import type { Magnet } from "./state.types";
 import { produce } from "structurajs";
 
 export const useRemoteMagnetStore = create<{

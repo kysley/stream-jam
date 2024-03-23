@@ -20,7 +20,7 @@ import {
 import { EventSubWsListener } from "@twurple/eventsub-ws";
 import { NgrokAdapter } from "@twurple/eventsub-ngrok";
 import { makeAuthProvider } from "./twitch";
-import { log } from "console";
+import { log } from "node:console";
 
 export const TEST_CHANNEL_IDS = [
 	"31688366", // sym
@@ -154,9 +154,20 @@ fastify.get("/", (req, res) => {
 				// const cleanup = predictionListener(socket);
 				// const cleanup2 = subscriptionListener(socket);
 				// Can't seem to verify the cookie outside of fastify context
-				// const cookie = socket.handshake.headers.cookie;
+				const cookie = socket.handshake.headers.cookie;
 				// // No cookie? we want OUT
-				// if (!cookie) return;
+				if (!cookie) return;
+				const cookieValue = cookie.split("=")[1];
+				if (!cookieValue) return;
+				// console.log(decodeURIComponent(cookieValue), "COOKIE");
+				try {
+					const cookies = fastify.parseCookie(cookie);
+					console.log(cookies.token);
+				} catch (e) {
+					console.log(e);
+				}
+
+				// console.log(user, "YSER HERE");
 
 				// // const { token } = fastify.parseCookie(cookie);
 				// const token = cookie.split("=")[1];
