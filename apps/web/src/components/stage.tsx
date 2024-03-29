@@ -14,7 +14,7 @@ import { MagnetDisplay } from "./magnet-display";
 import { RemoteMagnetDisplay } from "./remote-magnet-display";
 import { StreamPreview } from "./stream-preview";
 
-export const StageComponent = forwardRef<HTMLDivElement, unknown>(
+export const StageComponent = forwardRef<HTMLDivElement, { room: string }>(
 	(props, containerRef) => {
 		const [stage, setStage] = useState<
 			{ height: number; width: number } | undefined
@@ -119,7 +119,7 @@ export const StageComponent = forwardRef<HTMLDivElement, unknown>(
 						</Html>
 					</Group>
 					<MagnetDisplay />
-					<RemoteMagnetDisplay source={false} />
+					<RemoteMagnetDisplay source={false} room={props.room} />
 				</Layer>
 			</Stage>
 		);

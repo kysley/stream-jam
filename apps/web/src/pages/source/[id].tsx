@@ -20,7 +20,7 @@ export function SourceIdPage() {
 						</Html>
 					</Group>
 				)}
-				<RemoteMagnetDisplay source />
+				<RemoteMagnetDisplay source room={params.id} />
 			</Layer>
 		</Stage>
 	);

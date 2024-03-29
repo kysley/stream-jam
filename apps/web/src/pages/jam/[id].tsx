@@ -24,7 +24,7 @@ export function JamIdPage() {
 				<PresetsPanel />
 			</div>
 			<div className="pos-main" ref={containerRef}>
-				<StageComponent ref={containerRef} />
+				<StageComponent ref={containerRef} room={params.id} />
 			</div>
 			<div className="pos-right">
 				<EditorPanel />
