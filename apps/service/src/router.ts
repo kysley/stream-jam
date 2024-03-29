@@ -13,6 +13,7 @@ import {
 	getUserModerators,
 	createUserOverlay,
 	getUserOverlay,
+	getOverlayByName,
 } from "./routes";
 
 export const t = initTRPC.context<typeof createContext>().create();
@@ -191,6 +192,7 @@ export const router = t.router({
 	getUserModerators: getUserModerators(t),
 	createUserOverlay: createUserOverlay(t),
 	getUserOverlay: getUserOverlay(t),
+	getOverlayByName: getOverlayByName(t),
 
 	// syncModerators: t.procedure.mutation(async ({ ctx }) => {
 	// 	if (ctx.user) {
