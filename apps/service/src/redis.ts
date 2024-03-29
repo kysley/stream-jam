@@ -14,23 +14,21 @@ export const rUserModerators = (userId: string) => `user:${userId}:moderators`;
 
 export const rUserPrivileged = (userId: string) => `user:${userId}:privileged`;
 
+// based on a socket session you are able to look up a userId
+// this is to work around socketio handshake being shit and not working
 export const rSocketSessionUser = (sessionId: string) =>
 	`socketSession:${sessionId}:user`;
 
-export const setUserSocketSession = async (
-	userId: string,
-	remove?: boolean,
-) => {
-	if (remove) {
-		await redis.del(rUserSocketSession(userId));
-		return;
-	}
-˝
+export const setSocketSessionUser = async (userId: string): Promise<string> => {
 	const uuid = randomUUID();
-	await redis.set(rUserSocketSession(userId), uuid);
+	await redis.set(rSocketSessionUser(uuid), userId);
 	return uuid;
 };
 
-export const getUserSocketSession = async (userId: string) => {
-	return redis.get(rUserSocketSession(userId));
+export const getSocketUserSession = async (sessionId: string) => {
+	return redis.get(rSocketSessionUser(sessionId));
+};
+
+export const deleteSocketUserSession = async (sessionId: string) => {
+	return redis.del(rSocketSessionUser(sessionId));
 };

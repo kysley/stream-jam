@@ -28,14 +28,20 @@ model Magnet {
   props   String? // stringified json for now
   name    String
   version Int     @default(1)
-  user    User?   @relation(fields: [userId], references: [id])
-  userId  String?
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  overlay   Overlay? @relation(fields: [overlayId], references: [id])
+  overlayId String?
 }
 
 model OverlayEditor {
-  id        String  @id @default(uuid())
-  user      User    @relation(fields: [userId], references: [id])
-  userId    String
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
   overlay   Overlay @relation(fields: [overlayId], references: [id])
   overlayId String
 
@@ -43,10 +49,13 @@ model OverlayEditor {
 }
 
 model Overlay {
-  id      String          @id @default(uuid())
+  id String @id @default(uuid())
+
   editors OverlayEditor[]
-  user    User            @relation(fields: [userId], references: [id])
-  userId  String          @unique
+
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String   @unique
+  magnets Magnet[]
 
   @@unique([id, userId])
 }

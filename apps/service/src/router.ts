@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createContext } from "./context";
 import { prisma } from "./prisma";
 import { getAuthorizationCode, getStreams, refreshAccessToken } from "./helix";
-import { redis } from "./redis";
+import { getSocketUserSession, redis, setSocketSessionUser } from "./redis";
 import { syncModerators } from "./helix/helpers";
 import {
 	saveMagnet,
@@ -107,6 +107,22 @@ export const router = t.router({
 				path: "/",
 			});
 
+			const socketSessionCookie = ctx.req.cookies.socketSession;
+			const sessionPart = socketSessionCookie?.split(".")[0];
+
+			const sessionExists = await getSocketUserSession(sessionPart || "");
+
+			if (!sessionExists) {
+				const socketSessionId = await setSocketSessionUser(user.id);
+				ctx.res.setCookie("socketSession", socketSessionId, {
+					secure: true,
+					httpOnly: true,
+					expires: new Date(new Date().setMonth(12)),
+					signed: true,
+					path: "/",
+				});
+			}
+
 			return user;
 		}
 		return null;
@@ -158,7 +174,7 @@ export const router = t.router({
 				ctx.user,
 			);
 
-			console.log({ streams, ...editing[0].overlay });
+			// console.log({ streams, ...editing[0].overlay });
 
 			return editing?.map((e) => ({
 				id: e.overlayId,

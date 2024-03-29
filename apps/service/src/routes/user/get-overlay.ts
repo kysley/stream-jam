@@ -1,7 +1,7 @@
 import { prisma } from "../../prisma";
-import { type t as TRPC } from "../../router";
+import type { t as TRPC } from "../../router";
 import { GetModeratorsResponse, getModerators } from "../../helix";
-import { Overlay } from "@prisma/client";
+import type { Overlay } from "@prisma/client";
 
 export const getUserOverlay = (t: typeof TRPC) =>
 	t.procedure.query<Overlay | null>(async ({ ctx }) => {
@@ -12,6 +12,7 @@ export const getUserOverlay = (t: typeof TRPC) =>
 				},
 				include: {
 					overlay: true,
+					magnets: true,
 				},
 			});
 			return user.overlay;

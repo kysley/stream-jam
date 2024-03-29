@@ -11,7 +11,8 @@
     "dev": "tsup src/index.ts --format cjs --dts --watch --onSuccess \"node -r dotenv/config dist/index.js\"",
     "db:generate": "yarn prisma generate",
     "db:push": "yarn prisma db push",
-    "db:up": "docker-compose -p stream-jam up -d"
+    "db:up": "docker-compose -p stream-jam up -d",
+    "db:studio": "yarn prisma studio"
   },
   "devDependencies": {
     "@types/bull": "^4.10.0",

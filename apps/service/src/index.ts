@@ -21,6 +21,8 @@ import { EventSubWsListener } from "@twurple/eventsub-ws";
 import { NgrokAdapter } from "@twurple/eventsub-ngrok";
 import { makeAuthProvider } from "./twitch";
 import { log } from "node:console";
+import { deleteSocketUserSession, getSocketUserSession } from "./redis";
+import { prisma } from "./prisma";
 
 export const TEST_CHANNEL_IDS = [
 	"31688366", // sym
@@ -61,7 +63,7 @@ fastify.register(socketioServer, {
 	cors: {
 		origin: "http://localhost:5173",
 		credentials: true,
-		allowedHeaders: ["token"],
+		allowedHeaders: ["socketSession"],
 	},
 	// cookie: {
 	//   name: "token",
@@ -149,51 +151,70 @@ fastify.get("/", (req, res) => {
 			//   next();
 			// });
 
-			fastify.io.on("connection", (socket) => {
+			fastify.io.on("connection", async (socket) => {
 				let roomName: string;
+				let serverSessionId: string;
 				// const cleanup = predictionListener(socket);
 				// const cleanup2 = subscriptionListener(socket);
 				// Can't seem to verify the cookie outside of fastify context
 				const cookie = socket.handshake.headers.cookie;
 				// // No cookie? we want OUT
 				if (!cookie) return;
-				const cookieValue = cookie.split("=")[1];
-				if (!cookieValue) return;
-				// console.log(decodeURIComponent(cookieValue), "COOKIE");
 				try {
 					const cookies = fastify.parseCookie(cookie);
-					console.log(cookies.token);
+					// For some reason the cookie has stuff other than the value
+					const sessionPart = cookies.socketSession.split(".")[0];
+					const session = await getSocketUserSession(sessionPart);
+
+					if (!session) {
+						socket.disconnect(true);
+						return;
+					}
+
+					serverSessionId = sessionPart;
 				} catch (e) {
 					console.log(e);
 				}
 
-				// console.log(user, "YSER HERE");
-
-				// // const { token } = fastify.parseCookie(cookie);
-				// const token = cookie.split("=")[1];
-				// if (!token) return;
-
-				// if the user has a socket session
-				// get the user from the session
-
-				// verify that the socket session 1. is the same as the room or 2. is allowed to be in the room
-
-				console.log("connection");
+				console.log("connection with session");
 				socket.on("update", (state) => {
 					if (roomName) {
 						fastify.io.to(roomName).emit("update", state);
 					}
 				});
 
-				socket.on("joinRoom", (name: string) => {
+				socket.on("joinRoom", async (name: string) => {
+					// only belong to one room at a time
+					const userId = await getSocketUserSession(serverSessionId);
+					if (!userId) {
+						console.log("no matching session on joinRoom");
+						socket.disconnect();
+						return;
+					}
+
+					const hasStream = await prisma.user.findUnique({
+						where: { id: userId },
+						select: {
+							streams: { where: { user: { twDisplayName: { equals: name } } } },
+						},
+					});
+
+					if (!hasStream?.streams.length) {
+						console.log("user trying to join stream without rights");
+						socket.disconnect();
+						return;
+					}
+
 					socket.rooms.clear();
 					socket.join(name);
+
 					roomName = name;
+					console.log("user joined room");
 				});
 
 				socket.on("disconnect", () => {
 					console.log("socket disconnect");
-					console.log("TODO: remove socket session");
+					deleteSocketUserSession(serverSessionId);
 					// socket.on("disconnect",);
 					// cleanup();
 					// cleanup2();
