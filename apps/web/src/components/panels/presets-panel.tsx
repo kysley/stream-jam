@@ -47,7 +47,7 @@ export function PresetsPanel() {
 									() => {
 										console.log(props);
 										load({
-											id: `${id}${Date.now()}`,
+											id: `${id}-${Date.now()}`,
 											name,
 											...props,
 										});

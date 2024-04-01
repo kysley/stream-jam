@@ -8,40 +8,15 @@ export const updateMagnet = (t: typeof TRPC) =>
 			z.object({
 				id: z.string(),
 				props: z.any({}).optional(),
-				// overlayId: z.string().optional(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
 			if (!ctx.user) return;
-
 			const user = await prisma.user.findUniqueOrThrow({
 				where: {
 					id: ctx.user.id,
 				},
 			});
-
-			// let hasOverlayAccess = false;
-
-			// if (input.overlayId) {
-			// 	const overlayExists = await prisma.overlay.findUniqueOrThrow({
-			// 		where: {
-			// 			id: input.overlayId,
-			// 			OR: [
-			// 				{
-			// 					editors: {
-			// 						some: {
-			// 							userId: user.id,
-			// 						},
-			// 					},
-			// 				},
-			// 				{
-			// 					userId: user.id,
-			// 				},
-			// 			],
-			// 		},
-			// 	});
-			// 	hasOverlayAccess = !!overlayExists.id;
-			// }
 
 			const magnet = await prisma.magnet.update({
 				where: {

@@ -1,5 +1,5 @@
-import { trpc } from "../utils/trpc";
+import { type ReactQueryOptions, trpc } from "../utils/trpc";
 
-export function useMe() {
-	return trpc.me.useQuery(undefined, {});
+export function useMe(opts: ReactQueryOptions["me"] = {}) {
+	return trpc.me.useQuery(undefined, opts);
 }

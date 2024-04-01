@@ -1,6 +1,6 @@
 import { Group, Image as KonvaImage, Text as KonvaText } from "react-konva";
 import {
-	Magnet,
+	type Magnet,
 	useMagnetActions,
 	useManget,
 	useSelectedMagnetId,
@@ -12,6 +12,10 @@ import { useThrottledCallback } from "@react-hookz/web";
 import { useEffect, useMemo, useRef } from "react";
 import "gifler";
 import { Animation } from "konva/lib/Animation";
+import { trpc } from "../../utils/trpc";
+import { useUpdateMagnet } from "../../hooks/use-update-magnet";
+import { makeMagnetProps } from "../../utils";
+import { useMe } from "../../hooks/use-me";
 
 type MagnetProps = {
 	id: string;
@@ -20,7 +24,9 @@ export function CanvasMagnet({ id }: MagnetProps) {
 	const magnet = useManget(id);
 	const { setSelectedMagnetId, updateMagnet } = useMagnetActions();
 	const selectedId = useSelectedMagnetId();
-	const { scale } = useStageState();
+	const { data: me } = useMe({ networkMode: "offlineFirst" });
+
+	const { mutateAsync: updateMagnetServer } = useUpdateMagnet();
 
 	const { emitMagnetUpdate } = useEmitMagnetUpdate();
 	const onMove = useThrottledCallback((fn) => fn(), [], 25);
@@ -38,7 +44,14 @@ export function CanvasMagnet({ id }: MagnetProps) {
 				const lastX = event.target.attrs.x;
 				const lastY = event.target.attrs.y;
 
-				updateMagnet(magnet.id, { x: lastX, y: lastY });
+				const newMagnet = updateMagnet(magnet.id, { x: lastX, y: lastY });
+				if (newMagnet) {
+					updateMagnetServer({
+						// Remove the timestamp if added from saved magnets
+						id: magnet.id.split("-")[0],
+						props: makeMagnetProps(newMagnet, { preservePosition: true }),
+					});
+				}
 			}}
 			onDragMove={(event) => {
 				const newX = event.target.attrs.x;
@@ -48,8 +61,10 @@ export function CanvasMagnet({ id }: MagnetProps) {
 					emitMagnetUpdate({ ...magnet, x: newX, y: newY });
 				});
 			}}
-			onClick={(e) => {
-				setSelectedMagnetId(magnet.id);
+			onClick={() => {
+				if (magnet.userId === me?.id) {
+					setSelectedMagnetId(magnet.id);
+				}
 			}}
 			scaleX={magnet?.scale / 100}
 			scaleY={magnet?.scale / 100}
@@ -76,7 +91,7 @@ export function MagnetRenderer({ magnet, ...props }: { magnet: Magnet }) {
 		return <GIF src={magnet.url} {...props} />;
 	}
 
-	return <Image src={magnet.url} {...props}  />;
+	return <Image src={magnet.url} {...props} />;
 }
 
 // https://stackoverflow.com/questions/59741398/play-video-on-canvas-in-react-konva

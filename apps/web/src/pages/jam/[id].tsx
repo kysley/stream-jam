@@ -1,21 +1,26 @@
 import { useRoute } from "wouter";
 import { StageComponent } from "../../components/stage";
-import { useRef } from "react";
-import { useMagnets } from "../../hooks/use-magnets";
-import { Button } from "../../components/ui/button";
-import { useEditorActions, useMagnetActions } from "../../state";
-import {
-	MagnetEditor,
-	StatefulMagnetEditor,
-} from "../../components/magnet-editor";
+import { useEffect, useRef } from "react";
+import { type WrappedMagnet, useRemoteMagnetActions } from "../../state";
 import { EditorPanel, PresetsPanel } from "../../components/panels";
+import { trpc } from "../../utils";
 
 export function JamIdPage() {
-	const { load } = useEditorActions();
-
 	const [match, params] = useRoute("/jam/:id");
-	const { addMagnet } = useMagnetActions();
-	const { data, isLoading } = useMagnets();
+	const { loadRemoteMagnets } = useRemoteMagnetActions();
+	const { data, isLoading: isOverlayLoading } = trpc.getOverlayByName.useQuery(
+		{
+			name: (match && params.id) || "",
+		},
+		{ enabled: match },
+	);
+
+	useEffect(() => {
+		if (!isOverlayLoading && data) {
+			loadRemoteMagnets(data?.magnets as WrappedMagnet[]);
+		}
+	}, [isOverlayLoading]);
+
 	const containerRef = useRef<HTMLDivElement>(null);
 	if (!match) return <span>404</span>;
 	return (
@@ -24,7 +29,11 @@ export function JamIdPage() {
 				<PresetsPanel />
 			</div>
 			<div className="pos-main" ref={containerRef}>
-				<StageComponent ref={containerRef} room={params.id} />
+				{isOverlayLoading ? (
+					<span>loading...</span>
+				) : (
+					<StageComponent ref={containerRef} room={params.id} />
+				)}
 			</div>
 			<div className="pos-right">
 				<EditorPanel />

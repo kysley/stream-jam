@@ -1,4 +1,4 @@
-import { Overlay } from "@prisma/client";
+import type { Overlay } from "@prisma/client";
 import type { t as TRPC } from "../../router";
 import { prisma } from "../../prisma";
 import { z } from "zod";
@@ -10,10 +10,21 @@ export const getOverlayByName = (t: typeof TRPC) =>
 			if (!ctx.user) {
 				return;
 			}
-			return await prisma.user.findUnique({
-				where: { twDisplayName: input.name },
+			const overlay = await prisma.overlay.findFirstOrThrow({
+				where: {
+					user: {
+						twDisplayName: input.name,
+					},
+					editors: {
+						some: {
+							userId: ctx.user.id,
+						},
+					},
+				},
 				include: {
 					magnets: true,
 				},
 			});
+
+			return overlay;
 		});

@@ -1,6 +1,6 @@
-import { CSSProperties, useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 import {
-	Magnet,
+	type Magnet,
 	useEditor,
 	useMagnetActions,
 	useManget,
@@ -11,14 +11,20 @@ import { MagnetRenderer } from "../../magnet/canvas-magnet";
 import { Button } from "../../ui/button";
 import { IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
 import { he } from "date-fns/locale";
+import { makeMagnetProps, trpc } from "../../../utils";
+import { useSaveMagnet } from "../../../hooks/use-save-magnet";
+import { useRoute } from "wouter";
 
 // TODO: Editing existing magnet vs adding it to the scene
 export function EditorPanel() {
+	const [match, params] = useRoute("/jam/:id");
 	const [popout, setPopout] = useState(false);
 	const selectedMagnetId = useSelectedMagnetId();
 	const existingmagnet = useManget(selectedMagnetId);
 	const { actions, magnet: tempMagnet } = useEditor();
 	const { addMagnet, updateMagnet, setSelectedMagnetId } = useMagnetActions();
+
+	const { mutateAsync: createMagnet } = useSaveMagnet();
 
 	const isTempMagnet = !selectedMagnetId && tempMagnet;
 
@@ -111,10 +117,19 @@ export function EditorPanel() {
 						<div className="flex flex-row justify-between">
 							<Button
 								variant="secondary"
-								onClick={() => {
+								onClick={async () => {
 									addMagnet(magnet);
 									actions.clear();
 									setSelectedMagnetId(magnet.id);
+									if (match) {
+										await createMagnet({
+											name: "testing",
+											overlayId: params.id,
+											props: makeMagnetProps(magnet, {
+												preservePosition: true,
+											}),
+										});
+									}
 								}}
 							>
 								Add to scene

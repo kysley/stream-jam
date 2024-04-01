@@ -20,6 +20,7 @@ export function RemoteMagnetDisplay({
 				remoteMagnets.map((magnet) => (
 					// magnet.visible && (
 					<MagnetRenderer
+						key={magnet.id}
 						magnet={magnet}
 						scaleX={magnet?.scale / 100}
 						scaleY={magnet?.scale / 100}

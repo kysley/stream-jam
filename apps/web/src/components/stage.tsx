@@ -43,7 +43,7 @@ export const StageComponent = forwardRef<HTMLDivElement, { room: string }>(
 				}
 			}
 			fitStageIntoParentContainer();
-		}, [containerRef]);
+		}, []);
 
 		const handleWheel = useCallback(
 			(e: KonvaEventObject<WheelEvent>) => {

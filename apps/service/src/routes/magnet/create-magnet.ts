@@ -24,37 +24,42 @@ export const saveMagnet = (t: typeof TRPC) =>
 				// no user found
 				throw new Error("User not found");
 
-			let hasOverlayAccess = false;
+			let hasOverlayId = undefined;
 			if (input.overlayId) {
-				const overlayExists = await prisma.overlay.findUnique({
+				// try out finding the overlay through a mix of twitch username and editor/user check
+				const overlayExists = await prisma.overlay.findFirst({
 					where: {
-						id: input.overlayId,
-						OR: [
-							{
-								editors: {
-									some: {
-										userId: user.id,
-									},
-								},
-							},
-							{
+						// id: input.overlayId,
+						// AND: {
+						user: {
+							twDisplayName: input.overlayId,
+						},
+						// OR: [
+						// {
+						editors: {
+							some: {
 								userId: user.id,
 							},
-						],
+							// },
+							// },
+							// 	{
+							// 		userId: user.id,
+							// 	},
+							// ],
+						},
 					},
 				});
 
 				if (!overlayExists)
 					throw new Error("Cannot add magnet to overlay without permission");
 
-				hasOverlayAccess = !!overlayExists.id;
+				hasOverlayId = overlayExists.id;
 			}
 
 			const magnet = await prisma.magnet.create({
 				data: {
 					name: input.name,
-					overlayId:
-						hasOverlayAccess && input.overlayId ? input.overlayId : undefined,
+					overlayId: hasOverlayId ?? undefined,
 					userId: user.id,
 					props: JSON.stringify(input.props),
 				},
