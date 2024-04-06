@@ -36,14 +36,24 @@ export function Header() {
 				style={{
 					width: "100%",
 					display: "grid",
-					gridTemplateColumns: "1fr",
+					gridTemplateColumns: "auto 1fr auto",
 					padding: "0 24px",
-					// pointerEvents: "none",
+					pointerEvents: "none",
+					position: "absolute",
 					zIndex: 1000,
-					backgroundColor: "rgb(33,33,33)",
-					borderBottom: "1px solid rgb(55,55,55)",
+					// backgroundColor: "rgb(33,33,33)",
+					// borderBottom: "1px solid rgb(55,55,55)",
 				}}
 			>
+				<div style={{ pointerEvents: "all" }}>
+					<StreamSelector streams={streams} />
+					<Link to="/">
+						<Button variant={"ghost"}>
+							{/* Home */}
+							<IconHome />
+						</Button>
+					</Link>
+				</div>
 				<div
 					style={{
 						display: "flex",
@@ -51,7 +61,6 @@ export function Header() {
 						position: "relative",
 					}}
 				>
-					<StreamSelector streams={streams} />
 					{/* {!isIndex && <QuickToolbar streams={streams} me={data} />} */}
 					<div
 						style={{
@@ -64,23 +73,23 @@ export function Header() {
 							right: 0,
 						}}
 					>
-						{isIndex ? (
-							<MagnetPresetSheet
+						{/* {isIndex ? ( */}
+						{/* <MagnetPresetSheet
 								target={
 									<Button variant={"ghost"} className="gap-2">
 										<IconFolder size={18} />
 										Presets
 									</Button>
 								}
-							/>
-						) : (
-							<Link to="/">
-								<Button variant={"ghost"}>
-									{/* Home */}
-									<IconHome />
-								</Button>
-							</Link>
-						)}
+							/> */}
+						{/* ) : ( */}
+						{/* <Link to="/"> */}
+						{/* <Button variant={"ghost"}> */}
+						{/* Home */}
+						{/* <IconHome /> */}
+						{/* </Button> */}
+						{/* </Link> */}
+						{/* )} */}
 						{isLoading && <IconLoader />}
 						{!isLoading && data && (
 							<Popover

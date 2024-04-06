@@ -1,10 +1,12 @@
 import { Group, Layer, Stage } from "react-konva";
 import { useRoute } from "wouter";
-import { RemoteMagnetDisplay } from "../../components/remote-magnet-display";
 import { Html } from "react-konva-utils";
+import { MagnetDisplay } from "../../components/magnet-display";
+import { useListenForMagnetUpdate } from "../../hooks/use-listen-for-magnet-update";
 
 export function SourceIdPage() {
 	const [match, params] = useRoute("/source/:id");
+	useListenForMagnetUpdate(params.id);
 
 	if (!match) return <span>404</span>;
 
@@ -20,7 +22,7 @@ export function SourceIdPage() {
 						</Html>
 					</Group>
 				)}
-				<RemoteMagnetDisplay source room={params.id} />
+				<MagnetDisplay />
 			</Layer>
 		</Stage>
 	);

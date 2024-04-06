@@ -1,6 +1,5 @@
 import { Layer, Stage } from "react-konva";
 import { Link, useLocation, useRoute } from "wouter";
-import { RemoteMagnetDisplay } from "../../components/remote-magnet-display";
 import { useSearch } from "wouter";
 import { cn } from "../../lib/utils";
 import { buttonVariants } from "../../components/ui/button";

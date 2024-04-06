@@ -12,14 +12,12 @@
 
 .slotted-grid {
   display: grid;
-  grid-template-columns: 2fr 10fr 2fr;
-  grid-template-areas: "left main right";
+  grid-template-columns: 1fr;
   grid-auto-flow: column;
   height: 100%;
   position: relative;
   gap: 8px;
   /* padding: 10px 0; */
-  height: 100%;
 }
 
 .slotted-grid .pos-left {
@@ -31,7 +29,7 @@
 }
 
 .slotted-grid .pos-main {
-  grid-area: main;
+  /* grid-area: main; */
   /* border-radius: 20px; */
   /* background-color: rgb(33,33,33); */
   /* border:1px solid red; */

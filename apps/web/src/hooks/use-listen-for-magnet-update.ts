@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useRemoteMagnetActions } from "../state";
+import { useMagnetActions } from "../state";
 import { useSocket } from "./use-socket";
 
 export function useListenForMagnetUpdate(room: string) {
 	const socket = useSocket();
-	const { updateRemoteMagnet } = useRemoteMagnetActions();
+	const { updateMagnet } = useMagnetActions();
 
 	useEffect(() => {
 		// race condition
@@ -13,8 +13,9 @@ export function useListenForMagnetUpdate(room: string) {
 
 		socket?.on("update", (data) => {
 			// Ignore our own updates
+			console.log(data);
 			if (data.socketId === socket.id) return;
-			updateRemoteMagnet(data.magnet.id, data.magnet);
+			updateMagnet(data.magnet.id, data.magnet);
 		});
 
 		return () => {

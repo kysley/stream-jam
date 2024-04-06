@@ -1,12 +1,15 @@
 import { useCallback } from "react";
 import { create } from "zustand";
-import type { Magnet } from "./state.types";
+import type { Magnet, WrappedMagnet } from "./state.types";
+import { unwrapMagnet } from "../utils";
+import { produce } from "structurajs";
 
 const useMagnetStore = create<{
 	magnets: Magnet[];
 	ids: string[];
 	selected?: string;
 	actions: {
+		loadMagnets(magnets: WrappedMagnet[]): void;
 		setSelectedMagnetId(id?: string): void;
 		addMagnet(magnet: Magnet): void;
 		removeMagnet(id: string): void;
@@ -62,6 +65,25 @@ const useMagnetStore = create<{
 						selected: state.magnets[target].id,
 					};
 				}
+			});
+		},
+		loadMagnets(magnets) {
+			set((state) => {
+				const m = produce(state.magnets, (draft) => {
+					for (const magnet of magnets) {
+						const target = state.magnets.findIndex((m) => m.id === magnet.id);
+
+						if (target !== -1) {
+							draft[target] = unwrapMagnet(magnet);
+						} else {
+							draft.push(unwrapMagnet(magnet));
+						}
+					}
+				});
+				return {
+					magnets: m,
+					ids: m.map((m) => m.id),
+				};
 			});
 		},
 		addMagnet(magnet) {

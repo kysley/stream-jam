@@ -11,7 +11,6 @@ import { Layer, Group, Stage } from "react-konva";
 import { Html } from "react-konva-utils";
 import { useMagnetActions, useStageActions, useStageState } from "../state";
 import { MagnetDisplay } from "./magnet-display";
-import { RemoteMagnetDisplay } from "./remote-magnet-display";
 import { StreamPreview } from "./stream-preview";
 
 export const StageComponent = forwardRef<HTMLDivElement, { room: string }>(
@@ -119,7 +118,6 @@ export const StageComponent = forwardRef<HTMLDivElement, { room: string }>(
 						</Html>
 					</Group>
 					<MagnetDisplay />
-					<RemoteMagnetDisplay source={false} room={props.room} />
 				</Layer>
 			</Stage>
 		);

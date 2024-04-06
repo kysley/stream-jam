@@ -1,10 +1,9 @@
-import { Group, Image as KonvaImage, Text as KonvaText } from "react-konva";
+import { Image as KonvaImage, Text as KonvaText } from "react-konva";
 import {
 	type Magnet,
 	useMagnetActions,
 	useManget,
 	useSelectedMagnetId,
-	useStageState,
 } from "../../state";
 import useImage from "use-image";
 import { useEmitMagnetUpdate } from "../../hooks/use-emit-magnet-update";
@@ -12,14 +11,16 @@ import { useThrottledCallback } from "@react-hookz/web";
 import { useEffect, useMemo, useRef } from "react";
 import "gifler";
 import { Animation } from "konva/lib/Animation";
-import { trpc } from "../../utils/trpc";
 import { useUpdateMagnet } from "../../hooks/use-update-magnet";
 import { makeMagnetProps } from "../../utils";
 import { useMe } from "../../hooks/use-me";
 
 type MagnetProps = {
 	id: string;
+	visible?: boolean;
+	selected?: boolean;
 };
+
 export function CanvasMagnet({ id }: MagnetProps) {
 	const magnet = useManget(id);
 	const { setSelectedMagnetId, updateMagnet } = useMagnetActions();
@@ -38,7 +39,8 @@ export function CanvasMagnet({ id }: MagnetProps) {
 	return (
 		<MagnetRenderer
 			magnet={magnet}
-			draggable
+			// Stop accidental dragging if panning on top of a magnet
+			draggable={selectedId === id}
 			// Update last x,y so when/if the magnet redeners it will stay in place (changing image/gif)
 			onDragEnd={(event) => {
 				const lastX = event.target.attrs.x;
@@ -142,10 +144,10 @@ export function GIF({ src, selected, ...rest }: { src: string }) {
 			anim.animateInCanvas(canvas);
 			anim.onDrawFrame = (ctx, frame) => {
 				ctx.drawImage(frame.buffer, frame.x, frame.y);
-				imageRef.current.getLayer().draw();
+				imageRef.current?.getLayer().draw();
 			};
 		});
-		return () => anim && anim.stop();
+		return () => anim?.stop();
 	}, [src, canvas]);
 
 	return (
